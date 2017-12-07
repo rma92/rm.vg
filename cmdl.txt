@@ -370,3 +370,12 @@ nmtui - tui wifi manager
 ifconfig - is owned by root, must sudo
 
 Transmission Jail port: 9091 by default.
+
+DNSCrypt and SSH:
+dnscrypt proxy acts as a dns server, and can tunnel dns traffic over ssh. (TCP only of course).  This can be used to get around DNS blocks.  Once you connect the SSH, you can set your interface's DNS server to 127.0.0.1:53.  (you can also SSH directly to an IP address, which would cause there to be no DNS leakage possible)
+
+-Open an SSH tunnel to the location outside of the local network, tunnel some port over SSH to the server needed.  The port number does NOT necessarily need to match the port number that the actual server listens on.  
+-Call DNSCrypt-Proxy with relevant parameters and TCP Only (because SSH doesn't tunnel UDP -- if you don't use TCP only it won't connect).  The name of the resolver is required.  Pull that information out of the CSV file.
+
+ssh -L 127.0.0.1:80:176.103.130.130:5443 user@secure.example.com
+dnscrypt-proxy.exe --local-address=127.0.0.1:53 --provider-key=51B0:6E5D:480C:AC52:4B47:23CA:8FF2:1677:4D3F:0064:0138:6A10:8037:77CA:C0C6:282F --resolver-address=127.0.0.1:5443 --resolver-name=adguard-dns-ns1 --tcp-only
