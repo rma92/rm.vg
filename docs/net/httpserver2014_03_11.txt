@@ -1,0 +1,203 @@
+#!/usr/local/bin/php
+<?php
+/*
+ HTTP Server Written in PHP 0.1
+ ** NOW SERVES FILES! **
+ this is an asynchronous HTTP server written in PHP. Upon launch, it copies
+ all the files in the current directory into the RAM, and serves them from there.
+
+ It has very low memory consumption -- PHP used less than 4 megabytes with over 
+ 1000 connections! 
+
+ MIMEs don't yet work.
+
+ SlowLoris Attack: it is mitigated by a low connection timeout. The connection timeout
+ is not strict -- it isn't auditied constantly. Timeouts are audited before going into
+ each wait, and each wait can last a maximum of 30 seconds. To change the timeout
+ set $max_conn_limit to something else. I set it to 6...but the HTTP spec default
+ is 60 seconds.
+
+ TODO: 
+ There is a problem where connections are refused if many are attempted at the same time
+ possible fix - check if sock still has another connection.
+*/
+date_default_timezone_set('America/Los_Angeles');
+$port = 80;
+$sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+socket_set_option($sock, SOL_SOCKET, SO_REUSEADDR, 1);
+socket_bind($sock, 0, $port);
+socket_listen($sock);
+socket_set_nonblock($sock);
+
+//the maximum number of seconds we allow for a request to be sent.
+$max_conn_limit = 6;
+$indexes = array( 'index.html', 'index.htm' );
+$MIMEs = array();
+$MIMEs['html'] = 'text/html';
+$MIMEs['png'] = 'image/png';
+$MIMEs['svg'] = 'image/svg+xml';
+
+$pages = array();
+$pages[404] = "<!DOCTYPE HTML>\r\n<html>\r\n<head>\r\n<title>404 Not Found</title>\r\n</head>\r\n<body>\r\n<h1>404 Not Found</h1>\r\n<hr/>The page you requested was not found.\r\n</body>\r\n</head>";
+$pages[408] = "<!DOCTYPE HTML>\r\n<html>\r\n<head>\r\n<title>408 Request Timeout</title>\r\n</head>\r\n<body>\r\n<h1>408 Request Timeout</h1>\r\n<hr/>The client did not finish a request within the time the server is expected to wait.\r\n</body>\r\n</head>";
+$pages[501] = "<!DOCTYPE HTML>\r\n<html>\r\n<head>\r\n<title>501 Not Implemented</title>\r\n</head>\r\n<body>\r\n<h1>501 Not Implemented</h1>\r\n<hr/>The method requested is not supported.\r\n</body>\r\n</head>";
+$pages['/'] = "<!DOCTYPE HTML><html><body>Hi</body></html>";
+
+//load up some files.
+//$dir = './htdocs/';
+$dir = './';
+if( $dh = opendir($dir) )
+{
+  while( ($file = readdir($dh) ) != false ) 
+  {
+    if(filetype($dir . $file) == 'file')
+    {
+      $pages[ '/' . $file ] = file_get_contents( $dir . $file );
+    }
+  }
+}
+
+foreach(array_keys($pages) as $aa)
+{
+  echo $aa, ',';
+}
+
+// list of sockets
+$clients = array($sock);
+// contains the current request header for the socket.
+// Key is the socket.
+// Value[0] is the time the connection began sending headers.
+// Value[1] is the current data the socket has sent thus far.
+// Value[2] is the state. 1 = read, 2 = keep-alive (waiting).
+$cur_heads = array();
+
+while (true) 
+{
+  //check if any of the sockets are taking an unduly long time.
+  foreach($clients as $read_sock)
+  {
+    if( $read_sock !== $sock && $cur_heads[$read_sock][0] < mktime() - $max_conn_limit && $cur_heads[$read_sock][0] > 0)
+    {
+      echo 'kicking';
+      /*
+      $send_buf = "HTTP/1.1 501 Not Implemented\r\nServer: server/0.1\r\nContent-Length: " . strlen($pages[501]) . "\r\nConnection:Keep-Alive\r\nContent-Type: text/html\r\n\r\n" . $pages[501];
+      try
+      {
+        socket_write($read_sock, $send_buf, strlen($send_buf) );
+      }catch(Exception $eee){}
+      */
+      $key = array_search($read_sock, $clients);
+      unset( $clients[$key] );      
+    }
+  }
+
+  // copy the list of sockets
+  $read = $clients;
+  if (socket_select($read, $write = NULL, $except = NULL, 15) < 1)
+  {
+    continue;
+  }
+
+  // check if there is a client trying to connect
+  if (in_array($sock, $read)) 
+  {
+    // accept the client.
+    while( ($newsock = socket_accept($sock)) != FALSE)
+    {
+      $clients[] = $newsock;
+      socket_set_option($newsock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => 1,'usec' => 0));
+
+        /*
+        // get the peername.
+        $cip;
+
+        $cport;
+        socket_getpeername($newsock, $cip, $cport);
+        
+        // add client to pool.
+        $clients[ $cip . ':' . $cport ] = $newsock;
+        
+        echo '(', count($clients), ' clients) New client connected: [' . $cip . ':' . $cport . "]\n";
+        */
+        echo "+\n";
+        $clients[] = $newsock;
+        $cur_heads[$read_sock][0] = mktime();
+        $key = array_search($sock, $read);
+         unset($read[$key]);
+    }
+   }
+  
+  // loop through all the clients that have data to read from
+  foreach ($read as $read_sock) 
+  {
+    if( $read_sock === $sock ) continue;
+
+    // read until newline or 1024 bytes
+    // socket_read while show errors when the client is disconnected, so silence the error messages
+    $data = @socket_read($read_sock, 1024, PHP_NORMAL_READ);
+    
+    /*
+      If the current socket is not reading, then we are starting a new request.
+      Set the state to reading, and the time we began the request.
+    */
+    if( $cur_heads[$read_sock][2] != 1)
+    {
+      $cur_heads[$read_sock][2] = 1;
+      $cur_heads[$read_sock][0] = mktime();
+    }
+    //echo "RF===\n", $data, "\n===\n";
+    
+    //an assumption is made that the second key for the item is
+    //the ip and port string set above.
+
+    // check if the client is disconnected
+    if ($data === false) 
+    {
+      $key = array_search($read_sock, $clients);
+      //$clikey = array_keys($clients, $read_sock)[1];
+      //echo '(', count($client), ' clients) client [', $clikey, "] disconnected.\n";
+      echo "-\n";
+      unset($clients[$key]);
+      continue;
+    }
+   
+    $data = trim($data, "\0");
+
+    $cur_heads[$read_sock][1] .= $data;
+    //check if the data is finished.
+    if( strrpos( $cur_heads[$read_sock][1], "\r\n\r\n" ) )
+    {
+      $cur_heads[$read_sock][1] = trim( $cur_heads[$read_sock][1]  );
+      //echo "\r\n====\r\n",     $cur_heads[$read_sock][1], "\r\n====\r\n";
+      //parse the header from the client.
+      $hlines = explode( "\r\n", $cur_heads[$read_sock][1] );
+      $cm_line = explode(' ', $hlines[0]);
+      //for now, we are ignoring everything else in header.
+      if( $cm_line[0] == 'GET' || $cm_line[0] == 'HEAD' )
+      {
+        //respond to the get or head.
+        if(isset($pages[ $cm_line[1] ]) )
+        {
+          $send_buf = "HTTP/1.1 200 OK\r\nServer: server/0.1\r\nContent-Length: " . strlen($pages[ $cm_line[1] ]) . "\r\nConnection:Keep-Alive\r\nContent-Type: text/html\r\n\r\n" . $pages[ $cm_line[1] ];
+        }
+        else
+        {
+          $send_buf = "HTTP/1.1 404 Not Found\r\nServer: server/0.1\r\nContent-Length: " . strlen($pages[404]) . "\r\nConnection:Keep-Alive\r\nContent-Type: text/html\r\n\r\n" . $pages[404];
+        }
+        socket_write( $read_sock, $send_buf, strlen($send_buf) );
+      }
+      else //unknown method
+      {
+        $send_buf = "HTTP/1.1 501 Not Implemented\r\nServer: server/0.1\r\nContent-Length: " . strlen($pages[501]) . "\r\nConnection:Keep-Alive\r\nContent-Type: text/html\r\n\r\n" . $pages[501];
+        socket_write($read_sock, $send_buf, strlen($send_buf) );
+      }
+      //now throw out the header.
+      $cur_heads[$read_sock][1] = '';
+      //and mark the socket as waiting for more.
+      $cur_heads[$read_sock][2] = 2;
+    }
+  }//!foreach [reading]
+}
+//close listening socket.
+socket_close($sock);
+?>

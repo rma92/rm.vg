@@ -1,0 +1,55 @@
+<  ? php
+$_SESSION['lines'] = array();
+//            array(x1, y1, z1, x2, y2, z2)
+$_SESSION['lines'][] = array(32, 32,  0,  0,  0,  0);
+$_SESSION['lines'][] = array(32,  0,  0,  0, 32,  0);
+$_SESSION['lines'][] = array(10,  0,  0, 15,  0,  0);
+$_SESSION['lines'][] = array(10,  1,  0, 15,  1,  0);
+
+//check if the lines intersect...
+function intersect($a)
+{
+  $r = array();
+  for($i = count($a)-1; $i >= 0; --$i)
+  {
+    for($j = $i-1; $j >= 0; --$j)
+    {
+      $x11 = $a[$i][0];
+      $y11 = $a[$i][1];
+      $z11 = $a[$i][2];
+      $x12 = $a[$i][3];
+      $y12 = $a[$i][4];
+      $z12 = $a[$i][5];
+
+      $x21 = $a[$j][0];
+      $y21 = $a[$j][1];
+      $z21 = $a[$j][2];
+      $x22 = $a[$j][3];
+      $y22 = $a[$j][4];
+      $z22 = $a[$j][5];
+
+      $a1 = $y12 - $y11;
+      $b1 = $x11 - $x12;
+      $c1 = $a1 * $x11 + $b1 * $y11;
+      $a2 = $y22 - $y21;
+      $b2 = $x21 - $x22;
+      $c2 = $a2 * $x21 + $b2 * $y21;
+
+      $d = $a1 * $b2 - $a2 * $b1;
+      if($d == 0)
+      {
+        echo('lines parallel\n');
+      }
+      else
+      {
+        $xLoc = ($b2 * $c1 - $b1 * $c2) / $d;
+        $yLoc = ($a1 * $c2 - $a2 * $c1) / $d;
+        printf("lines %d and %d intersect at (%d, %d)\n", $i, $j, $xLoc, $yLoc);
+      }
+    }
+  }
+  return $r;
+}
+
+intersect($_SESSION['lines']);
+?>

@@ -1,0 +1,31 @@
+RewriteEngine On
+#Make data directory invisible.
+RewriteRule ^data/ - [L,R=404]
+
+#Check for a statically compress copy of the file.
+RewriteCond %{HTTP:Accept-Encoding} gzip
+RewriteCond %{REQUEST_FILENAME}.gz -f
+RewriteRule ^(.+)\.(html|svg|css|js|data)$ $1.$2.gz [T=text/$2,E=GZIP:gzip,L] 
+Header set Content-Encoding gzip env=GZIP 
+
+# If requested resource exists as a file or directory, skip next two rules
+RewriteCond %{DOCUMENT_ROOT}/$1 -f [OR]
+RewriteCond %{DOCUMENT_ROOT}/$1 -d
+RewriteRule (.*) - [S=2]
+#
+# Requested resource does not exist, do rewrite if it exists in /archive
+#RewriteCond %{DOCUMENT_ROOT}/archive/$1 -f [OR]
+#RewriteCond %{DOCUMENT_ROOT}/archive/$1 -d
+#RewriteRule (.*) /archive/$1 [L]
+#
+# Else rewrite requests for non-existent resources to /index.php
+RewriteRule (.*) /qr.php?q=$1 [L] 
+
+<FilesMatch "\.(ico|svg|pdf|flv|jpg|jpeg|png|gif|js|css|gz|swf)$">
+Header set Cache-Control "max-age=2592000, public"
+</FilesMatch>
+
+<FilesMatch "\.(js|css|xml|gz|html|data)$">
+  Header append Vary: Accept-Encoding
+</FilesMatch>
+

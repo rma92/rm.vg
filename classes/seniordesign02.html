@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+ol li
+{
+  padding: 8px;
+}
+.mname
+{
+  
+}
+</style>
+</head>
+<body>
+<div class="main">
+<span class="mname">Richard A. Marino</span>
+<h1>File and Data Sharing in the Near Field</h1>
+<center>By</center><br>
+<center>Richard A. Marino</center>
+<h2>Abstract</h2>
+File- and Data- sharing between devices that are physically nearby is surprisingly non-trivial.  A tool (software) should be developed to significantly simplify this task, with limited or no dependence on the Internet, and minimal hassle to the user. 
+<h2>Need and Prior Technology</h2>
+The software to be developed will be applicable in a diverse range of applications where people meet, ranging from business meetings, to college classes, to informal gatherings. 
+<ul>
+  <li>Take, for example, a business meeting between an architect and a couple of clients, in a public location, such as a coffee shop. The architect would like to quickly give the clients some drawings, which are stored on his laptop. The drawings take up several megabytes. He has a variety of options for how to proceed -- 
+  <ul>
+    <li><b>Flash Drive</b> - The architect could use a flash drive, or some other physical disk, such as an SD Card, to transfer the files. This is time consuming, and would be particularly troublesome with many people -- the drive would need to be passed around to everyone, which could be time consuming.</li>
+    <li><b>Email</b> - The architect could email everyone the file. In order to do this, he would need to collect everyone's email address, if he doesn't already have them, and then proceed to send a mail. Everyone must then open the email, and download the attachment. In some cases, the attachment may be too large for one of the mail servers or accounts, which would lead to further trouble.</li>
+    <li><b>Dropbox</b> - The architect could upload the file to Dropbox. If everyone involved already has a Dropbox account, and has a folder shared between them, this will work fairly well, assuming everyone has adequate Internet access. If there are people involved that do not have a Dropbox account, or their accounts are not all linked to a folder, the architect may then proceed to make the file publicly available, causing everyone to have to open a link in their web browser. He could also collect everyone's email address, and add them to a folder, or invite them to open Dropbox accounts, which is quite excellent if there will be a lot of subsequent file transfers, but would be questionable in a more ad-hoc environment. By this point, it might have been better to have emailed the files to everyone.</li>
+    <li><b>Google Drive, Microsoft SkyDrive</b> - These would be similar to using DropBox, except that both products have authentication integrated to other services, which may be slightly advantageous.</li>
+    <li><b>Skype</b> - If everyone has a Skype account, the file could be sent that way. Unless the architect has a paid account (allowed to have multiple people in a conference simultaneously), he will need to send each person the files separately. Again, email would be preferred, except that Skype can, on occasion, transfer files directly over a local area network if both computers are connected to the same network.</li>
+    <li><b>RapidShare (or other File Sharing)</b> - The architect could upload the files to one of the free online hosting sites. Everyone must then download the file. This has a poor user experience, not the least of which would come from requiring the user to wait for a period, or buy a premium account.</li>
+    <li><b>Web Server</b> - The architect could upload the files to a web server, and ask everyone to download the files. This requires a certain degree of technical competence for the person sending the files. It also only works in one direction, unless everyone has access to a web server. In some cases, the URLs may be too lengthy to type, which would be solved by the architect sending a link via email or instant message.</li>
+    <li><b>Instant Message</b> - Some instant message services can transfer files in a convenient way, if everyone has an account.</li>
+    <li><b>Facebook Messenger</b> - Facebook's messaging platform supports sending file attachments. In some cases, this may be strongly preferable to email, as people may be friends on Facebook, and may not know the other's email address. This would likely be more desirable in a collaboration between classmates at a high school or university, who are likely to be Facebook friends, but may not know everyone's email address.</li>
+    <li><b>FTP Server / SFTP Server</b> - This would be very similar to the web server. The architect would upload the files, and others would download them. The FTP server also may allow the clients to upload files as well.</li>
+    <li><b>Windows File Sharing (SMB / Samba)</b> - If all of the computers are on the same network, it should be possible to use Windows File Sharing. The architect could share a folder, and then have everyone connect to the share and copy files. He could also have people copy files onto the share, if he wishes. This will only work properly if all computers are on a well-configured network.<br>One could potentially create an adhoc network to get around any network issues, but this is fairly non-trivial to most users, requiring a decent amount of technical know-how for all parties.</li>
+    <li><b>Unix File Sharing, Apple File Sharing</b> - Both of these could be used, similarly to the Windows File Sharing case.</li>
+    <li><b>iSCSI</b> - Everyone could mount an iSCSI target. This would require that an iSCSI target is available, and that everyone can be allowed to access it, as well as a very large amount of technical knowhow from all parties. While iSCSI is known for its good performance, it would be limited by the Internet connection available at the location.</li>
+    <li><b>Bluetooth OBEX</b> - It should be trivial to move files via Bluetooth, as this is exactly the type of application for which this technology was designed. It is, however, extremely buggy and unreliable. It is also slow to both set up, and actually transfer data due to bandwidth limitations. The bandwidth limitation is not a significant issue in small files. Bluetooth OBEX also does not adequately support sending files to many devices simultaneously (unreliable).</li> 
+    <li><b>AirDrop</b> - This is by far the most desirable solution listed here. AirDrop is a relatively new technology developed by Apple, and supported in recent Macintosh models, and devices running iOS 7 (at the time of this writing). On a Macintosh that supports AirDrop, a special folder is available in the Finder. Opening this folder shows Macintoshes (and potentially other devices) in the vicinity that support AirDrop. A user can then simply drag files to the devices in question. The user of the receiving device will be asked if they want to receive the file(s). 
+    <br>If the user accepts, the file will be transferred. This file is transferred internally by either Wi-Fi Direct, or Bluetooth.
+    <br>This technology works very well, however, it has very bad compatibility. At the time of writing, while AirDrop is supported on both iOS 7 devices, and Macintosh computers with certain Wi-Fi adapters, it is not presently supported between the platforms, let alone to any non-Apple platforms.
+    <br>
+  </ul>
+  Despite the plethora of options to transfer the file, there are no seamless and cross platform options. Options are significantly limited without Internet access as well, despite the fact that the two computers are physically within arms-reach.
+  </li>
+  <li><b>It would be desirable to develop an application that uses technology that, for the most part, is already available in most computers, and can provide this type of seamless experience, preferably without Internet access, if possible.</b></li>
+  <li>Some example applications of this product include
+  <ul>
+    <li>Business meetings (cross company)</li>
+    <li>Sharing photos at casual gathering</li>
+    <li>In a college class, where it would be unacceptable to use a technology like BlackBoard, due to performance reasons</li>
+  </ul>
+  </li>
+</ul>
+<h2>Design Considerations</h2>
+<ul>
+  <li>There should be two components to the system.
+    <li><b>Anonymous Web File Server Service</b> - A web service that allows for a "file chat room" of sorts should be created. This will allow users on Internet connected computers to move files quickly.
+    <br>This service will not require authentication, and will authenticate in the sense of IRC -- that is, the user will connect to the server, be prompted to enter a room. Upon entering a room, all files in the room will be displayed. A user can then download the files, or drag files into the window using HTML5 drag and drop. The file will then become available to the other users, who will be notified by an audible tone.
+    <br>This facilitates file sharing relatively quickly between users connected to the Internet, as users can simply be told to open a website, enter a room, and can then freely upload and download files.
+    <br>Some restrictions should be implemented.
+    <ul>
+      <li>Potentially, files should be purged after some amount of time. The site is not intended necessarily as a public pastebin.</li>
+      <li>Room names can be chosen freely, and are created in the database when a file is uploaded for the first time. Even if two users wish to transfer a file separately from other users, this should be reasonably facilitated by picking a lengthy room name.
+      <br>In the past, America Online had two types of chat rooms -- public chat rooms, and "Buddy Chat", which was a chat that people would need to be invited to. The "Buddy Chat" actually created a public chat room with a lengthy name, that was not listed in any directory, and added all relevant people. An outside party was not technologically barred from entering this chat room -- but would need to know the name of the room in order to do so.
+    </ul>
+  </li>
+  <li><b>Facility for transferring files in the near-field, without necessarily requiring an Internet connection</b> - This will be a software application that runs on various devices, such as computers, and smartphones. Like <i>AirDrop</i>, actual file transfer will be facilitated over either Wi-Fi Direct, Bluetooth, or an existing network connection between the computers (It should be noted the AirDrop will work over Ethernet connections, but this is not supported by Apple <sup>[1]</sup>).
+  <br>A handshake, which will only send a small amount of data, and open connections on the relevant devices (if applicable), will be able to be facilitated in a variety of ways:
+  <ul>
+    <li><b>Near-Field Communication</b> - (heron, NFC) on machines that support this technology, the communication can be facilitated by sharing the handshake data using the NFC chip. NFC chips support sharing data in a beacon-like manner, and scanning.</li>
+    <li><b>Multicast UDP</b> - if it is known that the computers are on a network together, all computers can be configured to join a multicast group and receive beacons (and possibly complete the transfer) that way. As this does not require computers to have a properly assigned Unicast IP address, this could also operate over ad-hoc Wi-Fi connections.</li>
+    <li><b>Camera</b> - With the ubiquity of webcams and cameras, especially rear-facing cameras, it would be reasonable to transmit the data by having the user take a picture of something on a screen. This could be, for example, a <b>QR Code</b>, which can encode a quite significant amount of data, or a technology similar to <b>Casio's PiCapiCamera</b><sup>[2]</sup>. PiCapiCamera is a technology developed by Casio that allows information to be transferred between an onscreen shape that changes color, and a camera that decodes this data. This technology is presently only used in limited advertising applications in Japan.
+    <br>Utilizing a camera for data transmission is particularly interesting, as it requires no other connectivity whatsoever between the devices, and as such, could facilitate data transfer in heavily restricted computing environments. 
+    <br>Further research into the applicability of cameras in data transfer applications is necessary. 
+    </li>
+    <li><b>Manual entry of some form of code</b> - As a last resort, if none of the above are applicable, such as due to hardware limitations of a user's device, it should be possible to manually initiate the transfer in some way, either by typing a code.
+  </ul>
+  <br>
+  </li>
+</ul>
+<h2>Feasibility Considerations</h2>
+It should be possible to implement both systems to a functional level within the timeframe specified for this project. Much of the Web feature has already been implemented to a working state.<br>
+Cost should not be particularly prohibitive, as all relevant hardware is readily available in many computers and smartphones. The only hardware that may be necessary to purchase would be NFC equipment, which can be had relatively cheaply.<br>
+Overall, the entire project seems very feasible.<br>
+<h2>Milestones</h2>
+Microsoft Windows 8.1 will be the initial platform, due to the dependency of NFC libraries that are readily available.
+<ul>
+  <li><b>Basic Design and Implementation of one-click web application</b> - Complete and working now. Some miner changes may be done in the future.</li>
+  <li><b>Prototype: Viewing files over NFC or QR Codes</b> - Finish by end of November. This should also allow the files to be uploaded to the web application into a selectable room.</li>
+  <li><b>Files can be transferred via Wi-Fi Direct, Bluetooth, Local Network, or over Internet</b> - Finish by end of January.</li>
+  <li><b>Final milestone: Application available on Windows</b></li>
+  <li><b>Additional Goals: Android application, potentially iOS application</b></li>
+</ul>
+<h2>Updates (late October)</h2>
+<p>Over the past month, I have done some research on alternative means of transferring files locally, primarily IrDA. IrDA is an Infrared communication protocol that was popular in the 1990s, and was used extensively in PDAs, as well as the Nintendo Game Boy. It could, for example, transfer an address book entry (vCard) to someone. Internally, it created a standard serial port, and passed the data. It was, as a result, cross platform, to the extent that the data transferred was usable on the various platforms. IrDA is present in the recently released Nintendo 3DS, and is used for interactive, head-to-head multi-player in some games.</p>
+
+<p>Several hours have been spent attempting to get IrDA dongles to run under Windows. This did not work well on Windows 8.1, and required adding hardware to the computer (which required restarting before the hardware could be used). As a result of this, using this technology will be undesirable.</p>
+
+<p>NFC hardware will be ordered in the next week's time. Additionally, I will experiment with QR Codes and other means of transfusing information with a camera.</p>
+<!--
+<h2>Introduction</h2>
+<h3>Problem Statement</h3>
+<h3>General Information</h3>
+<h3>Specifications and Goals</h3>
+<h2>Design Procedure</h2>
+<h2>Design Details</h2>
+<h2>Desing Verification</h2>
+<h2>Cost</h2>
+<h3>Parts</h3>
+Due to the fact that the project will be implemented entirely in software, the cost of most parts will be <b>negligable</b>, due to existing beforehand.
+A brief list of items required:
+<ul>
+<li>Web server / Domain name- costs several dollars per month to run</li>
+<li>Computers / Tablets / Smartphones with relevant hardware capability - already exist. No cost.</li>
+<li>All software (other than operating systems) will likely be open source.</li>
+</ul>
+<h3>Labor</h3>
+
+-->
+<br>
+<p>
+<h2>References</h2>
+<!--<a name='r1'><sup>1</sup></a> This 4×6 index card has all the financial advice you’ll ever need, Erza Klein. Published 16 Sep 2013. <a href=http://www.washingtonpost.com/blogs/wonkblog/wp/2013/09/16/this-4x6-index-card-has-all-the-financial-advice-youll-ever-need/>http://www.washingtonpost.com/blogs/wonkblog/wp/2013/09/16/this-4x6-index-card-has-all-the-financial-advice-youll-ever-need/</a> Accessed 17 Sep 2013.-->
+<a name='r1'><sup>1</sup></a> OS X Daily (2011, Sep 16) Enable AirDrop Over Ethernet & AirDrop On Unsupported Macs Running OS X. <a href=http://osxdaily.com/2011/09/16/enable-airdrop-ethernet-and-unsupported-macs/>http://osxdaily.com/2011/09/16/enable-airdrop-ethernet-and-unsupported-macs/</a>.
+<br>
+<a name='r2'><sup>2</sup></a> Casio (2012) PiCapiCamera. <a href=http://www.casio-isc.com/en/>http://www.casio-isc.com/en/</a>.
+<h2>Other Resources</h2>
+Google (2012) Android: Wi-Fi Direct APIs. <a href=http://developer.android.com/guide/topics/connectivity/wifip2p.html>http://developer.android.com/guide/topics/connectivity/wifip2p.html</a>
+<br>
+Microsoft (2013) MSDN: Proximity Sample (Windows 8.1). <a href=http://code.msdn.microsoft.com/windowsapps/Proximity-Sample-88129731>http://code.msdn.microsoft.com/windowsapps/Proximity-Sample-88129731</a>
+<br>
+Microsoft (2013) Wi-Fi Direct Protocol Implementation. <a href=http://msdn.microsoft.com/en-us/library/windows/hardware/hh440290(v=vs.85).aspx>http://msdn.microsoft.com/en-us/library/windows/hardware/hh440290(v=vs.85).aspx</a>
+<br>
+Question on Superuser.com forums regarding using Wi-Fi Direct on Windows 8. (2013 5 May) How can I connect 2 windows 8 machines with WiFi Direct? <a href=http://superuser.com/questions/591733/how-can-i-connect-2-windows-8-machines-with-wifi-direct>http://superuser.com/questions/591733/how-can-i-connect-2-windows-8-machines-with-wifi-direct</a>
+</p>
+</div>
+</body>
+</html>
+

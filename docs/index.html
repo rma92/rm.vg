@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>Docs - Rich A. Marino</TITLE>
+<link rel="stylesheet" href="/rm.css"> 
+</HEAD>
+<BODY>
+<h1><a href="/index.html">Rich A. Marino</a>&nbsp;&nbsp;|&nbsp;&nbsp;<span class="ht1">Docs</span></h1>
+Here is a list of documents/files I've written.
+<h2>Hardware/Embedded Tech</h2>
+<ul>
+<li><a href="hardware/arduino.html">Arduino Stuff (including Windows 8 tutorial)</a></li>
+</ul>
+
+<h2>Programming</h2>
+<ul>
+<li><a href="code/asm.c">asm.c</a> - Example code demonstrating GCC inline assembly (including <span class=code>xchg</span>).</li>
+<li><a href="code/starptrplus.c">starptrplus.c</a> - Test code for <span class=code>char * str = "ace"; printf("%c", *++str);</span>. I'm not sure if this is defined, but it seems to print a 'c'.</li>
+<li><a href="code/loopArray.txt">loopArray.pl</a> - stupid test program to demonstrate array loopings due to a question in a class.</li>
+<li><a href="code/intersect1.php.txt">intersect1.php</a> - Intersection of lines in PHP</li>
+<li><a href="code/mingw_dll.7z">MinGW Example DLL with build script</a></li>
+<li><a href="code/cancalc.html">Can Pyramid Calculator</a> - A stupid can pyramid size calculator. Given a height and shape, how many cans are needed?</li>
+</ul>
+
+<h2>Windows API (Win32/Winapi) Stuff</h2>
+<ul>
+<li><a href="winapi/win32.c">win32.c</a> - Empty Win32 program in C.  Creates an empty window, and sets up a basic message loop.</li>
+<li><a href="winapi/win32x.c">win32x.c</a> - Trival Win32 program in C that demonstrates various controls.  Creates window with several controls, complete with an operable button.</li>
+<li><a href="winapi/win32.asm">win32.asm</a> - Empty Win32 program in x86 Assembly (MASM). Creates an empty window, and sets up a basic message loop.</li>
+<li><a href="winapi/flash.c">flash.c</a> - Win32 program that flashes the screen white for a second, then fades to normal. Demonstrates some of the Extended Window Styles and Win32 Timers.</li>
+<li><a href="winapi/win32_hello.c">win32_hello.c</a> - Interactive "Hello World", where the user is greeted by the name entered. Uses a button, an edit box, and shows the answer in a message box.</li>
+<li><a href="winapi/win32_convhex.c">win32_convhex.c</a> - Converts the entered text to hex, in a GUI.</li>
+<li><a href="winapi/testdll.c">testdll.c</a> - A Test RunDLL32 DLL in C that can be compiled with Tiny C Compiler or Visual C++.</li>
+<li><a href="winapi/testdll.cpp">testdll.cpp</a> - C++ Version of testdll.c.</li>
+<li><a href="winapi/web.c">web.c</a> - A small win32 sample program that uses WinINet to download something over HTTP.</li>
+<li><a href="winapi/tonegen.c">tonegen.c</a> - A small win32 piano program that generates frequencies when buttons are pressed.  Some changes are needed to deal with synchronization when filling buffers.  To compile with Tiny C Compiler, use <a href="winapi/mmsystem.7z">this slightly edited mmsystem.7z</a> that disables some unions that TCC's inbuilt libraries don't agree with.</li>
+</ul>
+
+<h2>Network stuff</h2>
+When I was trying to learn about multicast programming, I couldn't find any 
+working example code anywhere, so I'll leave this here in case it helps someone.
+<ul>
+<li><a href="net/mclisten.c">WinSock Multicast Listener</a></li>
+<li><a href="net/mcsend.c">WinSock Multicast Sender</a></li>
+<li><a href="net/udptrix.txt">PHP Socket Stuff (UDPTrix)</a></li>
+<li><a href="net/phpweb1.txt">A primative PHP web server</a> -- it is just for demonstration.</li>
+<li><a href="net/httpserver2014_03_11.txt">More PHP Web Server</a> -- a decent async web server. It loads the files into memory on launch and serves from there. 
+	(<a href="net/phpweb2.txt">other</a>)
+</li>
+<li><a href="net/UDPClient.java">Primitive Java UDP Listener</a></li>
+<li><a href="net/listen.cs">C#: Primitive UDP Listener</a></li>
+<li><a href="net/send.cs">C#: Primitive UDP Sender</a></li>
+<li><a href="net/webserver1.cs">C#: Primative Threaded Web Server (that only 404s) using TcpClient.</a></li>
+<li><a href="net/daytimeclient.cs">C#: UDP daytime protocol client</a> - using Socket instead of UdpClient.</li>
+<li><a href="net/tcpchargenclient.cs">C#: TCP Chargen client</a> - using Socket instead of TcpClient.</li>
+<li><a href="net/tcpchargenserver.cs">C#: TCP Chargen server</a> - modification of the above bad web server.</li>
+<li><a href="net/elixir404server.exs">Primative Elixir web server that only sends out 404 pages</a> -- it is just for demonstration.</li>
+<li><a href="net/webserverv01.exs">Elixir web server</a> -- that can server files, but is insecure.</li>
+<li><a href="net/tictactoeserver.zip">Elixir Tic-Tac-Toe Server</a> -- an HTTP Tic-Tac-Toe Server written in Elixir.  It doesn't use pattern matching correctly though.</li>
+</ul>
+<h2>General Computer Documents</h2>
+<ul>
+<li><a href="code/vimrc.txt">My .vimrc file</a> - I learned VIM on Windows, and like to keep it acting a bit that way.</li>
+<li><a href="other/SC4CommandLine.txt">SimCity 4 Command Line Options</a></li>
+<li><a href="/cmdl.txt">Random Command Lines</a> - A messy scratchpad of various command lines and other technical data.</li>
+</ul>
+<h2>Other Documents</h2>
+<ul>
+<li><a href="other/ummail.txt">List of University of Miami Addresses</a></li>
+<li><a href="other/longexits.txt">longexits.txt</a> - list of 16 longest sections of freeway with no exits in the United States (source: TomTom)</li>
+<li><a href="other/FL316183.txt">Florida Statute 316.183 (as of 1 Mar 2013) - Unlawful Speed</a></li>
+<li><a href="other/131007-housing_rant.txt">Univeristy Housing Survey Response (7 Oct 2013)</a> - Responses to some questions on a survey regarding on campus housing at the University of Miami. <!--See also /University of Miami Fall 2013 Housing Strategic Plan.pdf--> </li>
+<li><a href="other/cluesheet17.pdf">Cluedo/Clue Sheet (early 2017)</a> (<a href="other/cluesheet.html">HTML</a>,<a href="other/cluesheet13.pdf">2013 PDF</a>, <a href="other/cluesheet13_noback.pdf">Pure B/W PDF</a>) - A sheet for the game Clue/Cluedo</li>
+<li><a href="other/FL316183.txt">Two Prong Outlet Rant</a> - a rant complaining that we shouldn't see any two prong outlets in the US anymore.</li>
+<li><a href="ttr/trains.xlsx">Ticket To Ride Scoring Excel Sheet</a> - a quickly written Excel sheet for scoring Ticket To Ride games (xlsx)</li>
+<li><a href="micromoon_pm26.xpi">Pale Moon 26: Micromoon Theme</a> - Old version of the MicroMoon Theme that works with PaleMoon 26</li>
+<li><a href="other/luna-xfwm4.zip">XFWM4 Windows XP Luna theme with icons</a> - Extract to ~/.themes.  Based on Windows XP themes for Linux OSes by Christian Medel (Elbullazul)</li>
+</ul>
+<h2>Online Programs</h2>
+<ul>
+<li><a href="/live/sign/signworks.html">Sign Thingy</a></li>
+<li><a href="qr.html">QR Code and URL Shortening information</a></li>
+</ul>
+</BODY>
+</HTML>

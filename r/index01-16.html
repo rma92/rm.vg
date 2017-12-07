@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+  <meta name="viewport" content="user-scalable=no,width=device-width">
+  <title>TextReddit</title>
+<style>
+input#subreddit{width:120px;}
+input#append{width:100px;}
+body
+{
+  padding:0;
+  margin:0;
+  font-family: courier;
+  background-color: #fff;
+  color: #000;
+  overflow:hidden;
+}/* phones */
+@media screen and (max-width: 420px) {
+  font-size: 24px;
+}
+@media screen and (min-width: 420px) {
+  font-size: 12px;
+}
+.ka
+{
+  color: #fff;
+  background-color: #000;
+}
+.statusbar
+{
+  height: 40px;
+  position: fixed;
+  bottom:0;
+  width:100%;
+  background-color: #fff;
+}
+.toolbar
+{
+  height: 20px;
+}
+#pwin, #cwin, #opensubwin, #optionswin
+{
+  /* border: 2px solid red;*/
+  z-index: 1;
+  background-color: #fff;
+  position: absolute;
+  visibility: hidden; 
+}
+#pwin, #cwin
+{
+  top:0px;
+  bottom: 40px;
+  left:0px;
+  right:0px;
+}
+#opensubwin
+{
+  width:300px;
+  height:100px;
+  left:50%;
+  top:50%;
+  margin-top:-50px;
+  margin-left:-150px;
+  border: 2px solid red;
+}
+#optionswin
+{
+  width:300px;
+  height:300px;
+  left:50%;
+  top:50%;
+  margin-top:-50px;
+  margin-left:-150px;
+  border: 2px solid red;
+}
+#pcontent, #ccontent
+{
+  max-height: 100%;
+  position:absolute;
+  background-repeat: no-repeat;
+  background-size: contain; 
+  top:20px;
+  bottom:0;
+  left:0;
+  right:0;
+}
+#ccontent
+{
+  overflow: hidden;
+  overflow-y:scroll;
+}
+.commentli
+{
+  color: #000;
+}
+.commentul
+{
+  padding:0;
+  margin:10px;
+  list-style-type: none;
+}
+.pwinimg
+{
+  max-width: 100%;
+  max-height: 100%;
+}
+input
+{
+  border: 0;
+  border-right: 2px solid white;
+  border-left: 2px solid white;
+  font-family: courier;
+  font-size: inherit;
+  background-color: #fff;
+  color: #000;
+}
+input:focus
+{
+  border-right: 2px solid red;
+  border-left: 2px solid red;
+  color: #a00;
+}
+button
+{
+  background-color: #fff;
+  color: #000;
+  font-size: inherit;
+  font-family: inherit;
+  border: 0;
+  padding:0;
+  padding-left:3px;
+  padding-right:3px;
+}
+button:focus
+{
+  color: #a00;
+}
+button:before
+{
+  content: "[ ";
+}
+button:after
+{
+  content: " ]";
+}
+a
+{
+  color: #000; 
+  text-decoration: none;
+}
+a:focus
+{
+  color: #fff;
+  background-color: #000;
+}
+#a1
+{
+  padding-left: 10px;
+  padding-right: 10px;
+  bottom: 40px;
+  top: 20px;
+  left:0;
+  right:0;
+  position:absolute;
+  overflow-y:scroll;
+}
+#cwinclosebutton, #pwinclosebutton, #opensubwinclosebutton, #optionswinclosebutton
+{
+position:absolute;top:0;right:0;z-index:10;
+}
+li
+{
+  color: #888;
+}
+</style>
+<script>
+var count = 0;
+var nextAppend = "";
+var prevAppend = "";
+var lastSelectedLinkIndex = 0;
+var linkNames = []; 
+var linkPreviews = [];
+var linkThumbnails = [];
+
+function loadComments(linkid)
+{ 
+  lastSelectedLinkIndex = linkid;
+  var sub = document.getElementById("subreddit").value;
+  var url = "https://www.reddit.com/r/" + sub + "/comments/" + 
+    linkNames[linkid].substr( linkNames[linkid].indexOf('_') + 1 ) + "/.json";
+  document.getElementById("cwintitle").innerHTML = "comments";//url;
+  document.getElementById("ccontent").innerHTML = "Loading...";
+  var xH = new XMLHttpRequest();
+  xH.onreadystatechange = function()
+  {
+    console.log(xH.readyState + " " + xH.status );
+    document.getElementById("ccontent").innerHTML += ".";
+    if( xH.readyState == 4 )
+    {
+      if( xH.status == 200 )
+      {
+        obj = JSON.parse( xH.responseText );
+        document.getElementById("ccontent").innerHTML = obj[0].data.children[0].data.selftext.replace(/(?:\r\n|\r|\n)/g, '<br/>');//or selftext_html
+        document.getElementById("ccontent").innerHTML += "<hr/>";
+        document.getElementById("ccontent").innerHTML += "<ul class=commentul>\n";
+        //obj[0] is the t3 post, obj[1] is the t1 comments
+        for( var i = 0; i < obj[1].data.children.length; ++i )
+        {
+          //each item in children is a t1 comment object.
+          document.getElementById("ccontent").innerHTML += 
+          "<li class=commentli id=" + obj[1].data.children[i].data.id + ">" + printCTree( obj[1].data.children[i] ) + "</li>";
+        }
+         
+        document.getElementById("ccontent").innerHTML += "</ul>";
+      }
+    }
+  }
+  xH.open("GET", url, true);
+  xH.send(null);
+  document.getElementById("cwin").style.visibility = "visible";
+  document.getElementById("cwinclosebutton").focus();
+}
+//returns more comments given the URL to the comments
+//https://www.reddit.com/r/the_donald/api/morechildren.json?link_id=t3_5njg2g&children=dcca1gv&api_type=json
+//in: url - the URL to load, 
+//    outField - the id of the DOM object in which to output.  The innerHTML will be set to the output.
+function getMoreComments(url, outField)
+{
+  var xH = new XMLHttpRequest();
+  xH.onreadystatechange = function()
+  {
+    if( xH.readyState == 4 )
+    {
+      if( xH.status == 200 )
+      {
+        //alert( xH.responseText );
+        obj = JSON.parse( xH.responseText );
+        //obj.data.things
+        var moreCommentsHTML = "";
+        for( var i = 0; i < obj.json.data.things.length; ++i )
+        {
+          moreCommentsHTML += printCTree( obj.json.data.things[i] );
+          
+          //alert( JSON.stringify( obj.json.data.things[i], "\n" ) );
+        }
+        if( document.getElementById( outField ) )
+        {
+          document.getElementById( outField ).innerHTML = moreCommentsHTML;
+          document.getElementById( outField ).style.backgroundColor = "#DDD";
+        }
+        else
+        {
+          alert( "Failed to find comments field: " + outField );
+        }
+      }
+    }
+  }
+  xH.open("GET", url, true);
+  xH.send(null);
+}
+//helper function for printing a comment tree.
+function printCTree(co)
+{ //or use body_html
+  if( co.kind == 't1')
+  {
+    var bodytext = co.data.body;
+    bodytext = bodytext.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+
+    //filter bodytext to get links.
+    var s = "<span class=commentdesc>" + co.data.score + " " + co.data.author + 
+      //" t1_" + co.data.id + " " +
+      "</span><br/>" + bodytext;
+    s += "<ul class=commentul>";
+    //print the replies recursively if they exist.
+    if( co.data.replies )
+    {
+      for( var i = 0; i < co.data.replies.data.children.length; ++i )
+      {
+        if( co.data.replies.data.children[i].kind == "more" )
+        {
+          //https://www.reddit.com/r/the_donald/api/morechildren.json?link_id=t3_5njg2g&children=dcca1gv&api_type=json
+          //get the children.
+          var moreurl = "https://www.reddit.com/r/the_donald/api/morechildren.json?link_id="
+          + co.data.link_id
+          + "&children=";
+          for( var j = 0; j < co.data.replies.data.children[i].data.children.length; ++j )
+          {
+            if( j != 0 ) moreurl += ',';
+            moreurl += co.data.replies.data.children[i].data.children[j] ;
+          }
+          moreurl += "&api_type=json";
+          s += "<li class=commentli id=\"" + co.data.replies.data.children[i].data.id + 
+            "\"><a onclick='getMoreComments(\"" + moreurl + "\", \""
+            + co.data.replies.data.children[i].data.id + "\")'>More</a> ";
+          //s += "  " + JSON.stringify(co.data.replies.data.children[i].data );
+          s += "</li>";
+        }
+        else
+        {
+          s += "<li class=commentli id=\"" + co.data.replies.data.children[i].data.id + "\">" + printCTree( co.data.replies.data.children[i] ) + "</li>";
+        }
+      }
+    }
+    s += "</ul>";
+  }
+  return s;
+}
+
+function loadFullPreview(id)
+{
+  lastSelectedLinkIndex = id;
+  document.getElementById("pcontent").style.backgroundImage=
+    "url(" + linkPreviews[id] + ")";
+  document.getElementById("pwin").style.visibility = "visible";
+  document.getElementById("pwinclosebutton").focus();
+}
+
+function loadSmallPreview(id)
+{
+  lastSelectedLinkIndex = id;
+  document.getElementById("pcontent").style.backgroundImage=
+    "url(" + linkThumbnails[id] + ")";
+  document.getElementById("pwin").style.visibility = "visible";
+  document.getElementById("pwinclosebutton").focus();
+}
+
+function keyDown(event)
+{ //40 down arrow //38 up arrow //9 tab //80 p 67 c
+  var key = event.keyCode;
+  var trigger = event.target.id;
+  //alert(key);
+  if( key == 67 )
+  {
+    if( trigger[0] == 'l' )
+    { 
+      var id = parseInt( trigger.substr(1) );
+      loadComments( id );
+    }
+  }
+  if( key == 79 ) //full preview
+  {
+    if( trigger[0] == 'l' )
+    {
+      var id = parseInt( trigger.substr(1) );
+      loadFullPreview(id);
+    }
+    else if( trigger == "pwinclosebutton" )
+    {
+      closePreviewWindow();
+    }
+  }
+  if(key == 80 ) //preview
+  {
+    if( trigger[0] == 'l' )
+    {
+      var id = parseInt( trigger.substr(1) );
+      loadSmallPreview(id);
+    }
+    else if( trigger == "pwinclosebutton" )
+    {
+      closePreviewWindow();
+    }
+  }
+  if(key == 40 || key == 74)
+  {//down or j
+    if( trigger[0] == 'l' )
+    {
+      var id = parseInt( trigger.substr(1) );
+      ++id;
+      var nId = "l" + id;
+      lastSelectedLinkIndex = id;
+      if( document.getElementById(nId) )
+      {
+        document.getElementById(nId).focus();
+      }
+    }
+    else if( trigger == "x5" )
+    {
+      if( document.getElementById('l0') )
+      {
+        document.getElementById('l0').focus();
+      }
+    }
+    else if( trigger == "x4" )
+    {
+      document.getElementById("x5").focus();
+    }
+    else if( trigger == "x3" )
+    {
+      document.getElementById("x4").focus();
+    }
+    else if( trigger == "subreddit" )
+    {
+      document.getElementById("x3").focus();
+    }
+  }
+  else if( key == 38 || key == 75)
+  {//up or k
+    if( trigger[0] == 'l' )
+    {
+      var id = parseInt( trigger.substr(1) );
+      if( id > 0 )
+      {
+        --id;
+        var nId = "l" + id;
+        lastSelectedLinkIndex = id;
+        document.getElementById(nId).focus();
+      }
+      else if(id == 0)
+      {
+        document.getElementById("x5").focus();
+      }
+    }//trigger begins with l
+    else if( trigger == "x5" )
+    {
+      document.getElementById("x4").focus();
+    }
+    else if( trigger == "x4" )
+    {
+      document.getElementById("x3").focus();
+    }
+    else if( trigger == "x3" )
+    {
+      document.getElementById("subreddit").focus();
+    }
+  }
+}//keyDown function
+
+function closeCommentWindow()
+{
+  document.getElementById("cwin").style.visibility="hidden";
+  if( document.getElementById("l" + lastSelectedLinkIndex) )
+  {
+    document.getElementById("l" + lastSelectedLinkIndex).focus();
+  }
+}
+
+function closePreviewWindow()
+{
+  document.getElementById("pwin").style.visibility="hidden";
+  if( document.getElementById("l" + lastSelectedLinkIndex) )
+  {
+    document.getElementById("l" + lastSelectedLinkIndex).focus();
+  }
+}
+function closeOptionsWindow()
+{
+  document.getElementById("optionswin").style.visibility="hidden";
+  if( document.getElementById("l" + lastSelectedLinkIndex) )
+  {
+    document.getElementById("l" + lastSelectedLinkIndex).focus();
+  }
+}
+function closeOpenSubWindow()
+{
+  document.getElementById("opensubwin").style.visibility="hidden";
+  if( document.getElementById("l" + lastSelectedLinkIndex) )
+  {
+    document.getElementById("l" + lastSelectedLinkIndex).focus();
+  }
+}
+function showOpenSubredditWindow()
+{
+  document.getElementById("opensubwin").style.visibility="visible";
+}
+function showOptionsWindow()
+{
+  document.getElementById("optionswin").style.visibility="visible";
+}
+
+function doSomething()
+{
+  var appendix = document.getElementById("append").value;
+  var sub = document.getElementById("subreddit").value;
+  loadSub( sub, appendix );
+}
+
+function doNext()
+{
+  var sub = document.getElementById("subreddit").value;
+  loadSub( sub, nextAppend );
+}
+
+function doPrev()
+{
+  var sub = document.getElementById("subreddit").value;
+  loadSub( sub, prevAppend );
+}
+function putter(out, replace)
+{
+  if( replace )
+  {
+    document.getElementById("a1").innerHTML = out;
+  }
+  else
+  {
+    document.getElementById("a1").innerHTML += out;
+  }
+  //alert(out);
+}
+
+function loadSub(subName, appendix = "")
+{
+  
+  var url = "https://www.reddit.com/r/" + subName + "/.json" + appendix;
+  //alert(url);
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.onreadystatechange = function() 
+  {
+    if( xmlHttp.readyState == 4 )
+    {
+      //alert( xmlHttp.responseText );
+      if( xmlHttp.status == 200 )
+      {
+        putter("<ol type=1>", true);
+        obj =
+          JSON.parse( xmlHttp.responseText, null, 4 );
+        var last = "";
+        var first = obj.data.children[0].name;
+        for( var i = 0; i < obj.data.children.length; ++i )
+        {
+          var t3 = obj.data.children[i];
+          last = t3.data.name;
+          putter( "<li>" + t3.data.ups + " <a onkeydown='keyDown(event)' id='" +
+            "l" + i +
+            "' href='" +
+            t3.data.url +
+            "' target='_blank'>" +
+            t3.data.title +
+            "</a> " + 
+            t3.data.domain + " " +
+            t3.data.subreddit +
+            " " +
+            t3.data.author +
+            " <a onclick='loadComments(" + i + ");' href=#>" +
+              t3.data.num_comments + " comments</a> " +
+            "<button onclick='loadFullPreview(" + i + ");'>FP</button>" +
+            "<button onclick='loadSmallPreview(" + i + ");'>SP</button>" +
+            "</li>", false);
+          linkNames[i] = t3.data.name;
+          linkThumbnails[i] = t3.data.thumbnail;
+          if( t3.data.preview )
+          {
+            linkPreviews[i] = t3.data.preview.images[0].source.url;
+          }
+          else
+          {
+            linkPreviews[i] = "";
+          }
+        }
+        putter("<li><a id='l" +
+          i++ +
+          "' href='#' onkeydown='keyDown(event)' onclick='doNext()'>Next</a></li>", false);
+        putter("<li><a id='l" +
+          i++ +
+          "' href='#' onkeydown='keyDown(event)' onclick='doPrev()'>Prev</a></li>", false);
+        putter("</ol>", false);
+        nextAppend = "?count=" + (count+25) + "&after=" + last;
+        if( count <= 25 )
+        {
+          prevAppend = "";
+        }
+        else
+        {
+          prevAppend = "?count=" + (count-25) + "&before=" + first;
+        }
+        document.getElementById('l0').focus();
+      }
+    }
+  }
+  xmlHttp.open("GET", url, true); //true async
+  xmlHttp.send(null);
+}
+</script>
+</head>
+<body onload="document.getElementById('x3').focus()">
+<div class="toolbar">
+<!--
+<input id="subreddit" onkeydown="keyDown(event)" value="the_donald">
+<input id="append">
+<button id="x3" onkeydown="keyDown(event)" onclick="doSomething()">Go</button>-->
+<button id="x3" onkeydown="keyDown(event)" onclick="showOpenSubredditWindow()">Open</button>
+<button id="x4" onkeydown="keyDown(event)" onclick="doNext()">Next</button>
+<button id="x5" onkeydown="keyDown(event)" onclick="doPrev()">Prev</button>
+</div>
+
+<div id="a1">x&nbsp;</div>
+
+<div id="pwin">
+  <div class="pwintoolbar">
+    <span id="pwintitle">Preview Window</span>
+    <button onkeydown="keyDown(event)" id="pwinclosebutton" onclick="closePreviewWindow();"> close</button>
+  </div>
+  <div id="pcontent">
+  </div>
+</div>
+
+<div id="cwin">
+  <div class="cwintoolbar">
+    <span id="cwintitle">Comments Window</span>
+    <button onkeydown="keyDown(event)" id="cwinclosebutton" onclick="closeCommentWindow();"> close</button>
+  </div>
+  <div id="ccontent">
+  </div>
+</div>
+
+<div id="opensubwin">
+  <b>Open Subreddit...</b>
+  <button onkeydown="keyDown(event)" id="opensubwinclosebutton" onclick="closeOpenSubWindow();">close</button><br/>
+  Sub: <input id="subreddit" onkeydown="keyDown(event)" value="the_donald"><br/>
+  Append: <input id="append"><br/>
+  <button id="openSubButton" onkeydown="keyDown(event)" onclick="closeOpenSubWindow();doSomething()">Go</button>
+</div>
+
+<div id="optionswin">
+  <button onkeydown="keyDown(event)" id="optionswinclosebutton" onclick="closeOptionsWindow();">close</button><br/>
+  <b>Options</b>
+</div>
+
+<div class="statusbar">
+<span class="ka">&#8593;/&#8595;</span> Select
+<span class="ka">&nbsp;C&nbsp;</span> Comments
+<span class="ka">&nbsp;P&nbsp;</span> Preview
+<span class="ka">&nbsp;O&nbsp;</span> Big Prev
+<button onclick="showOptionsWindow()">Options</button>
+</div>
+
+</body></html>

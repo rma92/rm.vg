@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+ol li
+{
+  padding: 8px;
+}
+.mname
+{
+  
+}
+</style>
+</head>
+<body>
+<div class="main">
+<span class="mname">Richard A. Marino</span>
+<h1>EEN567<br/>Database Design & Management</h1>
+<h2>Assignment 1</h2>
+
+<ol>
+<li>
+<b>(15 points)</b> List the entities, attributes, and relationships that you would have if you are responsible of designing a database for a university. Explain your reasons.
+<p>
+A database for a university would need to contain many fields to represent the various members of the university, as it is a large community. To represent a ll of the people, a common method of accounting for people should be used, as this simplifies the design and use of the database. An example of this would be the C numbers at the University of Miami. Each employee, actual student, and even prospective students (apparently), and certain contractors are assigned a C number that is unique to that particular person. A Social Security number is also kept on record.
+</p>
+<p>
+In this case, entities that should be tracked include all types of items that we should track. These include <b>people</b>, <b>assets</b> (tangible, non-real estate property), and <b>classes</b>. It may also be desirable to track real-estate, as a property asset, and more importantly, a <b>list of rooms</b> that can be used for various purposes, such as class or someone's office. <i>For simplicity of this document, assets will be ignored, and real-estate will be considered arbitrary.</i> Entries and their attributes is included below.
+</p>
+<p>
+In addition, a table should be created to store the student-class relationships.
+</p>
+<table >
+<tr>
+
+<td>
+<table border=1><tr><th colspan=2>Person</th></tr>
+<tr><td>ID</td><td>Unique ID</td></tr>
+<tr><td>Full Name</td></tr>
+<tr><td>Address</td></tr>
+<tr><td>SSN</td><td>Ostensibly, this is unique...</td></tr>
+<tr><td>E-Mail address</td></tr>
+<tr><td>UserID</td></tr>
+<tr><td>Office</td></tr>
+<tr><td>Finances</td><td>an ID into a table that is not discussed here containing billing information.</td></tr>
+<tr><td>MaxStudents</td></tr>
+</table>
+
+</td><td>
+
+<table border=1><tr><th colspan=2>Class</th></tr>
+<tr><td>ID</td><td>Unique ID</td></tr>
+<tr><td>ClassName</td></tr>
+<tr><td>ClassTitle</td></tr>
+<tr><td>SectionID</td></tr>
+<tr><td>FacultyID</td></tr>
+<tr><td>DefaultCredits</td></tr>
+<tr><td>Year</td></tr>
+</table>
+
+</td><td>
+
+<table border=1>
+<tr><th colspan=2>ClassStudents</th></tr>
+<tr><td>ID</td><td>Unique. may not be used by end user.</td></tr>
+<tr><td>StudentID</td><td>= ID in Person table. Perhaps Index</td></tr>
+<tr><td>ClassID</td><td>= The ID of the class</td></tr>
+<tr><td>Credits</td></tr>
+<tr><td>Grade</td><td>Grade in the class</td></tr>
+</table>
+</td></tr></table>
+<p>
+Each of the above will require a table in the database. The ClassStudents table will contain data that has to do with a student's enrollment in a particular class, either at present or in the past. The grade will be stored there, as it is something unique to each student in every class. The student's GPA can be calculated by getting all of the classes in which the student ID equals the student in question. Additionally, the average grade in a class can be calculated by selecting all of the entries where ClassID matches the class in question, and performing simple arithmetic.
+</p>
+<p>
+As in real life, a faculty may also sit in a class. A student can also be on payroll, and have an office, if this is relevant. Some students at the University of Miami have an office listed for various reasons. Naturally, a faculty would likely have an office.
+</p>
+
+</li>
+<li>
+<b>(25 points)</b> The owner of a toy store wants to store information (names, address, position, age, etc.) about the employees in the store. Not surprisingly, the volume of data compels the owner to buy a database system. To save money, the owner wants to buy one with the fewest possible features, and plans to run it as a stand-alone application on one machine. Of course, the list will not be shared with other people. Indicate which of the following DBMS features the owner should pay for; in each case, also indicate why the woner should (or should not) pay for the feature in the system.
+  <ol type=a>
+    <li>A security facility;</li>
+    <li>Concurrency control;</li>
+    <li>Crash recovery;</li>
+    <li>A view mechanism;</li>
+    <li>A query language.</li>
+  </ol>
+<p>
+The majority of these features are likely unnecessary to the scope of the project that the toy store owner is interested in. Since the list will not be shared with other people, and is running on it's own machine, neither a <b>security facility</b> or <b>concurrency control</b> <i>should be necessary</i>. Based on the description, it appears the database will not be online constantly (as in a web application), but will only be brought online as needed. Because of this, <b>Crash recovery</b> should be <i>relatively unnecessary</i>. The desirability of this feature varies indirectly with the frugality of the owner of the toy store. I would recommend not seeking this feature. <b>A view mechanism</b> is <i>very necessary</i>, as without this, it may be troublesome, or at the very least, inconvenient, for the toy store owner to access the database. <b>A query language</b> would also be <i>a desirable</i> feature, as it will aid in management of the database.</p>
+<table border=1>
+<tr><th>Feature</th><th>Needed</th><th>Microsoft Access</th><th>Microsoft SQL</th><th>Oracle</th><th>MySQL</th><th>SQLite</th><th>CSV</th></tr>
+<tr><td>Security Facility</td><td>No</td><td>Primitive (password only)</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+<tr><td>Concurrency control</td><td>No</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Read-only</td><td>No</td></tr>
+<tr><td>Crash recovery</td><td>Maybe</td><td>Limited</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+<tr><td>View Mechanism</td><td>Yes</td><td>Yes</td><td>Optional</td><td>Optional</td><td>Optional</td><td>Third-party</td><td>No</td></tr>
+<tr><td>Query Language</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+</table>
+<p>
+While one could use a CSV file to store this information, recommending this to the toy store owner would be ill-advised, unless he is extremely stingy. In this case, no purchase should be needed, as one could use Vi or Notepad to edit the database.
+</p>
+<p>
+For this person, I would recommend <b>Microsoft Access</b>, as it is relatively easy to use, can be run standalone, and contains an easy to use view mechanism, as well as a query language. It can also be purchased for under $100.
+</p>
+</li>
+<li>
+<b>(10 points)</b> Using any Web browser, search two different database systems and visit their Web pages. For each of them, please briefly report what you learn from the Web page (e.g. functionalities, characteristics, etc.)
+<p>
+<b>Oracle Database</b> includes many high end features, such as support for multitenancy, which allows for good cloud consolidation. A large emphasis is placed on data-integrity, as a large amount of protections are provided against server failures, site failures, human errors, and various types of attack ("Defense-in-depth" as they said). It is also extremely scalable.
+</p>
+<p>
+<b>MySQL Enterprise Edition</b> includes many high end features as well, but is not as high-end a platform as <b>Oracle's flagship</b> product. The base (free to use) version of MySQL includes basic security and management features. The Enterprise edition adds other database engines, and other types of extensions to enhance data integrity. These include a "hot" backup solution (which allows for quick recovery from a crash), high availability features such as replication, and support for Oracle Solairs Clustering and Windows Failover Clustering. Scalability and Security are enhanced over the free SKU as well, but not to the extent of Oracle. MySQL Thread Pool provides an efficient performance increase, and support for authentication via PAM and Windows Active Directory is available (as well as standard MySQL authentication).
+</p>
+<p>
+<b>SQLite</b> is a very different sort of database. It does not provide a server, and is a standalone, small application. The databases are stored in a file. Concurrency is limited to read-only. Only one write operation may occur at a time, as writing locks the database. The scalability of the database is limited due to this, as well as the default size limitations implemented in SQLite. These include a limitation on the size of a database at 4GB, as well as the same cap for runtime memory. It is, however, possible to join multiple large databases that in total take up more than 4GB. SQLite also can create temporary databases in memory, which is a useful feature for certain applications that is not as easy, simple, or performant in <b>MySQL</b> or <b>Oracle</b>, as those databases are quite a bit heavier.
+</p>
+</li>
+</ol>
+</div>
+</body>
+</html>

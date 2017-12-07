@@ -1,0 +1,22 @@
+<?
+  $localport = 80;
+  $server = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
+  socket_bind( $server , '0.0.0.0', $localport );
+  socket_listen( $server );
+  while($c = socket_accept( $server ) )
+  {
+    //read everything
+    socket_getpeername( $c, $raddr, $rport );
+    socket_recv( $c, $recv_buf, 32768, 0 );
+    //process
+    $tr = explode("\n", $recv_buf);
+    $proto = explode(' ', $tr[0]);
+    echo 'conn from ', $raddr, ':', $rport, ' -- "', $proto[0], '" File: "', $proto[1], "\".\n";
+    //send everything
+    $page = "<!DOCTYPE HTML><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><hr>The page you requested was not found.</body></head>";
+    $send_buf = "HTTP/1.1 404 Not Found\nServer: server/0.1\nContent-Length: " . strlen($page) . "\nConnection:close\nContent-Type: text/html\n\n" . $page;
+    socket_send( $c, $send_buf, strlen( $send_buf ), 0);
+    socket_close( $c );
+  }
+  socket_close( $server );
+?>

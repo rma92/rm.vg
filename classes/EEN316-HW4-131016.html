@@ -1,0 +1,399 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  //list of interesting legal words http://kuancheen.blogspot.com/2005/07/legal-and-formal-adverbs.html
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+body ol li
+{
+  padding: 2px;
+}
+body ol li:first-child p
+{
+  margin-top: 0px;
+}
+body ol li:last-child p
+{
+  margin-bottom: 0px;
+}
+table
+{
+  border-collapse:collapse;
+}
+tr:first-child th, tr:first-child td
+{
+  border-bottom: 1px solid #000;
+  font-weight: normal;
+  padding-top: 8px;
+}
+tr:last-child td, tr:last-child th
+{
+  border-bottom: 1px solid #000;
+}
+td, th
+{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:1px;
+}
+/*
+  Use the lt class for a table that needs to be compact.
+  Its not nice to look at, but saves paper.
+*/
+.lt tr td, .lt tr th
+{
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left:2px;
+  padding-right: 2px;
+}
+img
+{
+  max-width:500px;
+}
+.mname
+{
+  
+}
+
+/*VIM syntax*/
+/*codeblock-vhdl: VHDL*/
+.codeblock-vhdl .Constant { /*color: #ff6060;*/ color: #f00; }
+.codeblock-vhdl .Special { color: #ff8500; }
+.codeblock-vhdl .Statement { /*color: #eaea00;*/ color: #04b;}
+.codeblock-vhdl .Type { color: #60d060; }
+
+/*codeblock-tcl: Tcl/TK */
+.codeblock-tcl .Constant { color: #f00; }
+.codeblock-tcl .Comment { color: #80a0ff; }
+
+/*codeblock-v: Verilog*/
+.codeblock-v .Constant { color: #f00; }
+.codeblock-v .Special { color: #ff8500; }
+.codeblock-v .PreProc { color: #ff80ff; }
+.codeblock-v .Statement { color: #04b; }
+.codeblock-v .Comment { color: #90b0ff; }
+
+/*codeblock-c: C*/
+.codeblock-c .Constant { color: #f00; }
+.codeblock-c .PreProc { color: #ff80ff; }
+.codeblock-c .Statement { color: #04b; }
+.codeblock-c .Comment { color: #90b0ff; }
+
+/*codeblock-php: PHP/HTML*/
+.codeblock-php .Title { color: #ff00ff; font-weight: bold; }
+.codeblock-php .htmlUnderline { text-decoration: underline; }
+.codeblock-php .htmlItalic { font-style: italic; }
+.codeblock-php .Constant { color: #f00; }
+.codeblock-php .Identifier { color: #40ffff; }
+.codeblock-php .PreProc { color: #ff80ff; }
+.codeblock-php .htmlBoldItalic { font-weight: bold; font-style: italic; }
+.codeblock-php .Statement { color: #04b; }
+.codeblock-php .htmlBold { font-weight: bold; }
+.codeblock-php .Special { color: #ff8500; }
+.codeblock-php .Comment { color: #90b0ff; }
+.codeblock-php .Type { color: #60d060; }
+
+.codeblock
+{
+white-space: pre-wrap; font-family: monospace; color: #000; background-color: #fff;
+font-size: 10px;
+counter-reset: lss;
+border: 1px solid #000;
+}
+.popline { counter-increment:lss; }
+/*
+this cannot be used due to too many sections.
+.codeblock .popline:before {content: counters(lss, ".", decimal-leading-zero) ""; color: #f00; font-size:10px; background-color: #fff; border-right: 1px solid #600; font-weight: bold;} 
+*/
+.linenum
+{
+  color: #f00;
+  border-right: 1px solid #600;
+}
+/*end VIM Syntax*/
+</style>
+<script>
+//Line Number Script
+//(C) 2010-2013 Rich Marino. All Rights Reserved.
+onload=function()
+{
+  //make the getElementsByClassName method
+  if (document.getElementsByClassName == undefined)
+  {
+    document.getElementsByClassName = function(className)
+    {
+      var hasClassName = new RegExp("(?:^|\\s)" + className + "(?:$|\\s)");
+      var allElements = document.getElementsByTagName("*");
+      var results = [];
+      var element;
+      for( var i = 0; (element = allElements[i]) != null; i++ )
+      {
+        var elementClass = element.className;
+        if (elementClass && elementClass.indexOf(className) != -1 && hasClassName.test(elementClass))
+        {
+          results.push(element);
+        }
+      }
+      return results;
+    }
+  }
+  
+  //now actually take care of the text
+  wrapCodeBlocks('codeblock');
+}
+
+function wrapText(element)
+{
+  var newString = '';
+  var lines = element.innerHTML.split("\n");
+  
+  var lx = ('' + lines.length ).length;
+  var mxl = 60;
+  for( var i in lines )
+  {
+    var num = '' + i;
+    while(num.length < lx)
+    {
+      num = ' ' + num;
+    }
+    newString += "<span class=linenum>";
+    newString += num + "</span><span class=popline>";
+    /*
+    //uncomment this if you want to put a mark at the character specified by mxl above.
+    if( lines[i].length > mxl )
+    {
+      newString += lines[i].substring(0,mxl) + "<span style='border-right: 1px solid #f00;'></span>";
+      newString += lines[i].substring(mxl);
+    }
+    else
+    {
+      newString += lines[i];
+    }
+    */
+    newString += lines[i];
+    newString += "</span>\n";
+  }
+  element.innerHTML = newString + '';
+}
+
+function wrapCodeBlocks(type)
+{
+  var codeblocks = document.getElementsByClassName(type);
+  for( var cb in codeblocks )
+  {
+    if( typeof( codeblocks[cb]) == 'object'  ){
+      wrapText( codeblocks[cb] );
+    }
+  }
+}
+</script>
+
+</head>
+<body>
+<div class="main">
+<!--begin content-->
+<span class="mname">Richard A. Marino</span>
+<h1>EEN316<br/>Lab 4<br/>Single Latch, High Speed Double-Edge Triggered JK Flip-Flop</h1>
+
+<h2>Abstract</h2>
+<p>The goal of this project was to implement a High Speed Double-Edge Triggered JK Flip-Flop, which improves performance by having 2 flip-flops, one of which is operated and accessed when the clock is high, and the other when the clock is low. The output passes through a multiplexer, for which the select line is tied to the clock.</p>
+
+<h2>VHDL Code</h2>
+<h3>JK FlipFlop</h3>
+<pre class='codeblock codeblock-vhdl'>
+<span class="Statement">Library</span> ieee<span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_1164<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_unsigned<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">entity</span> jkff <span class="Statement">is</span>
+  <span class="Statement">port</span> <span class="Special">(</span>
+    J<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    K<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    CLK<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    Q<span class="Type">:</span> <span class="Statement">out</span> <span class="Type">std_logic</span>
+    <span class="Special">);</span>
+<span class="Statement">end</span> <span class="Statement">entity</span><span class="Special">;</span>
+<span class="Statement">architecture</span> behav <span class="Statement">of</span> jkff <span class="Statement">is</span>
+<span class="Statement">begin</span>
+  <span class="Statement">process</span> <span class="Special">(</span>CLK<span class="Special">)</span>
+    <span class="Statement">variable</span> b0<span class="Type">:</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    <span class="Statement">begin</span>
+    <span class="Statement">if</span><span class="Special">(</span> CLK<span class="Type">'event</span> <span class="Type">AND</span> CLK<span class="Type">=</span><span class="Constant">'1'</span> <span class="Type">AND</span> J <span class="Type">=</span> <span class="Constant">'0'</span> <span class="Type">AND</span> K <span class="Type">=</span> <span class="Constant">'1'</span> <span class="Special">)</span> <span class="Statement">then</span>
+      b0 <span class="Type">:=</span> <span class="Constant">'0'</span><span class="Special">;</span>
+    <span class="Statement">elsif</span><span class="Special">(</span> CLK<span class="Type">'event</span> <span class="Type">AND</span> CLK<span class="Type">=</span><span class="Constant">'1'</span> <span class="Type">AND</span> J <span class="Type">=</span> <span class="Constant">'1'</span> <span class="Type">AND</span> K <span class="Type">=</span> <span class="Constant">'0'</span> <span class="Special">)</span> <span class="Statement">then</span>
+      b0 <span class="Type">:=</span> <span class="Constant">'1'</span><span class="Special">;</span>
+    <span class="Statement">elsif</span><span class="Special">(</span> CLK<span class="Type">'event</span> <span class="Type">AND</span> CLK<span class="Type">=</span><span class="Constant">'1'</span> <span class="Type">AND</span> J <span class="Type">=</span> <span class="Constant">'1'</span> <span class="Type">AND</span> K <span class="Type">=</span> <span class="Constant">'1'</span> <span class="Special">)</span> <span class="Statement">then</span>
+      b0 <span class="Type">:=</span> <span class="Type">NOT</span> b0<span class="Special">;</span>
+    <span class="Statement">end</span> <span class="Statement">if</span><span class="Special">;</span>
+      Q <span class="Type">&lt;=</span> b0<span class="Special">;</span>
+  <span class="Statement">end</span> <span class="Statement">process</span><span class="Special">;</span>
+<span class="Statement">end</span> <span class="Statement">architecture</span><span class="Special">;</span>
+</pre>
+
+<h3>2:1 Multiplexer</h3>
+<pre class="codeblock codeblock-vhdl">
+<span class="Statement">Library</span> ieee<span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_1164<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_unsigned<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">entity</span> Mux21 <span class="Statement">is</span>
+  <span class="Statement">port</span> <span class="Special">(</span>
+    A<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    B<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    SEL<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    OUTP<span class="Type">:</span> <span class="Statement">out</span> <span class="Type">std_logic</span>
+    <span class="Special">);</span>
+<span class="Statement">end</span> <span class="Statement">entity</span><span class="Special">;</span>
+<span class="Statement">architecture</span> behav <span class="Statement">of</span> Mux21 <span class="Statement">is</span>
+<span class="Statement">begin</span>
+  OUTP <span class="Type">&lt;=</span> A <span class="Statement">when</span> SEL <span class="Type">=</span> <span class="Constant">'0'</span> <span class="Statement">else</span>
+          B<span class="Special">;</span>
+<span class="Statement">end</span> <span class="Statement">architecture</span><span class="Special">;</span>
+</pre>
+
+
+<h3>DETFF</h3>
+<pre class="codeblock codeblock-vhdl">
+<span class="Statement">Library</span> ieee<span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_1164<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_unsigned<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">entity</span> detff <span class="Statement">is</span>
+  <span class="Statement">port</span> <span class="Special">(</span>
+    Data1<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    Data2<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    CLK<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    output<span class="Type">:</span> <span class="Statement">out</span> <span class="Type">std_logic</span>
+    <span class="Special">);</span>
+<span class="Statement">end</span> <span class="Statement">entity</span><span class="Special">;</span>
+<span class="Statement">architecture</span> struct <span class="Statement">of</span> detff <span class="Statement">is</span>
+  <span class="Statement">signal</span> Q1<span class="Special">,</span> Q2<span class="Special">,</span> CLKInverse<span class="Type">:</span> <span class="Type">std_logic</span><span class="Special">;</span>
+  <span class="Statement">component</span> Mux21 <span class="Statement">port</span><span class="Special">(</span>A<span class="Special">,</span>B<span class="Special">,</span>SEL<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+                    OUTP<span class="Type">:</span> <span class="Statement">out</span> <span class="Type">std_logic</span><span class="Special">);</span>
+  <span class="Statement">end</span> <span class="Statement">component</span><span class="Special">;</span>
+  <span class="Statement">component</span> jkff <span class="Statement">port</span><span class="Special">(</span>J<span class="Special">,</span>K<span class="Special">,</span>CLK <span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+                    Q <span class="Type">:</span> <span class="Statement">out</span> <span class="Type">std_logic</span><span class="Special">);</span>
+  <span class="Statement">end</span> <span class="Statement">component</span><span class="Special">;</span>
+<span class="Statement">begin</span>
+  CLKInverse <span class="Type">&lt;=</span> <span class="Type">NOT</span> CLK<span class="Special">;</span>
+  muxA <span class="Type">:</span> Mux21 <span class="Statement">port</span> <span class="Statement">map</span> <span class="Special">(</span>Q1<span class="Special">,</span> Q2<span class="Special">,</span> CLK<span class="Special">,</span> output<span class="Special">);</span>
+  jkffA <span class="Type">:</span> jkff <span class="Statement">port</span> <span class="Statement">map</span> <span class="Special">(</span>Data1<span class="Special">,</span> Data2<span class="Special">,</span> CLK<span class="Special">,</span> Q1<span class="Special">);</span>
+  jkffB <span class="Type">:</span> jkff <span class="Statement">port</span> <span class="Statement">map</span> <span class="Special">(</span>Data1<span class="Special">,</span> Data2<span class="Special">,</span> CLKInverse<span class="Special">,</span> Q2<span class="Special">);</span>
+<span class="Statement">end</span> <span class="Statement">architecture</span><span class="Special">;</span>
+</pre>
+
+<h2>Wave</h2>
+<h3>JKFF Test</h3>
+<img src="data:image/png;base64,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">
+
+<h3>2:1 Multiplexer Test</h3>
+<img src="data:image/png;base64,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aMPOWKtpV2pqasfOkdNULmomorQrdWYT5bzLbUMXt8RTTbtSU1M7do6cprJRMxHXXakjraaipnbsHDlNZatmIpa7UlOTmjqyduwcUXOa1EzYlZqakVPTd5xqx7OipptdqTOFTGqaazJGosp6HWCu+VPUVNSkpuYlETWpSU1qUlPzkkgialKTmtTUvCSSSChqUlNRUyKJhKKmoiY1GSORUNRU1KSm5iWRUNRU1KSm5iURNampqElNzUsiiahJTWpSU/OSSCJqUpOaipoSSSQUNQFATWoyRiKhqKmoSU3GSCQUNRU1qal5SSQUNRU1qal5SURNalKTmtTUvCSSiJrUpCY1NS+JJBKKmtRU1JRIIqGoqahJTcZIJBQ1FTWpqXlJJBQ1FTWpqXlJRE1qKmpSU/OSSCJqUpOa1NS8JJJIKGpSU1FTIomEoiYAqElNxkgkFDUVNampeUkkFDUVNampeUnkPzxqKmpSU/OSiJrUpCY1qal5SSQRNalJTYNGTYkkEoqa1FTUlEgioaipqElNxkgkFDUVNampeUkkFDUVNampeUlETWoqalJT85JIImpSk5rU1LwkkkgoalJTUVMiiYSipqImNRkjkVDUVNSkpuYlkVDUVNSkpuYlETWpqahJTc1LImpSk5rUpKbmJZFE1KQmNQ0aNSWSSChqUlNRUyKJhKKmoiY1GSORUNRU1KSm5iWRUNRU1KSm5iURNampqElNzUsiiahJTWpSU/OSSCKhqElNRU2JJBKKmoqa1GSMREJRU1GTmpqXREJRU1GTmpqXRNSkpqImNTUviahJTWpSk5qal0QSUZOa1FTUlEgioahJTUVNxkgkFDUVNanJGImEoqaiJjU1L4mEoqaiJjU1L4moSU1qUpOampdEElGTmtSkpuYlkURCUZOaipoSSSQUNRU1qckYiYSipqImNTUviYSipqImNTUviahJTUVNampeElGTmtSkJjU1L4kkoiY1qamoKZFEQlETANSkJmMkEoqaiprUZIxEQlFTUZOampdEQlFTUZOampdE1KQmNalJTc1LIomoSU1qUlPzkkgioahJTUVNiSQSipqKmtRkjERCUVNRk5qal0RCUVNRk5qal0TUpKaiJjU1L4kkoiY1qUlNzUsiiahJTWoqakokkVDUBAA1qckYiYSipqImNTUviYSipqImNTUviYSipqImNTUv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">
+<h3>DETFF Test</h3>
+<img src="data:image/png;base64,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">
+
+<h2>DO Scripts</h2>
+<h3>JKFF Test</h3>
+<pre class='codeblock codeblock-tcl'>
+<span class="Statement">Library</span> ieee<span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_1164<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_unsigned<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">entity</span> jkff <span class="Statement">is</span>
+  <span class="Statement">port</span> <span class="Special">(</span>
+    J<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    K<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    CLK<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    Q<span class="Type">:</span> <span class="Statement">out</span> <span class="Type">std_logic</span>
+    <span class="Special">);</span>
+<span class="Statement">end</span> <span class="Statement">entity</span><span class="Special">;</span>
+<span class="Statement">architecture</span> behav <span class="Statement">of</span> jkff <span class="Statement">is</span>
+<span class="Statement">begin</span>
+  <span class="Statement">process</span> <span class="Special">(</span>CLK<span class="Special">)</span>
+    <span class="Statement">variable</span> b0<span class="Type">:</span> <span class="Type">std_logic</span><span class="Special">;</span>
+    <span class="Statement">begin</span>
+    <span class="Statement">if</span><span class="Special">(</span> CLK<span class="Type">'event</span> <span class="Type">AND</span> CLK<span class="Type">=</span><span class="Constant">'1'</span> <span class="Type">AND</span> J <span class="Type">=</span> <span class="Constant">'0'</span> <span class="Type">AND</span> K <span class="Type">=</span> <span class="Constant">'1'</span> <span class="Special">)</span> <span class="Statement">then</span>
+      b0 <span class="Type">:=</span> <span class="Constant">'0'</span><span class="Special">;</span>
+    <span class="Statement">elsif</span><span class="Special">(</span> CLK<span class="Type">'event</span> <span class="Type">AND</span> CLK<span class="Type">=</span><span class="Constant">'1'</span> <span class="Type">AND</span> J <span class="Type">=</span> <span class="Constant">'1'</span> <span class="Type">AND</span> K <span class="Type">=</span> <span class="Constant">'0'</span> <span class="Special">)</span> <span class="Statement">then</span>
+      b0 <span class="Type">:=</span> <span class="Constant">'1'</span><span class="Special">;</span>
+    <span class="Statement">elsif</span><span class="Special">(</span> CLK<span class="Type">'event</span> <span class="Type">AND</span> CLK<span class="Type">=</span><span class="Constant">'1'</span> <span class="Type">AND</span> J <span class="Type">=</span> <span class="Constant">'1'</span> <span class="Type">AND</span> K <span class="Type">=</span> <span class="Constant">'1'</span> <span class="Special">)</span> <span class="Statement">then</span>
+      b0 <span class="Type">:=</span> <span class="Type">NOT</span> b0<span class="Special">;</span>
+    <span class="Statement">end</span> <span class="Statement">if</span><span class="Special">;</span>
+      Q <span class="Type">&lt;=</span> b0<span class="Special">;</span>
+  <span class="Statement">end</span> <span class="Statement">process</span><span class="Special">;</span>
+<span class="Statement">end</span> <span class="Statement">architecture</span><span class="Special">;</span>
+</pre>
+
+<h3>2:1 Multiplexer Test</h3>
+<pre class='codeblock codeblock-tcl'>
+<span class="Comment"># Loading work.mux21(behav)</span>
+force -freeze a <span class="Constant">1</span> <span class="Constant">0</span>
+force -freeze b <span class="Constant">1</span> <span class="Constant">0</span>
+force -freeze sel <span class="Constant">0</span> <span class="Constant">0</span>
+run
+force -freeze sel <span class="Constant">1</span> <span class="Constant">0</span>
+run
+force -freeze b <span class="Constant">0</span> <span class="Constant">0</span>
+run
+force -freeze sel <span class="Constant">0</span> <span class="Constant">0</span>
+run
+force -freeze a <span class="Constant">0</span> <span class="Constant">0</span>
+run
+</pre>
+
+<h3>DETFF Test</h3>
+<pre class='codeblock codeblock-tcl'>
+<span class="Comment"># Loading work.detff(struct)</span>
+<span class="Comment"># Loading work.mux21(behav)</span>
+<span class="Comment"># Loading work.jkff(behav)</span>
+force -f data1 <span class="Constant">0</span>
+force -f data2 <span class="Constant">0</span>
+force -f clk <span class="Constant">0</span>
+run
+force -f clk <span class="Constant">1</span>
+run
+force -f clk <span class="Constant">0</span>
+run
+force -f data1 <span class="Constant">1</span>
+force -f clk <span class="Constant">1</span>
+run
+force -f clk <span class="Constant">0</span>
+run
+force -f data1 <span class="Constant">0</span>
+force -f data2 <span class="Constant">0</span>
+force -f clk <span class="Constant">1</span>
+run
+force -f data1 <span class="Constant">0</span>
+force -f data2 <span class="Constant">0</span>
+force -f clk <span class="Constant">0</span>
+run
+force -f data2 <span class="Constant">1</span>
+force -f clk <span class="Constant">1</span>
+run
+force -f clk <span class="Constant">0</span>
+force -f data2 <span class="Constant">0</span>
+run
+force -f clk <span class="Constant">1</span>
+run
+force -f clk <span class="Constant">0</span>
+run
+</pre>
+<!--end content-->
+</div>
+</body>
+</html>

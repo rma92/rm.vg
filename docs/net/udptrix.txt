@@ -1,0 +1,164 @@
+<?php
+
+//Default configuration
+$DEF_PROV_ITERATIONS = 10; //Default provider iterations = 30 times.
+$DEF_PROV_DELAY = 10; //Default provider delay = 10 seconds
+//!Default configuration
+
+/*
+  Send a message on UDP.
+  For multicast, the IP_str is the multicast address.
+*/
+function send_msg($data, $IP_str, $port, $localport = 0)
+{
+  $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+  socket_bind($sock, '0.0.0.0', $localport);
+  socket_sendto($sock, $data, strlen($data), 0, $IP_str, $port);
+  socket_close($sock);
+}
+//!function send_msg
+
+/*
+  Listen on multicast.
+  Joins MCAST_group on interface specified, listens on port specified.
+*/
+function listen_multicast($IP_str, $port, $interface_id)
+{
+  $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP); 
+  socket_bind($sock, '0.0.0.0', $port);
+  $err = socket_set_option($sock, getprotobyname("ip"), MCAST_JOIN_GROUP, array("group"=>$IP_str,"interface"=>$interface_id));
+  while(1)
+  {
+    $from = '';
+    $portfrom = 0;
+    socket_recvfrom($sock, $buf, 32768, MSG_WAITALL, $from, $portfrom); 
+    echo 'got "', $buf, '" from "', $from, '" and port "', $portfrom, "\"\n";
+    //socket_sendto($sock, $buf, strlen($bc_buf), 0, $IP_send, $PORT_send);
+  }
+  socket_close($sock);
+}
+//!function listen_multicast
+
+//function router_loop
+function router_loop($IP_str_in, $port_in, $IP_str_out, $port_out, $interface_id = 0)
+{
+  $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP); 
+  socket_bind($sock, '0.0.0.0', $port_in);
+  $err = socket_set_option($sock, getprotobyname("ip"), MCAST_JOIN_GROUP, array("group"=>$IP_str_in,"interface"=>$interface_id));
+  while(1)
+  {
+    $from = '';
+    $portfrom = 0;
+    socket_recvfrom($sock, $buf, 32768, MSG_WAITALL, $from, $portfrom); 
+    echo 'passing "', $buf, '" from "', $from, '" and port "', $portfrom, "\"\n";
+    send_msg($buf, $IP_str_out, $port_out);
+    //socket_sendto($sock, $buf, strlen($bc_buf), 0, $IP_send, $PORT_send);
+  }
+  socket_close($sock);
+}
+//!function router_loop
+//startup
+$mode = 0; //0 = error, 1 = provider, 2 = consumer, 3 = router;
+$IP_listen = ''; //IP address to listen on. Multicast address.
+$Port_listen = 0; //port to listen on.
+$IP_send = ''; //IP address to send on. Multicast address, router only.
+$Port_send = 0; //port to send on. 
+
+//[provider | consumer | router]
+if(strcasecmp($argv[1], 'provider') === 0)
+{
+  $mode = 1;
+}
+else if(strcasecmp($argv[1], 'consumer') === 0)
+{
+  $mode = 2;
+}
+else if(strcasecmp($argv[1], 'router') === 0)
+{
+  $mode = 3;
+}
+//![provider | consumer | router]
+
+//provider
+if($mode === 1)
+{
+  $IP_str = $argv[2];
+  $port = $argv[3];
+  $buf = $argv[4];
+  //set default options
+  $iterations = $DEF_PROV_ITERATIONS;
+  $delay = $DEF_PROV_DELAY;
+  $localport = 0;
+  //handle optional things
+  $opts = explode(',', $argv[5]);
+  foreach($opts as $o)
+  {
+    $o = explode('=', $o);
+    if(strcasecmp($o[0], 'iterations') === 0)
+    {
+      $iterations = $o[1];
+    }
+    else if(strcasecmp($o[0], 'delay') === 0)
+    {
+      $delay = $o[1];
+    }
+    else if(strcasecmp($o[0], 'localport') === 0)
+    {
+      $localport = $o[1];
+    }
+  }
+  echo "Provider\nsending messges on ", $IP_str, ':', $port, ' ', $iterations, ' times with a delay of ', $delay, ' seconds.', "\n";
+  $i = 0;
+  while($iterations === 0 || ++$i <= $iterations)
+  {
+    send_msg($buf, $IP_str, $port);
+    echo "sent\n";
+    sleep($delay);
+  }
+}
+//!provider
+
+//consumer
+if($mode === 2)
+{
+  $IP_str = $argv[2];
+  $port = $argv[3];
+  echo "Consumer:\nListening on ", $IP_str, ':', $port, "\n";
+  listen_multicast($IP_str, $port, 0);
+}
+//!consumer
+
+//router
+if($mode === 3)
+{
+  $IP_str_in = $argv[2];
+  $port_in = $argv[3];
+  $IP_str_out = $argv[4];
+  $port_out = $argv[5];
+  echo "Router:\nWhen traffics is recieved on ", $IP_str_in, ':', $port_in, "\nit will be passed onto ", $IP_str_out, ':', $port_out, "\n";
+  router_loop($IP_str_in, $port_in, $IP_str_out, $port_out);
+}
+//!router
+
+//no mode
+if($mode === 0)
+{
+?>
+  UDPTrix -- stupid multicast tool
+  Usage:
+  php udptrix.php [ provider | consumer | router ] 
+    provider: 239.194.0.73 5555 "blah" [iterations=32,delay=10,localport=5309]
+      IP to multicast onto, port, message. 
+      The last parameter is an optional list of comma separated options:
+      delay      the number of seconds to wait before reiterating. Default 10.
+      iterations the number of iterations. 0 for infinite. Default 10.
+      localport  set the source port. 0 for automatic. default 0.
+    consumer: 239.194.0.73 5555
+      IP of multicast group to join, port to listen on.
+    router: 239.194.0.73 5555 239.195.0.73 7777
+      Route traffic from multicast group 1 (239.194), listening on port 5555,
+      to group 2 (239.195) on port 7777.
+<?php
+}
+?>
+

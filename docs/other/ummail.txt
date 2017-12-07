@@ -1,0 +1,14 @@
+List of useful postal addresses, University of Miami
+
+ERC	1211 Dickinson Drive
+MRC	1101 Stanford Drive
+PRC	5185 Ponce de Leon Blvd
+HRC	1231 Dickinson Drive
+SRC	1239 Dickinson Drive
+UV	1527 Albenga Ave
+
+Format:
+Person
+Room (e.g. UV2901)
+Street address (e.g. 1527 Albenga Ave)
+Coral Gables, FL

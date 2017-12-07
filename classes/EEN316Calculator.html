@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  //list of interesting legal words http://kuancheen.blogspot.com/2005/07/legal-and-formal-adverbs.html
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+body ol li
+{
+  padding: 2px;
+}
+body ol li:first-child p
+{
+  margin-top: 0px;
+}
+body ol li:last-child p
+{
+  margin-bottom: 0px;
+}
+table
+{
+  border-collapse:collapse;
+}
+tr:first-child th, tr:first-child td
+{
+  border-bottom: 1px solid #000;
+  font-weight: normal;
+  padding-top: 8px;
+}
+tr:last-child td, tr:last-child th
+{
+  border-bottom: 1px solid #000;
+}
+td, th
+{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:1px;
+}
+/*
+  Use the lt class for a table that needs to be compact.
+  Its not nice to look at, but saves paper.
+*/
+.lt tr td, .lt tr th
+{
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left:2px;
+  padding-right: 2px;
+}
+.mname
+{
+  
+}
+
+/*VIM syntax*/
+/*codeblock-vhdl: VHDL*/
+.codeblock-vhdl .Constant { /*color: #ff6060;*/ color: #f00; }
+.codeblock-vhdl .Special { color: #ff8500; }
+.codeblock-vhdl .Statement { /*color: #eaea00;*/ color: #04b;}
+.codeblock-vhdl .Type { color: #60d060; }
+
+/*codeblock-tcl: Tcl/TK */
+.codeblock-tcl .Constant { color: #f00; }
+.codeblock-tcl .Comment { color: #80a0ff; }
+
+/*codeblock-v: Verilog*/
+.codeblock-v .Constant { color: #f00; }
+.codeblock-v .Special { color: #ff8500; }
+.codeblock-v .PreProc { color: #ff80ff; }
+.codeblock-v .Statement { color: #04b; }
+.codeblock-v .Comment { color: #90b0ff; }
+
+/*codeblock-c: C*/
+.codeblock-c .Constant { color: #f00; }
+.codeblock-c .PreProc { color: #ff80ff; }
+.codeblock-c .Statement { color: #04b; }
+.codeblock-c .Comment { color: #90b0ff; }
+
+/*codeblock-php: PHP/HTML*/
+.codeblock-php .Title { color: #ff00ff; font-weight: bold; }
+.codeblock-php .htmlUnderline { text-decoration: underline; }
+.codeblock-php .htmlItalic { font-style: italic; }
+.codeblock-php .Constant { color: #f00; }
+.codeblock-php .Identifier { color: #40ffff; }
+.codeblock-php .PreProc { color: #ff80ff; }
+.codeblock-php .htmlBoldItalic { font-weight: bold; font-style: italic; }
+.codeblock-php .Statement { color: #04b; }
+.codeblock-php .htmlBold { font-weight: bold; }
+.codeblock-php .Special { color: #ff8500; }
+.codeblock-php .Comment { color: #90b0ff; }
+.codeblock-php .Type { color: #60d060; }
+
+.codeblock
+{
+white-space: pre-wrap; font-family: monospace; color: #000; background-color: #fff;
+font-size: 10px;
+counter-reset: lss;
+border: 1px solid #000;
+}
+.popline { counter-increment:lss; }
+/*
+this cannot be used due to too many sections.
+.codeblock .popline:before {content: counters(lss, ".", decimal-leading-zero) ""; color: #f00; font-size:10px; background-color: #fff; border-right: 1px solid #600; font-weight: bold;} 
+*/
+.linenum
+{
+  color: #f00;
+  border-right: 1px solid #600;
+}
+/*end VIM Syntax*/
+</style>
+<script>
+//Line Number Script
+//(C) 2010-2013 Rich Marino. All Rights Reserved.
+onload=function()
+{
+  //make the getElementsByClassName method
+  if (document.getElementsByClassName == undefined)
+  {
+    document.getElementsByClassName = function(className)
+    {
+      var hasClassName = new RegExp("(?:^|\\s)" + className + "(?:$|\\s)");
+      var allElements = document.getElementsByTagName("*");
+      var results = [];
+      var element;
+      for( var i = 0; (element = allElements[i]) != null; i++ )
+      {
+        var elementClass = element.className;
+        if (elementClass && elementClass.indexOf(className) != -1 && hasClassName.test(elementClass))
+        {
+          results.push(element);
+        }
+      }
+      return results;
+    }
+  }
+  
+  //now actually take care of the text
+  wrapCodeBlocks('codeblock');
+}
+
+function wrapText(element)
+{
+  var newString = '';
+  var lines = element.innerHTML.split("\n");
+  
+  var lx = ('' + lines.length ).length;
+  var mxl = 60;
+  for( var i in lines )
+  {
+    var num = '' + i;
+    while(num.length < lx)
+    {
+      num = ' ' + num;
+    }
+    newString += "<span class=linenum>";
+    newString += num + "</span><span class=popline>";
+    /*
+    //uncomment this if you want to put a mark at the character specified by mxl above.
+    if( lines[i].length > mxl )
+    {
+      newString += lines[i].substring(0,mxl) + "<span style='border-right: 1px solid #f00;'></span>";
+      newString += lines[i].substring(mxl);
+    }
+    else
+    {
+      newString += lines[i];
+    }
+    */
+    newString += lines[i];
+    newString += "</span>\n";
+  }
+  element.innerHTML = newString + '';
+}
+
+function wrapCodeBlocks(type)
+{
+  var codeblocks = document.getElementsByClassName(type);
+  for( var cb in codeblocks )
+  {
+    if( typeof( codeblocks[cb]) == 'object'  ){
+      wrapText( codeblocks[cb] );
+    }
+  }
+}
+</script>
+
+</head>
+<body>
+<div class="main">
+<!--begin content-->
+<span class="mname">Richard A. Marino</span>
+<h1>EEN316<br/>Marika Wei, Rich Marino, Brian Hasenstab</h1>
+<h2>Final Project: Calculator</h2>
+
+<h3>Registers</h3>
+<table>
+<tr><td>Register</td><td>ID</td><td>Description</td></tr>
+<tr><td>Accumulator</td><td>00</td><td>Output register. Its the destination of operations. E.g. A + B would be stored here.</td></tr>
+<tr><td>A</td><td>01</td><td>General Purpose</td></tr>
+<tr><td>B</td><td>10</td><td>General Purpose</td></tr>
+<tr><td>C</td><td>11</td><td>General Purpose</td></tr>
+</table>
+<h3>OpCode List</h3>
+<table>
+Instructions have 4-bit OPCode, 2-bit destination (D), optionally either:
+<ul>
+<li>2-bit A and 2-bit B inputs.</li>
+<li>An 8-bit <!--unsigned--> number</li>
+</ul><tr><td>Instruction</td><td>OpCode</td><td>Description</td></tr>
+<tr><td>0000</td><td> MOV</td><td> <ul>
+  <li>Move contents of B into A.</li>
+  <li>0000 00 00 is MOV A A, to prevent a glitch</li>
+  <li>To clear a register, use XOR A A.</li>
+</ul>
+</td></tr>
+<tr><td>0001</td><td> LD</td><td> Load into a register from switches. So, 0001 01 would load into register 1 </td></tr>
+<tr><td>0010</td><td> ADD</td><td> D = A + B</td></tr>
+<tr><td>0011</td><td> SUB</td><td> D = A - B</td></tr>
+<tr><td>0100</td><td> MULT</td><td> D = A * B</td></tr>
+<tr><td>0101</td><td> DIV</td><td> D = A / B</td></tr>
+<tr><td>0110</td><td> EXP</td><td> D = A POW B</td></tr>
+<tr><td>0111</td><td> SQ</td><td> D = A * A (ignores B)</td></tr>
+<!--<tr><td>1000</td><td> SQRT</td><td> D = SQRT A (ignores B)</td></tr>-->
+<tr><td>1000</td><td> Reserved</td><td> Reserved.</td></tr>
+<tr><td>1001</td><td> RS</td><td> D = A &gt;&gt; 1 (ignores B)</td></tr>
+<tr><td>1010</td><td> LS</td><td> D = A &lt;&lt; 1 (ignores B)</td></tr>
+<tr><td>1011</td><td> ACC</td><td> D = A + 1</td></tr>
+<tr><td>1100</td><td> DEC</td><td> D = A - 1 </td></tr>
+<tr><td>1101</td><td> XOR</td><td> D = A XOR B </td></tr>
+<tr><td>1110</td><td> INV</td><td> D = !A </td></tr>
+<tr><td>1111</td><td> M10</td><td> D = A * 10 </td></tr>
+</table>
+
+
+<h3>Inputs/Outputs</h3>
+<h4>Input</h4>
+<ul>
+<li>18 switches -- left-most will be opcode (4), followed by A and B (4). Right-most 8-bits will be numerical input, if applicable.</li>
+</ul>
+<h4>Output</h4>
+
+Output will display the contents of the accumulator register, either in binary in LEDs And/Or on the 7-segment display. Possibly, it will be possible to display the contents of another register by pressing a button.
+<!--end content-->
+</div>
+</body>
+</html>
+
+

@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  font-family: "Times New Roman", times, serif;
+  font-size: 12px;
+  line-height: 18px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+ol li
+{
+  padding: 8px;
+}
+.ltitle
+{
+  border-bottom: 1px solid black;
+}
+.mname
+{
+  
+}
+@media all {
+.page-break {display: none;}
+}
+@media print {
+.page-break {display: block; page-break-before: always;}
+}
+</style>
+</head>
+<body>
+<div class="main">
+<span class="mname">Richard A. Marino<br/>December 2013</span>
+<h1>File and Data Sharing in the Near Field</h1>
+<center>By</center><br>
+<center>Richard A. Marino</center>
+<h2>0. Abstract</h2>
+File- and Data- sharing between devices that are physically nearby is surprisingly non-trivial.  A tool (software) should be developed to significantly simplify this task, with limited or no dependence on the Internet, and minimal hassle to the user. 
+<div class="page-break"></div>
+<h2>1. Introduction</h2>
+The software to be developed will be applicable in a diverse range of applications where people meet, ranging from business meetings, to college classes, to informal gatherings. 
+<h3>1.1. Problem Statement</h3>
+<p>Considering the non-triviality of transferring files between nearby devices, it will be desirable to develop an application to facilitate this in a quick and painless manner. The goal of the project is to develop a <b>Universal means of transferring files without necessarily requiring a direct connection between devices</b>.
+<h3>1.2. Prior Technology</h3>
+Take, for example, a business meeting between an architect and a couple of clients, in a public location, such as a coffee shop. The architect would like to quickly give the clients some drawings, which are stored on his laptop. The drawings take up several megabytes. He has a variety of options for how to proceed. 
+  <ul>
+    <li><b>Flash Drive</b> - The architect could use a flash drive, or some other physical disk, such as an SD Card, to transfer the files. This is time consuming, and would be particularly troublesome with many people -- the drive would need to be passed around to everyone, which could be time consuming.</li>
+    <li><b>Email</b> - The architect could email everyone the file. In order to do this, he would need to collect everyone's email address, if he doesn't already have them, and then proceed to send a mail. Everyone must then open the email, and download the attachment. In some cases, the attachment may be too large for one of the mail servers or accounts, which would lead to further trouble.</li>
+    <li><b>Dropbox</b> - The architect could upload the file to Dropbox. If everyone involved already has a Dropbox account, and has a folder shared between them, this will work fairly well, assuming everyone has adequate Internet access. If there are people involved that do not have a Dropbox account, or their accounts are not all linked to a folder, the architect may then proceed to make the file publicly available, causing everyone to have to open a link in their web browser. He could also collect everyone's email address, and add them to a folder, or invite them to open Dropbox accounts, which is quite excellent if there will be a lot of subsequent file transfers, but would be questionable in a more ad-hoc environment. By this point, it might have been better to have emailed the files to everyone.</li>
+    <li><b>Google Drive, Microsoft SkyDrive</b> - These would be similar to using DropBox, except that both products have authentication integrated to other services, which may be slightly advantageous.</li>
+    <li><b>Skype</b> - If everyone has a Skype account, the file could be sent that way. Unless the architect has a paid account (allowed to have multiple people in a conference simultaneously), he will need to send each person the files separately. Again, email would be preferred, except that Skype can, on occasion, transfer files directly over a local area network if both computers are connected to the same network.</li>
+    <li><b>RapidShare (or other File Sharing)</b> - The architect could upload the files to one of the free online hosting sites. Everyone must then download the file. This has a poor user experience, not the least of which would come from requiring the user to wait for a period, or buy a premium account.</li>
+    <li><b>Web Server</b> - The architect could upload the files to a web server, and ask everyone to download the files. This requires a certain degree of technical competence for the person sending the files. It also only works in one direction, unless everyone has access to a web server. In some cases, the URLs may be too lengthy to type, which would be solved by the architect sending a link via email or instant message.</li>
+    <li><b>Instant Message</b> - Some instant message services can transfer files in a convenient way, if everyone has an account.</li>
+    <li><b>Facebook Messenger</b> - Facebook's messaging platform supports sending file attachments. In some cases, this may be strongly preferable to email, as people may be friends on Facebook, and may not know the other's email address. This would likely be more desirable in a collaboration between classmates at a high school or university, who are likely to be Facebook friends, but may not know everyone's email address.</li>
+    <li><b>FTP Server / SFTP Server</b> - This would be very similar to the web server. The architect would upload the files, and others would download them. The FTP server also may allow the clients to upload files as well.</li>
+    <li><b>Windows File Sharing (SMB / Samba)</b> - If all of the computers are on the same network, it should be possible to use Windows File Sharing. The architect could share a folder, and then have everyone connect to the share and copy files. He could also have people copy files onto the share, if he wishes. This will only work properly if all computers are on a well-configured network.<br>One could potentially create an adhoc network to get around any network issues, but this is fairly non-trivial to most users, requiring a decent amount of technical know-how for all parties.</li>
+    <li><b>Unix File Sharing, Apple File Sharing</b> - Both of these could be used, similarly to the Windows File Sharing case.</li>
+    <li><b>iSCSI</b> - Everyone could mount an iSCSI target. This would require that an iSCSI target is available, and that everyone can be allowed to access it, as well as a very large amount of technical knowhow from all parties. While iSCSI is known for its good performance, it would be limited by the Internet connection available at the location.</li>
+    <li><b>Bluetooth OBEX</b> - It should be trivial to move files via Bluetooth, as this is exactly the type of application for which this technology was designed. It is, however, extremely buggy and unreliable. It is also slow to both set up, and actually transfer data due to bandwidth limitations. The bandwidth limitation is not a significant issue in small files. Bluetooth OBEX also does not adequately support sending files to many devices simultaneously (unreliable).</li> 
+    <li><b>AirDrop</b> - This is by far the most desirable solution listed here. AirDrop is a relatively new technology developed by Apple, and supported in recent Macintosh models, and devices running iOS 7 (at the time of this writing). On a Macintosh that supports AirDrop, a special folder is available in the Finder. Opening this folder shows Macintoshes (and potentially other devices) in the vicinity that support AirDrop. A user can then simply drag files to the devices in question. The user of the receiving device will be asked if they want to receive the file(s). 
+    <br>If the user accepts, the file will be transferred. This file is transferred internally by either Wi-Fi Direct, or Bluetooth.
+    <br>This technology works very well, however, it has very bad compatibility. At the time of writing, while AirDrop is supported on both iOS 7 devices, and Macintosh computers with certain Wi-Fi adapters, it is not presently supported between the platforms, let alone to any non-Apple platforms.
+    <br>
+  </ul>
+  Despite the plethora of options to transfer the file, there are no seamless and cross platform options. Options are significantly limited without Internet access as well, despite the fact that the two computers are physically within arms-reach.
+  </li>
+</ul>
+<b>It would be desirable to develop an application that uses technology that, for the most part, is already available in most computers, and can provide this type of seamless experience, preferably without Internet access, if possible.</b>
+Some example applications of this product include cross company business meetings, where a guest's equipment may not be connected to a corporate network, sharing photos at a casual gathering, or in a college classroom where it would be unacceptable or undesirable to use technology like BlackBoard, due to performance or design issues.
+
+<div class="page-break"></div>
+<h2>2. Design Procedure</h2>
+<p>The first part of design consisted of determining what would need to be developed. There should be two components to the system -- an "Anonymous Web File Server Service", and a "Facility for transferring files in the near-field without necessarily requiring an Internet connection".</p>
+
+<p>The <b>Web Service</b> is responsible for hosting files if the user wishes to transfer using only a web browser, or between computers that are not on the same network, and no direct connection can be facilitated. It is also responsible for selecting the File IDs for transfers -- the application software will (if possible) attempt to contact the web service to get a file ID, in the event the file needs to be uploaded.</p>
+
+<p>The <b>Facility for transferring files in the near-field, without necessarily requiring an Internet connection</b> is a software application that can facilitate convenient sharing of files without needing to use a web browser, and have better access to hardware than a web browser. When a user wishes to transfer a file, he will open it in the application. The application then attempts to contact the web service, to get a file ID, if possible. If contact is impossible, a self-assigned ID will be used (a different length than the global IDs). A client using the application or web interface can then begin the transfer through a variety of means.</p>
+
+<p>Since the application will depend on the web service, it will be developed first. Subsequently, development will focus on getting a primitive working example of the software application, and then a cleanup of both parts of the system. The initial application will be developed on Windows. Final stretch goals include making Android and possibly iOS applications.</p>
+
+<div class="page-break"></div>
+<h2>3. Design Details</h2>
+<p>The <b>Anonymous Web File Server Service</b> will be a web service that allows for a "file chat room" of sorts should be created. This will allow users on Internet connected computers to move files quickly. This service will not require authentication, and will authenticate in the sense of IRC -- that is, the user will connect to the server, be prompted to enter a room. Upon entering a room, all files in the room will be displayed. A user can then download the files, or drag files into the window using HTML5 drag and drop. The file will then become available to the other users, who will be notified by an audible tone. This facilitates file sharing relatively quickly between users connected to the Internet, as users can simply be told to open a website, enter a room, and can then freely upload and download files.</p>
+<p>Some restrictions should be implemented. Potentially, files should be purged after some amount of time. The site is not intended necessarily as a public pastebin. Additionally, Room names can be chosen freely, and are created in the database when a file is uploaded for the first time. Even if two users wish to transfer a file separately from other users, this should be reasonably facilitated by picking a lengthy room name.</p>
+<p>In the past, America Online had two types of chat rooms -- public chat rooms, and "Buddy Chat", which was a chat that people would need to be invited to. The "Buddy Chat" actually created a public chat room with a lengthy name, that was not listed in any directory, and added all relevant people. An outside party was not technologically barred from entering this chat room -- but would need to know the name of the room in order to do so.</p>
+
+<p>The web service is also responsible for selecting file IDs for transfers. See below for details on this.</p>
+
+<p>Since the goal is to provide file sharing, rather than file hosting, the server will remove files from the server after a short period of time (several hours to a day at most). This will reduce operating costs, and prevent the service from turning into some nature of a hosting service. In addition, released file IDs may be reused later, allowing them to remain short.</p>
+
+<p>The <b>Facility for transferring files in the near-field, without necessarily requiring an Internet connection</b> will be a software application that runs on various devices, such as computers, and smartphones. Like <i>Apple AirDrop</i>, actual file transfer will be facilitated over either Wi-Fi Direct, Bluetooth, or an existing network connection between the computers (It should be noted the AirDrop will work over Ethernet connections, but this is not supported by Apple <sup>[1]</sup>).</p>
+
+<p>A handshake, which will only send a small amount of data, and open connections on the relevant devices (if applicable), will be able to be facilitated in a variety of ways.</p>
+<p>One method will be through <b>Near-Field Communication</b> - (heron, NFC) on machines that support this technology. The communication can be facilitated by sharing the handshake data using the NFC chip. NFC chips support sharing data in a beacon-like manner, and scanning. This method will be inadequate to transfer files to a large number of people at once, due to NFC's short range<sup>[2]</sup>.</p>
+<p><b>Multicast UDP</b> may be used if it is known that the computers are on a network together. All computers can be configured to join a multicast group and receive beacons (and possibly complete the transfer) that way. As this does not require computers to have a properly assigned Unicast IP address, this could also operate over ad-hoc Wi-Fi connections with little complications.</p>
+<p>A <b>Camera</b> may also be used. With the ubiquity of webcams and cameras, especially rear-facing cameras, it would be reasonable to transmit the data by having the user take a picture of something on a screen. This could be, for example, a <b>QR Code</b>, which can encode a quite significant amount of data, or a technology similar to <b>Casio's PiCapiCamera</b><sup>[3]</sup>. PiCapiCamera is a technology developed by Casio that allows information to be transferred between an onscreen shape that changes color, and a camera that decodes this data. This technology is presently only used in limited advertising applications in Japan.</p>
+<p>Utilizing a camera for data transmission is particularly interesting, as it requires no other connectivity whatsoever between the devices, and as such, could facilitate data transfer in heavily restricted computing environments. Further research into the applicability of cameras in data transfer applications is necessary.</p>
+
+<p>Finally, as a failsafe, <b>some form of code may be manually entered.</b>If none of the former are applicable, such as due to hardware limitations of a user's device, it should be possible to manually initiate the transfer in some way, either by typing a code.</p>
+
+
+<p>Since the file IDs are so small (less than 32-bits of data), it is much more trivial to transfer them - they can even be transferred by a low resolution camera image.</p>
+
+<div class="page-break"></div>
+<h4>3.1.1 File ID Generation</h4>
+<p>Since it now appears more probable that a user will need to type a file ID at some point, considerations to the design of the file IDs will be of greater importance. I have determined that, for ease of use, they should meet the following criteria:
+<ul>
+  <li><b>Short</b> - to make entry quick and easy, codes should be short.</li>
+  <li><b>Case Insensitive</b> - this reduces chances of misentry, and reduces the number of keystrokes required.
+  <li><b>Limited Selection of Characters</b> - for readability, a limited selection of 22 characters will be used. Letters and numbers that look similar (e.g. 0  and O, 1 and I) have been removed. Figure 3.1.1 contains the characters that will be used. Note that letters will be <i>case-insensitive</i>.
+  <center>
+  <p><b>Figure 3.1.1</b> Letters and numbers to be used in File IDs.</p>
+  <span style="font-size:24px;border: 1px solid black;">234679CDFGHJKMPQRTVWXY</span></center>
+  </li>
+</ul>
+</p>
+
+<p>The length of the codes will be 5 characters, for the time being. With files being deleted at least once every 24 hours, it would be unlikely to need more than the roughly 5 million codes that are exactly 5 characters long, as the codes can be reused later.</p>
+<center>
+<p><b>Table 3.1.2</b> File ID Lengths, and the maximum number of IDs available using only this length.</p>
+<table>
+<tr><th class=ltitle>Length</th><th class=ltitle>Possible Entries</th></tr>
+<tr><td>3</td><td>10648</td></tr>
+<tr><td>4</td><td>234256</td></tr>
+<tr><td>5</td><td>5153632</td></tr>
+<tr><td>6</td><td>113379904</td></tr>
+</table>
+</center>
+<p>In the event that the web server is not accessible, and an offline transfer using the software application is attempted, the software will generate it's own file ID that is only 4 characters long (to difference it from the global or online IDs). Someone wishing to receive the file must enter this code into the application; it will not work with the web service, which will ignore any data transfered with an ID less than 4 characters long.</p>
+
+<div class="page-break"></div>
+<h2>4. Design Verification</h2>
+<h3>4.1 Testing</h3>
+Throughout development, tests will be conducted to measure the effectiveness of the implemented software. Small scale testing will be done throughout development, and large scale automated testing will be used once development nears completion. A mix of fuzz testing as well as prescribed hard tests will be used, allowing for proper stress and reliability testing, which cannot reasonably be simulated manually.
+<!--
+It should be possible to implement both systems to a functional level within the timeframe specified for this project. Much of the Web feature has already been implemented to a working state.<br>
+Cost should not be particularly prohibitive, as all relevant hardware is readily available in many computers and smartphones. The only hardware that may be necessary to purchase would be NFC equipment, which can be had relatively cheaply.<br>
+Overall, the entire project seems very feasible.<br>
+-->
+
+<!--<h2>Milestones</h2>
+Microsoft Windows 8.1 will be the initial platform, due to the dependency of NFC libraries that are readily available.
+<ul>
+  <li><b>Basic Design and Implementation of one-click web application</b> - Complete and working now. Some miner changes may be done in the future.</li>
+  <li><span style="text-decoration:line-through"><b>Prototype: Viewing files over NFC or QR Codes</b> - Finish by end of November. This should also allow the files to be uploaded to the web application into a selectable room.</span> At a late stage of developing this prototype, NFC was found to be inadequate for the initially anticipated purposes, as it's range is too low. As a result, more focus will be given to the back end transferring service, which will primarily use Local Network, if possible, or Internet. Initialization of the transfer will be done either manually (user enters a short code), or with other means. See <b>Updates (Late November)</b> for more details about this.</li>
+  <li><b>Files can be transferred via Wi-Fi Direct, Bluetooth, Local Network, or over Internet</b> - <span style="text-decoration:line-through">Finish by end of January.</span> Complete by early January.</li>
+  <li><b>Final milestone: Application available on Windows</b></li>
+  <li><b>Additional Goals: Android application, potentially iOS application</b></li>
+</ul>
+-->
+
+<!--
+<h2>Updates (late October)</h2>
+<p>Over the past month, I have done some research on alternative means of transferring files locally, primarily IrDA. IrDA is an Infrared communication protocol that was popular in the 1990s, and was used extensively in PDAs, as well as the Nintendo Game Boy. It could, for example, transfer an address book entry (vCard) to someone. Internally, it created a standard serial port, and passed the data. It was, as a result, cross platform, to the extent that the data transferred was usable on the various platforms. IrDA is present in the recently released Nintendo 3DS, and is used for interactive, head-to-head multi-player in some games.</p>
+
+<p>Several hours have been spent attempting to get IrDA dongles to run under Windows. This did not work well on Windows 8.1, and required adding hardware to the computer (which required restarting before the hardware could be used). As a result of this, using this technology will be undesirable.</p>
+
+<p>NFC hardware will be ordered in the next week's time. Additionally, I will experiment with QR Codes and other means of transfusing information with a camera.</p>
+-->
+<!--
+<h2>Updates (late November)</h2>
+<p>Over the past month, I have done further research on transferring files locally. NFC proved to be inadequate for blasting a file to many people - as it has a range of only several centimeters (see Intel Corporation (2012)). NFC may still, however, be used to share a file with a single person with acceptable results. As a result of these findings, I have slightly changed the priorities of the project to focus more on <b>Internet or Network-based means of moving files, while focusing less on the initialization methods at this time.</b>.</p>
+
+<p>Since the goal is to provide file sharing, rather than file hosting, the Internet service design will be changed. Files will be able to be stored on a server in the cloud, but only for a short period of time (several hours to a day). This reduces cost of operation, and simplifies the creation of file ids. See the following section for information about the file IDs.</p>
+
+<p>When a file must be transferred, the online service will be contacted, which will then generate a file ID. The file ID will then be entered into the receiving device(s). If all devices are accessible within the network (found by using UDP multicast), the file will be transferred without the use of the Internet. If there are devices that cannot be reached in this manner, the file will be uploaded to the webserver, and then downloaded by the relevant clients. This could potentially be expanded to create an ad hoc network, or use Bluetooth, however this is not presently a major focus.</p>
+
+<p>Since the file IDs are so small (less than 32-bits of data), it is much more trivial to transfer them - they can even be transferred by a low resolution camera image.</p>
+
+-->
+
+<!--
+<h2>Introduction</h2>
+<h3>Problem Statement</h3>
+<h3>General Information</h3>
+<h3>Specifications and Goals</h3>
+<h2>Design Procedure</h2>
+<h2>Design Details</h2>
+<h2>Desing Verification</h2>
+<h2>Cost</h2>
+<h3>Parts</h3>
+Due to the fact that the project will be implemented entirely in software, the cost of most parts will be <b>negligable</b>, due to existing beforehand.
+A brief list of items required:
+<ul>
+<li>Web server / Domain name- costs several dollars per month to run</li>
+<li>Computers / Tablets / Smartphones with relevant hardware capability - already exist. No cost.</li>
+<li>All software (other than operating systems) will likely be open source.</li>
+</ul>
+<h3>Labor</h3>
+
+-->
+<br>
+<p>
+
+<div class="page-break"></div>
+<h2>5. Cost</h2>
+<h3>5.1. Parts</h3>
+Implementation will be relatively inexpensive, as most of the project is being developed in software, costs involved with this are negligible, requiring only a server and laptops. No new equipment must be purchased to use the software and web service.
+
+<h3>5.2. Labor</h3>
+Software may or may not need to be installed, as the service may be accessed through only a web browser, but the user experience will be better with a native software application (which presumably must be downloaded by a user).
+
+<div class="page-break"></div>
+<h2>6. ABET Requirements</h2>
+<h3>6.1. Identifies and describes the needs in a particular situation</h3>
+<p>As discussed in sections 1.1 and 1.2 (Problem Statement and Prior Technology), the project addresses the need of improving the ability to share computer data in an ad-hoc manner with people who are near by physically, but not necessarily connected to the same computer network. Sharing files between nearby computers is currently a tedious, slow, and surprisingly non-trivial process, as discussed in the Prior Technology section. I have observed this in my own work and school experience, as well as that of my classmate's and coworkers.</p>
+
+<h3>6.2. Recognizes the need for information gathering during the design process</h3>
+<p>The first step to design the software was to do research. I researched existing solutions, as discussed in section 1.2 (Prior Technology), to determine what I will be improving upon. I then researched existing solutions to see what could help in coding the software. I decided it was better to implement the web service without the use of libraries, in the PHP programming language, as no libraries proved to be particularly useful without causing additional complications.</p>
+
+<p>Additional research was done in means of transferring the file ID to start the transfer, such as using Near Field Communication, web cameras, and IrDA (the last of which was scrapped due to obscurity).</p>
+
+<h3>6.3. Demonstrate an ability to formulate a design problem statement and specification</h3>
+<p>The problem statement can be found in section 1.1. The problem was discovered during a meeting I attended where a large amount of time was wasted trying to copy a file. This additional wasted time occurred at subsequent meetings, as well as during a cooperative class exam that required computer use, and file sharing. Others agreed that the time waste was unsatisfactory.</p>
+
+<p>The design specification in section 2, detailed in section 3, covers the two major components of the project. First is to provision a new and highly efficient web service to share files quickly (and without authentication). Second is a software application that runs on user's devices and interacts with the former, to provide a seamless experience, and make transfers even quicker. The use of the application is not required to use the service, but it will provide a better user experience by having more direct access to hardware, and a more natural user interface.</p>
+
+<h3>6.4. Critically assess if the design meets realistic constraints such as economic, environmental, social, political, ethical, health and safety, manufacturability, and sustainability</h3>
+<p>The main point in the project is to provide a system with low implementation cost to expedite file sharing between users, even those who have not used the service before. Whereas existing services require a comparatively lengthy upfront process before use, the service here can be used by visiting a web site -- no need to install anything or create an account, if the user wishes.</p>
+
+<p>Due to the nature of the project consisting of software that uses a user's existing devices and hardware, there are no issues of manufacturability, or such constraints that apply to technology that requires parts to be physically obtained. </p>
+
+<p>As a result, the only other constraint on the project is one of ethics. When creating software, it is important that one does not spend significant time and money on problems that have already been adequately solved by others. However, it is also important that the intellectual property of others is respected. In order to be able to market the resulting product, significant effort has been spent ensuring the project will not improperly use the intellectual property of others. The web service is implemented on top of entirely open-source platforms (the prototype was developed on FreeBSD with Apache, PHP and the public domain SQLite).</p>
+
+<h3>Demonstrates an ability to generate ideas creatively (brain storming</h3>
+<p>As mentioned in the introduction, I identified a need for technology that improves what should be a trivial action of moving computer data between devices that are nearby physically, but that may not share network access. Existing solutions require either a large amount of knowledge to use (e.g. servers), or some upfront time to create and synchronize user accounts (see prior technology section). The initial idea was to develop software that simply passed files over the internet, but did not require authentication. Further revisions of this idea broke into more interesting ways of sharing multiple files, or starting the transfer with minimal user effort (such as using the camera to initialize the transfer).</p>
+
+<h3>Analyzes the various ideas to pick a few options that meet the constraints</h3>
+<p>During the brainstorming process, many ideas were considered, such as a large array of initialization methods. Some of these (such as IrDA) were removed due to time constraints, and the likelihood that only a small number of users would ever use such a feature. In order to develop the project within the deadline, efforts were instead initially directed to the web application, and producing initially only a Windows client (in addition to the browser interface).</p>
+
+<div class="page-break"></div>
+<h2>References</h2>
+<!--<a name='r1'><sup>1</sup></a> This 4×6 index card has all the financial advice you’ll ever need, Erza Klein. Published 16 Sep 2013. <a href=http://www.washingtonpost.com/blogs/wonkblog/wp/2013/09/16/this-4x6-index-card-has-all-the-financial-advice-youll-ever-need/>http://www.washingtonpost.com/blogs/wonkblog/wp/2013/09/16/this-4x6-index-card-has-all-the-financial-advice-youll-ever-need/</a> Accessed 17 Sep 2013.-->
+<a name='r1'><sup>1</sup></a> OS X Daily (2011, Sep 16) Enable AirDrop Over Ethernet & AirDrop On Unsupported Macs Running OS X. <a href=http://osxdaily.com/2011/09/16/enable-airdrop-ethernet-and-unsupported-macs/>http://osxdaily.com/2011/09/16/enable-airdrop-ethernet-and-unsupported-macs/</a>.
+<br>
+
+<a name='r2'><sup>2</sup></a> Intel Corporation (2012): Using NFC (Near Field Communication) from Windows 8 Applications. <a href=http://software.intel.com/sites/default/files/d7/1d/using-nfc.pdf>http://software.intel.com/sites/default/files/d7/1d/using-nfc.pdf</a>
+<br>
+<a name='r3'><sup>3</sup></a> Casio (2012) PiCapiCamera. <a href=http://www.casio-isc.com/en/>http://www.casio-isc.com/en/</a>.
+<h2>Other Resources</h2>
+Google (2012) Android: Wi-Fi Direct APIs. <a href=http://developer.android.com/guide/topics/connectivity/wifip2p.html>http://developer.android.com/guide/topics/connectivity/wifip2p.html</a>
+<br>
+Microsoft (2013) MSDN: Proximity Sample (Windows 8.1). <a href=http://code.msdn.microsoft.com/windowsapps/Proximity-Sample-88129731>http://code.msdn.microsoft.com/windowsapps/Proximity-Sample-88129731</a>
+<br>
+Microsoft (2013) Wi-Fi Direct Protocol Implementation. <a href=http://msdn.microsoft.com/en-us/library/windows/hardware/hh440290(v=vs.85).aspx>http://msdn.microsoft.com/en-us/library/windows/hardware/hh440290(v=vs.85).aspx</a>
+<br>
+Question on Superuser.com forums regarding using Wi-Fi Direct on Windows 8. (2013 5 May) How can I connect 2 windows 8 machines with WiFi Direct? <a href=http://superuser.com/questions/591733/how-can-i-connect-2-windows-8-machines-with-wifi-direct>http://superuser.com/questions/591733/how-can-i-connect-2-windows-8-machines-with-wifi-direct</a>
+<br>
+</p>
+</div>
+</body>
+</html>
+
+

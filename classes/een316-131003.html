@@ -1,0 +1,327 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  /*list of interesting legal words http://kuancheen.blogspot.com/2005/07/legal-and-formal-adverbs.html */
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+body ol li
+{
+  padding: 2px;
+}
+body ol li:first-child p
+{
+  margin-top: 0px;
+}
+body ol li:last-child p
+{
+  margin-bottom: 0px;
+}
+table
+{
+  border-collapse:collapse;
+}
+tr:first-child th, tr:first-child td
+{
+  border-bottom: 1px solid #000;
+  font-weight: normal;
+  padding-top: 8px;
+}
+tr:last-child td, tr:last-child th
+{
+  border-bottom: 1px solid #000;
+}
+td, th
+{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:1px;
+}
+
+/*
+Use the lt class for a table that needs to be compact.
+Its not nice to look at, but saves paper.
+*/
+.lt tr td, .lt tr th
+{
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left:2px;
+  padding-right: 2px;
+}
+.mname
+{
+  
+}
+
+/*codeblock-vhdl: VHDL*/
+.codeblock-vhdl .Constant { /*color: #ff6060;*/ color: #f00; }
+.codeblock-vhdl .Special { color: #ff8500; }
+.codeblock-vhdl .Statement { /*color: #eaea00;*/ color: #04b;}
+.codeblock-vhdl .Type { color: #60d060; }
+
+/*codeblock-tcl: Tcl/TK */
+.codeblock-tcl .Constant { color: #f00; }
+.codeblock-tcl .Comment { color: #80a0ff; }
+
+/*codeblock-v: Verilog*/
+.codeblock-v .Constant { color: #f00; }
+.codeblock-v .Special { color: #ff8500; }
+.codeblock-v .PreProc { color: #ff80ff; }
+.codeblock-v .Statement { color: #04b; }
+.codeblock-v .Comment { color: #90b0ff; }
+
+.codeblock
+{
+white-space: pre-wrap; font-family: monospace; color: #000; background-color: #fff;
+font-size: 10px;
+counter-reset: lss;
+border: 1px solid #000;
+}
+.popline { counter-increment:lss; }
+/*
+this cannot be used due to too many sections.
+.codeblock .popline:before {content: counters(lss, ".", decimal-leading-zero) ""; color: #f00; font-size:10px; background-color: #fff; border-right: 1px solid #600; font-weight: bold;} 
+*/
+.linenum
+{
+  color: #f00;
+  border-right: 1px solid #600;
+}
+/*end VIM Syntax*/
+
+</style>
+<script>
+//Line Number Script
+//(C) 2010-2013 Rich Marino. All Rights Reserved.
+onload=function()
+{
+  //make the getElementsByClassName method
+  if (document.getElementsByClassName == undefined)
+  {
+    document.getElementsByClassName = function(className)
+    {
+      var hasClassName = new RegExp("(?:^|\\s)" + className + "(?:$|\\s)");
+      var allElements = document.getElementsByTagName("*");
+      var results = [];
+      var element;
+      for( var i = 0; (element = allElements[i]) != null; i++ )
+      {
+        var elementClass = element.className;
+        if (elementClass && elementClass.indexOf(className) != -1 && hasClassName.test(elementClass))
+        {
+          results.push(element);
+        }
+      }
+      return results;
+    }
+  }
+  
+  //now actually take care of the text
+  wrapCodeBlocks('codeblock');
+}
+
+function wrapText(element)
+{
+  var newString = '';
+  var lines = element.innerHTML.split("\n");
+  
+  var lx = ( '' + lines.length ).length;
+  for( var i in lines )
+  {
+    var num = '' + i;
+    while(num.length < lx)
+    {
+      num = ' ' + num;
+    }
+    newString += "<span class=linenum>";
+    newString += num + "</span><span class=popline>" + lines[i] + "</span>\n";
+  }
+  element.innerHTML = newString + '';
+}
+
+function wrapCodeBlocks(type)
+{
+  var codeblocks = document.getElementsByClassName(type);
+  for( var cb in codeblocks )
+  {
+    if( typeof( codeblocks[cb]) == 'object'  ){
+      wrapText( codeblocks[cb] );
+    }
+  }
+}
+
+//End Line Number Script
+</script>
+</head>
+<body>
+<div class="main">
+<!--begin content-->
+<span class="mname">Richard A. Marino</span>
+<h1>EEN316<br/>Lab 3<br>Calculator</h1>
+<h2>Abstract</h2>
+The goal of this project was to implement a calculator algorithmically. The calculator has two 16-bit inputs, a 5-bit opcode input, and a 16-bit output. Depending on the opcode, some operation was performed to generate the output.
+
+The algorithmic method is more efficient to code many things, especially if you would otherwise need to work out the logic. It is much more like software programing than data flow based development.
+
+<h2>VHDL Code</h2>
+<pre class="codeblock codeblock-vhdl">
+<span class="Statement">Library</span> ieee<span class="Special">;</span> 
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_1164<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span> 
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_unsigned<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">entity</span> c16 <span class="Statement">is</span>
+  <span class="Statement">port</span> <span class="Special">(</span>
+    x<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic_vector</span> <span class="Special">(</span><span class="Constant">15</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+    y<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic_vector</span> <span class="Special">(</span><span class="Constant">15</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+    opc<span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic_vector</span> <span class="Special">(</span><span class="Constant">4</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+    outp<span class="Type">:</span> <span class="Statement">out</span> <span class="Type">std_logic_vector</span> <span class="Special">(</span><span class="Constant">15</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">)</span>
+    <span class="Special">);</span>
+<span class="Statement">end</span> <span class="Statement">entity</span><span class="Special">;</span>
+<span class="Statement">architecture</span> behav <span class="Statement">of</span> c16 <span class="Statement">is</span>
+    <span class="Statement">begin</span>
+      <span class="Statement">process</span> <span class="Special">(</span>opc<span class="Special">)</span>
+        <span class="Statement">variable</span> result<span class="Type">:</span> <span class="Type">std_logic_vector</span> <span class="Special">(</span> <span class="Constant">15</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+        <span class="Statement">begin</span>
+          <span class="Statement">case</span> OPC <span class="Statement">is</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;10000&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> y<span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;10001&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> y <span class="Type">+</span> <span class="Constant">1</span><span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;10011&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> x <span class="Type">+</span> y<span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;10100&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> <span class="Type">NOT</span> y<span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;10101&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> <span class="Constant">'0'</span> <span class="Type">-</span> y<span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;10111&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> y <span class="Type">-</span> x<span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;11000&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> y <span class="Type">-</span> <span class="Constant">1</span><span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;11100&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> x <span class="Type">and</span> y<span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;11101&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> x <span class="Type">or</span> y<span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Constant">&quot;11110&quot;</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> x <span class="Type">xor</span> y<span class="Special">;</span>
+            <span class="Statement">when</span> <span class="Statement">OTHERS</span> <span class="Type">=&gt;</span>
+              result <span class="Type">:=</span> <span class="Constant">&quot;ZZZZZZZZZZZZZZZZ&quot;</span><span class="Special">;</span>
+          <span class="Statement">end</span> <span class="Statement">case</span><span class="Special">;</span>
+          outp <span class="Type">&lt;=</span> result <span class="Special">(</span><span class="Constant">15</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+      <span class="Statement">end</span> <span class="Statement">process</span><span class="Special">;</span>
+<span class="Statement">end</span> <span class="Statement">architecture</span><span class="Special">;</span>
+</pre>
+
+<h2>Wave</h2>
+<img style="max-width:500px" 
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8kAAAHUCAIAAACGef2iAAAACXBIWXMAAAsTAAALEwEAmpwYAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXXPues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgABeNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAtAGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dXLh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzABhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/phCJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhMWE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQAkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+IoUspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdpr+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZD5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61MbU2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY/R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllirSKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79up+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6VhlWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lOk06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7RyFDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3IveRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+BZ7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5pDoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5qPNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIsOpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQrAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1dT1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAAM89JREFUeNrs3X2Q1HV+L/pvzwwgDzKDwqDr7kZh0IijZr27pIKucUmpB7ncSErg7jlVZ9mcXHQob+RWHZOY2irGuqmabPwjmDK4UtkE9yR3CyHKLgKLuOriykZW2ZiMjMiAKD7ODDA8DPPU3b/7R880zTwzj909r1f1uj3f6V93f7+f/v3m3V9+D7GKiooAAAAMWVFpaalRGAV1dXUhhA0bNlRWVhqNSx20WCxmNACAbJaasC4wEKOmqqrKIAxu0KIaIwEA5EBuka0BAGB4yNYAACBbAwCAbD08Shc9XFlZubI83VC+srLy4UWOzQQAQLa+dA01NbPu6kjTpYvumtXQoKQAAIyRohx///XvHpx1V3npK6/UlX/rzvqDe2fN78jZD6+5c2YIITTs3fDUK3VdG0JvP3Y+PmOBzrb+nrPOpwkAQLbOaXWvvFZf+a3y6vq7Zu197tWwYn4IoXzlmlmvVVZWp0L2ikXVz4UVd9ZvrXyqOoTylStLSxfdlfljCNWvPFX5SgghhPKVld8qf2VzWLmm8xGlix5eMYDnDEG2BgCQrXNd9bs1Dzyw5saarZV1YVEIIZSWzgo3PlBZ+UDHA2pK696tD3c+ULkyVG6u3rw5hPKbLvqxyyx1fWlpmNWw97nqjBfp/zkBAJCt8yBcv7r3rhtnvVsdQvowxm47aVRXVqeOdXwg1Gyt3Lw588cN9XetmX9wQ2XHriArQiidNTPUd32Z/p6z2qcJAGB8y4tz8NW98lRmtK2rq59557fKMx5QumjlotIQqjdXbtjbMKu0/OIfS0NoOFhdF0IIpeXzZ4YQqt+tmTm/PPOEI/0+p7OTAACMe0X52KnqzRtKH17TuQNHw94NT9WFO9dU3tn5U3XpysrMH+vqbur4uaGmpiH1DFs7m0IIDXv7f057WwMAjHuxdevWGYW+lK+svOndoe/xUVdXV1VVVVxcXFlZaVAvddDCe7HYjcYDAMheFRUVVVVVRQait0T9QEeYq9laaVdqAAD6J1v3rHqzQA0AwKUpMAQAACBbAwBAFimqq3OGi1FlwAdhzd9VVFQYBgAg67N1CKGqqspAjLTHHnssdcdoGzQAIF9zS9GGDRuMxWgqLi42CAYNAMhLvZ4nxGmYR4iBHYRYLJZnPVq3bt3jjz+uU3qkU3qkU3qkU3nTo9QOrI5lJAdENcYAAMgBsjUAAAyPXvcJGfb58zuW7/rllsXjdqDT57nIv38/GoVBAwDI7Ww9vCq3Nr+8+bVxHq8ZtKXLtm+P8q1T2yu351mP3qp8a3u0XZmUSZmUaZxUSplypUx5mK0rtzan7w80Xi+oOvCD8NBtj+0f3EsOcXGybT1/YemLYfvS2NK86VH+HSyS/gOjTMqkTMo0HiqlTDnUo1F+xUvY33rny/t3v/r2tp+9vvOVN7ft3rtt994tL/78+Rdf2/jD5wcYrNPxuv9svOzesPuFXpLxqi0HqhZk/NTY2NjY2JjZ1ufiWeXivvTf0tnbxi2r+lkKAIDRNtBsvefVvYv/4Bv33HXbH957x+JvLfjDe775h/d884Eli5Yt+f3/64+X/XDzrn6Ddf2V3xx4vJ5f1nM2XlB1oLFx/d2ZwXp9WFtSUlJSkjlJ3dviWaVrXwbQsmpLR2/veXru+s503X2p/LN0Weak9eqdh9cvTN+PUnauHlILw+DrlV8f1jJ1fx5GtEwDabE25USZBlI4snBtstEbZ9k6Svb12zNnm/oO1j9+OXEp8XrVkruPHNofMqZpO+Zp9z92W8k9Tx+98Li5T9+zfFNviy+oOpC59IKqAwe2bDnQZeK360uMmi59GUDLqiV379mxKYQQ9r+w++jcGxb0slQeW7j+cBQ9s/jCFuiZ8GAsFovd/uS8Z3auHnQLw/D9J+NfRYelTN2fhxEt00BarE05UaaBFI4sXJts9MZfto4KM3/MvJZHPJFsaWntN1inDChed2TIBVUHOielS0q6J+gQVi25e07FS92Sccfiq7a8VHGkyyzvnLm1D5WUlJSUrN1z9/otq/p/iWy1/9CROWXzx9/ndd/aebHbn6zt3DTdv3jXto0hhLDvuR218+YvHGQLWVim7s/DiJZpIC3Wppwo00AKRxauTTZ64y9bJxNdL4wXTyRb2xJNze3nm+MtbfHMX92xfNfLm19L3TKDdTpenzl0MnW75ZZ/6T1aL7s3PP1EP3l3T0cwzthJonPxG+Ye7Vh8/wu7j969ZFUI4WjnriKbduwJc29YNZCXICc2bAcPl11fPvQWsrBM5GgpyYnCoSiMWbbu3CckFoulJq0nFBVeNqnobFP7+Zb4d//o949l+OcnbkwvOOvE612eatK+n6Tv/8d//LduL7XghrlHaw9eYj8u7CQxqMVzzvjoJQBAfmbrRDKkZqlPn209cbolhPBZfdPxz8+2tieaWuLP/nTftRfLPNFeZrzuL1hnnONj/wu7Q8Wjq/p4U5t27Ln7T1Onx1iw7N45qX2s04sfOjKnY/EFy+6d07GjcqdVS+4+uvuFTf2+RFbZtGNPavr9QnfpsHD+vNr3q4feQhaWiRwtJTlROBSFscrW8SjZ1BI/n7o1t4cQOn5sjjedb29vjXdfpHu87j9YX3T6vP2PPfT03PUX7U69oOpA40sVc+ZUvNTYuGVV2LT8nt33vtTY2Nj40r2771m+6aLFNy2/p2PxlyqOrE3tTJ3ePXt9WHvbY/t7eolR06UvA2nZtHxt6NKjnpYaNzZu27X4/tUhhLBwxZKywwf3DbKFYdD7BRQUJSfKNFxrHGNepoEUjixcm8gjUS+6POxft79+/POzxz49U3v89KFjp9451PDOoYY3//OLX7z96Uu/Ov6X39/U2/PfsXxX6nbLLf+SvvXxflZtGVJA7GvxBVUHxu4k0BUVFY2Njd0HloEMWlTTsRVbuP5w+iPacZaC3DwH3+ifyn4U/sysW7duWMvU/XmUaUTLNJAWa1NOlGkghVOpLFybxn6jl5cr1Gj2KJVbBnpdxs8aGs+3xBOJqD2ebGlLtLQlWjv/m0xGxbFeT9H3yy2Lu5wPpLcZ61Q2XnL3nh3LBx+th7Y42W7f2nmxtRd99b8vtrHLZMCgWsjCMnV/Hka0TANpsTblRJkGUjiycG2y0csTA83WD3936bf/5C8SiURbMgohRKEgmUyGgtiEgtjv3lz+53/2x30smxmv+wzWIYRNy0s2DaE7fS6+/7HbblPxnLR02fYHa4b930nHes6jcnteFkuZlEmZlGlcVUqZstxblW+N9ksOcJ+Qoet7V5C8Z5+QoQxaVJNvXcu/f3QL/iVRp/RIp3z2dGp89yiVWwpG7fX6m7EGAIDcVjSuvo2Nobq6OgM76EEDAMjtbP34448P7yvdsXxX5ln5xpuKiooRGtjxMGgAALmdrYdX5dbmlze/Ns7jNYO2dNn27Xm3p3r+HdPzVuVbjulRJmVSpvFTKWXKlTLlYbau3Nqcvj/QeL2g6sAPwkO3PTbISw8OcXGybT1/YemLYfvS2NK86dG6devy7F8w0n9glEmZlEmZxkOllCmHejTKr3gJxzLufHn/7lff3vaz13e+8ua23Xu37d675cWfP//iaxt/+PwAg3U6XvefjS9cXrG7VVsyLwGzakvqqoqZbX0u3i2Fj80FZTrf94Vr3eRiS08VGc4WAICcMsBz8O15dW/Uux9u3tVbsE7fbnjoXPoajf3G695C1oKqAxfl6FVberzO9yVktNHK1l3OwZe+fuSCqgOpe7nY0kNFhq8lc9D+999OTQ8M11UYs62ls/3w+oXD0DJmUzidszj5U5R167ZkDG+uXgQ0r8s0uPVLmcamBAfrf7HwEopio5eFZcq9v01hLM7BN9Bs/dLP+8rWf/sPW/sN1qnbwOJ1OsWlJ0ozEnRGGu4lQ3cu3pHXOpfOjNEd9y884sCWLQcObNlyoOeJ2eHO1hmXZu94J7nY0vv3k2Fq6ZKtV+/MuHJs5xVjc7Rl3bp16ZaQvs5txpZocC1j/pcmb8rUfXiH8ZmVaeTWpuEqpTKNyNqUEdr6LYqNXhaWKUf/NmXv+a2jqDDzx1gslr4fTyRbWlq7B+v0/R+/nEjfr7/ym+n7vcbrVUvu3rNjU1hQdWB9WFuSsnxTj4+bU/FStzTcsfiqLS9VHFlbUlJScs/Tc9f3HJb3P/bQ00ePPn1PScltT9SGOXNrHyopKSkpWbvn7vXDnq57sf/QkTll83O9ZTSsvn/xrm0bQwhh33M7aufNX5gnLSGkrnN7+5O1Gb0dXEsWyKuiVG7YWzvM/VKmMV+/lGnMStDQ6+Zr8BtGZRrFMuX036ZRNdBsnUzEurTEE8nWtkRTc/v55nhLWzzzV3cs3/Xy5tdSt8xgnY7XZw6dTN16vFhjZ7Redm94+olNfb+vPR3ZOyM+dy5+w9yjHYvvf2H30buX9J+Vj3buo71px54w9wZ7/matfQcPl11fnn8typQTRcmzcufr2jRcpVSmUf7M5/SG0V8iLi1bJy/MWKcmrScUFV42qehsU/v5lvh3/+j3j2X45yduTC8468TrXZ5q0r6fpO/3dLHGBTfMPVp78FJnf1/YfTSVhge1+Bjq/n5zsQUAgIFn60QypGapT59tPXG6JYTwWX3T8c/PtrYnmlriz/5037UXyzzRXma87i9YZ5zjY/8Lu0PFo6v6eFObduy5+09TO+guWHbvnCOH9mcufujInI7FFyy7d86eHZtCCJ17MixYdu+c9NN0371h1ZK7jw7wPCODs2nHno6J9M43nostY2fh/Hm171fnX0ueydei5Fm583VtGq5SKtMof+ZzesPoLxEpAzyW8fkXf3nidEvdyfOpSB1CqD1++tCxUwePnHznUMP3nvhRj0+eeeTiDQ+du+WWf0nfens/Fx3PduFQw4wzVDR2OT7xolPw9bJ4x+4iFx69ZUvGAZGdLY2NjSN1KGPX84TkzTn4ulVk2FrCeDqWseMRXY78GFzLGEkfMp83h/WEENb9/S8O59exjHlWpgEey9hlTVGmMVmbwsL19V1OQNFnUWz0srBMufi3KWTzeUL+dfvrxz8/e+zTM6lI/c6hhncONbz5n1/84u1PX/rV8b/8/qbeXiadrQcSrMNFZ9AYjMEvPsIn4+uWrbmEQYtqUodj5+05wjqOqs5oHVzL2P6ZWbduXR6Vqfvw5sk5+PKrTCNXSmUa5U3cIDeMypSFf4myqkxZna2f+qft6VnqdKT+6S+ObdlzZPPu2u//zT/28UpdsvUIZeOhLi5b50C2zh+jf5moUfwzo0zKpEzKlP+VUiY96i23DPSa5w9/d+m3/+QvEolEWzIKIUShIJlMhoLYhILY795c/ud/9sd9LPvLLYvTp9vreR/rCzYtL9k0hE4NYfH9j912mzSbpZYu2/5g3sXr7ZXb87JYyqRMyqRM46pSypTl3qp8a7RfcoDz1kPX34x1njNvPZRBi2ryrWv5NzEQzHbolB7plM+eTo3vHl3atWOGrr8ZawAAyG1F4+rb2Biqq6szsIMeNACA3M7Wjz/++PC+0h3Ld2We9Hq8qaioGKGBHQ+DBgCQ29l6eFVubX5582vjPF4zaEuXbd+eX3uqv1X5Vv4d/pJ/nVImPdIpnVKmPOhRHmbryq3N6fsDjdcLqg78IDx022ODvPjfEBcny2x/YemLYfvS2NI86U7nZitvepSXnVImPdIpnVKmPDD6++JewrGMO1/ev/vVt7f97PWdr7y5bffebbv3bnnx58+/+NrGHz4/wGCdjtf9Z+POK5f3ZNWWzBNRd14rMLOtz8WzxKhePbGHcRu9lqG8ZwCAnDLAc/DteXVv1Lsfbt7VW7BO32546FzmJdD7C549X8el48rY6V+u2tJjGutt8THU5Rx86YvcLKg6kLo3ci09jNsotgz6PYdu1zzPietaDXBioHNuYKTfyeqdXa86O7iWLOmUMilTlvRImS75cnv5VyllypUVKnuvy/jSz/vK1n/7D1v7Ddap28DidTprpaczMxJXxgUUe8nQqcVXbUkHvAVVBxrHOG1fnK0zrh/Z0Z2Ra+lh3EaxZUjvuUu2Xr0z43qqnRfJzaqWS9p+jfQ76bjqbMZmaHAt2dMpZVKmLOmRMg2iTHlZKWXKiTJl7/mto6gw88dYLJa+H08kW1pauwfr9P0fv5xI36+/8pvp+73G61VL7t6zY1NYUHVgfVhbkrJ8U4+Pm1PxUrfw3bH4puX3PB0qHl0VFlT94N7d92Trztf7Dx2ZUzZ/dFpysacZ31bvX7xr28YQQtj33I7aefMXZl3LpRrZd7Jv7bzY7U/WZrze4FqyplPKpExZ0iNlGnSZ8rJSypQrK9ToGWi2TiZiXVriiWRrW6Kpuf18c7ylLZ75qzuW73p582upW2awTsfrM4dOpm49XqyxM1ovuzc8/cSmvt/Xno7sfc/Tc9d3pOuOxUMI+x976Om56xtfunf3Q45qzCv7Dh4uu748m1uyp0fKpEzKlAeFy78y5WWllCl3t4Rjk62TF2asU5PWE4oKL5tUdLap/XxL/Lt/9PvHMvzzEzemF5x14vUuTzVp30/S93u6WOOCG+YerT14qXOiL+w+OveGBV0X33/oSLZXoHt3R64lF3sKAJB/2TqRDKlZ6tNnW0+cbgkhfFbfdPzzs63tiaaW+LM/3XftxTJPtJcZr/sL1hnn+Nj/wu5Q8eiqPt7Uph177v7Tjj2ql90758ih/V1OEbJqy/qwtmTtkYofZNmhjZt27Ll7yarMNz5yLbnY0/4snD+v9v3qbG65VNnzToaRMilTnpVpDAuXf2XKy0opU+5uCYfXAI9lfP7FX5443VJ38nwqUocQao+fPnTs1MEjJ9851PC9J37U45NnHrl4w0PnbrnlX9K33t7PRQezdZxy4sLu1BkNqZZ0w4WjFjNOUNG5E3YvpxMZTV3OEzLK5+DrNm6j2TL4c/Dl3rGMXQ/N6Ol+xoHYI37kysL1h7sc9nGpLQPr0eh0SpmUaUzKNGyFG8dlystKKVOurFDZe56Qf93++vHPzx779EwqUr9zqOGdQw1v/ucXv3j705d+dfwvv7+pt5dJZ+uBBOtw0XklBmOIi49ituYSBi2qSR25nPXnORrwFnndunUj3KPOQ6ozWgfTcilb5JHvlDIp05iUaZgKN47LlJeVUqZcWaGyN1s/9U/b07PU6Uj9018c27LnyObdtd//m3/s45W6ZOuRzMZZG61l62HJ1nkiY+MVdEqPdEqPdEqPdGrkjH62Hug1zx/+7tJv/8lfJBKJtmQUQohCQTKZDAWxCQWx3725/M//7I/7WPaXWxanT7fX8z7WF2xaXrJpCJ0a4uJkqaXLtj+YX/E6vRXLv2Ipk07pkU757OlU9nir8q3RfskBzlsPXX8z1nnOvPVQBi2qybeujebXaJ3SI2XSKZ3SI2UatdxSMGqv19+MNQAA5LaicfVtbAzV1dUZ2EEPGgBAbmfrxx9/fHhf6Y7luzJPej3eVFRUjNDAjodBAwDI7Ww9vCq3Nr+8+bVxHq8ZtKXLtm/Prz3V36p8K/8Of8m/TimTHumUTilTHvQoD7N15dbm9P2BxusFVQd+EB667bFBXlZwiIuTZba/sPTFsH1pbGmedKdzs5U3PcrLTimTHumUTilTHhj9fXEv4VjGnS/v3/3q29t+9vrOV97ctnvvtt17t7z48+dffG3jD58fYLBOx+v+s3Hmlcu7WrXlQMYlzDuv6JfZ1ufiWeXivgymZTSv7zjQ6ykOR78AAHLQAM/Bt+fVvVHvfrh5V2/BOn274aFzmZdAv9TI2RGaU9fTTv+yl4uZZ2FG634Ovq59GVRL+mI5C6oOpK8wPoYtw9WvLoOWuuZ5Dlz7asATAxf/i9vqnV0u63rJLWPco4s7pUzKpEzKlP+VUqZcWaGy97qML/28r2z9t/+wtd9gnboNLF6nM1t6WjQjQS+oOnAhWfaYoVOLZ+a9VVsaxzht93x+64y+DKol4zqUHY1j2zJc/eo5W6/emXHh052rs7DlkrZfqTsdF3HN2DANoiUbepTulDIpkzIp0ziplDLlRJmy9/zWUVSY+WMsFkvfjyeSLS2t3YN1+v6PX06k79df+c30/V7j9aold+/ZsSksqDqwPqwtSVm+qcfHzal4qVv47lh8/2N/t+fuJas6W/4uz3e+3n/oyJyy+dnTMvxW379417aNIYSw77kdtfPmL8y6lsHYt3Ze7PYna4fUklU9UiZlUiZlGleVUqZcWaFGz0CzdTIR69ISTyRb2xJNze3nm+MtbfHMX92xfNfLm19L3TKDdTpenzl0MnXr8WKNndF62b3h6Sc29f2+9nRk73uenru+I113LB5C2LQjFa4vtJAf9h08XHZ9eTa35N/IKJMyKZMyZWGZsqpTypQrK1S2ZOvkhRnr1KT1hKLCyyYVnW1qP98S/+4f/f6xDP/8xI3pBWedeL3LU03a95P0/Z4u1rjghrlHaw9e6qztC7uPzr1hQZfFU+F6fETr7sM2ti0AAOPPQLN1IhlSs9Snz7aeON0SQvisvun452db2xNNLfFnf7rv2otlnmgvM173F6wzzvGx/4XdoeLRVX28qU079tz9p6kddBcsu3fOkUP7u54iZNMTT89dv35uv9PfuapzZv7CAIxty2hZOH9e7fvV2dwyVrKqR8qkTMqkTOOqUsqUKyvUSBvgsYzPv/jLE6db6k6eT0XqEELt8dOHjp06eOTkO4cavvfEj3p88swjF2946Nwtt/xL+tbb+7noeLaOk0dc2J06oyHVkm7oWKjb4XDdj5gbG72eJ6Sv3g2kJevOwTdM/bpo0HLmWMbMgyx6u9/9QOyF6w93Ocj6ElvGvEeZnVImZVImZeqjU3lTKWXKlRUqe88T8q/bXz/++dljn55JRep3DjW8c6jhzf/84hdvf/rSr47/5fd7nRdOZ+uBBOtw0ZkvBqPr4mN/gpBeszUDH7SoJnXkctaf52jAW+R169altl8dh1RnPMugWsa4Rxd3SpmUSZmUqY9O5UmllClXVqjszdZP/dP29Cx1OlL/9BfHtuw5snl37ff/5h/7eKUu2fqSsvHQo/VQnk62zrJsnScyN146pUc6pUc6pUc6NXJGP1sP9JrnD3936bf/5C8SiURbMgohRKEgmUyGgtiEgtjv3lz+53/2x30s+8sti9On2+t5H+sLNi0v2TSETnVdfIhPR5ZYumz7g/kVr9NbsfwrljLplB7plM+eTmWPtyrfGu2XHOC89dD1N2Od58xbD2XQopp869pofo3WKT1SJp3SKT1SplHLLQWj9nr9zVgDAEBuKxpX38bGUF1dnYEd9KABAOSEAkMAAACyNQAAyNYAACBbAwAAsjUAAMjWAAAgWwMAgGwNAADI1gAAIFsDAIBsDQAAsjUAACBbAwCAbA0AALI1AAAgWwMAgGwNAACyNQAAyNYAAIBsDQAAsjUAAMjWAAAgWwMAALI1AADI1gAAIFsDAACyNQAAyNYAACBbAwCAbA0AAMjWAAAgWwMAgGwNAACyNQAAIFsDAIBsDQAAsjUAACBbAwCAbA0AALI1AADI1gAAgGwNAACyNQAAyNYAACBbAwAAsjUAAMjWAAAgWwMAALI1AADI1gAAIFsDAIBsDQAAyNYAACBbAwCAbA0AALI1AAAgWwMAgGwNAACyNQAAIFsDAIBsDQAAsjUAAMjWAACAbA0AALI1AADI1gAAIFsDAACyNQAAyNYAACBbAwCAbA0AAMjWAAAgWwMAgGwNAADI1gAAIFsDAIBsDQAAsjUAACBbAwCAbA0AALI1AADI1gAAgGwNAACyNQAAyNYAAIBsDQAAsjUAAMjWAAAgWwMAALI1AADI1gAAIFsDAIBsDQAAyNYAACBbAwCAbA0AAMjWAAAgWwMAgGwNAACyNQAAIFsDAIBsDQAAsjUAAMjWAACAbA0AALI1AADI1gAAgGwNAACyNQAAyNYAACBbAwAAsjUAAMjWAAAgWwMAgGwNAADI1gAAIFsDAIBsDQAAyNYAACBbAwCAbA0AALI1AAAgWwMAgGwNAACyNQAAyNYAAIBsDQAAsjUAAMjWAAAgWxsCAACQrQEAQLYGAADZGgAAkK0BAEC2BgAA2RoAAGRrAABAtgYAANkaAABkawAAkK0BAADZGgAAZGsAAJCtAQAA2RoAAGRrAACQrQEAQLYGAABkawAAkK0BAEC2BgAA2RoAAJCtAQBAtgYAANkaAACQrQEAQLYGAADZGgAAZGsAAEC2BgAA2RoAAGRrAACQrQEAANkaAABkawAAkK0BAADZGgAAZGsAAJCtAQBAtgYAAGRrAACQrQEAQLYGAADZGgAAkK0BAEC2BgAA2RoAAJCtAQBAtgYAANkaAABkawAAQLYGAADZGgAAZGsAAJCtAQAA2RoAAGRrAACQrQEAANkaAABkawAAkK0BAEC2BgAAZGsAAJCtAQBAtgYAANkaAACQrQEAQLYGAADZGgAAZGsAAEC2BgAA2RoAAGRrAABAtgYAANkaAABkawAAkK0BAADZGgAAZGsAAJCtAQBAtgYAAGRrAACQrQEAQLYGAABkawAAkK0BAEC2BgAA2RoAAJCtAQBAtgYAANkaAABkawAAQLYGAADZGgAAZGsAAEC2BgAA2RoAAGRrAACQrQEAANkaAABkawAAkK0BAEC2BgAAZGsAAJCtAQBAtgYAAGRrAACQrQEAQLYGAADZGgAAkK0BAEC2BgAA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"/>
+
+<h2>DO Script</h2>
+<pre class="codeblock codeblock-tcl">
+<span class="Comment">#opc 10000: output = y</span>
+
+force -freeze opc <span class="Constant">10000</span> <span class="Constant">0</span>
+force -freeze x <span class="Constant">0000000000000000</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">0000000000001111</span> <span class="Constant">0</span>
+run
+
+force -freeze x <span class="Constant">0000011111100000</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">1111000000001111</span> <span class="Constant">0</span>
+run
+
+<span class="Comment">#opc 10001: outp = y + 1</span>
+force -freeze opc <span class="Constant">10001</span> <span class="Constant">1</span>
+force -freeze x <span class="Constant">0000000000000000</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">0000000000001111</span> <span class="Constant">0</span>
+run
+
+force -freeze x <span class="Constant">0000011111100000</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">1111000000001111</span> <span class="Constant">0</span>
+run
+
+<span class="Comment">#opc 11100: outp = x and y</span>
+force -freeze opc <span class="Constant">11100</span> <span class="Constant">0</span>
+force -freeze x <span class="Constant">0000000000000111</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">0000000000011100</span> <span class="Constant">0</span>
+run
+
+force -freeze x <span class="Constant">0000001111111000</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">1111000000001111</span> <span class="Constant">0</span>
+run
+
+
+<span class="Comment">#opc 11110: outp = x xor y</span>
+force -freeze opc <span class="Constant">11110</span> <span class="Constant">0</span>
+force -freeze x <span class="Constant">0000000000000111</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">0000000000011100</span> <span class="Constant">0</span>
+run
+
+force -freeze x <span class="Constant">0000001111111000</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">1111000000001111</span> <span class="Constant">0</span>
+run
+
+<span class="Comment">#opc 11110: outp = x or y</span>
+force -freeze opc <span class="Constant">11101</span> <span class="Constant">0</span>
+force -freeze x <span class="Constant">0000000000000111</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">0000000000011100</span> <span class="Constant">0</span>
+run
+
+force -freeze x <span class="Constant">0000001111111000</span> <span class="Constant">0</span>
+force -freeze y <span class="Constant">1111000000001111</span> <span class="Constant">0</span>
+run
+</pre>
+
+<h2>Verilog Implementation</h2>
+<pre class="codeblock codeblock-v">
+<span class="PreProc">`timescale</span> 1ns <span class="Special">/</span> 1ps
+
+<span class="Statement">module</span> c16_verilog<span class="Special">(</span>
+  <span class="Statement">input</span> <span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> va<span class="Special">,</span>
+  <span class="Statement">input</span> <span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> vb<span class="Special">,</span>
+  <span class="Statement">input</span> <span class="Special">[</span><span class="Constant">5</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> opc<span class="Special">,</span>
+  <span class="Statement">output</span> <span class="Statement">reg</span> <span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> outp
+<span class="Special">);</span>
+
+<span class="Statement">always</span>
+<span class="Statement">begin</span>
+  <span class="Statement">case</span> <span class="Special">(</span>opc<span class="Special">)</span> <span class="Comment">//x is vb; y is va.</span>
+    <span class="Constant">5'b10000</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> va<span class="Special">;</span>
+    <span class="Constant">5'b10001</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> va <span class="Special">+</span> <span class="Constant">1</span><span class="Special">;</span>
+    <span class="Constant">5'b10011</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> va <span class="Special">+</span> vb<span class="Special">;</span>
+    <span class="Constant">5'b10100</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> <span class="Special">~</span>va<span class="Special">;</span>
+    <span class="Constant">5'b10101</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> <span class="Constant">16'h00</span> <span class="Special">-</span> va<span class="Special">;</span>
+    <span class="Constant">5'b10111</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> va <span class="Special">-</span> vb<span class="Special">;</span>
+    <span class="Constant">5'b11000</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> va <span class="Special">-</span> <span class="Constant">1</span><span class="Special">;</span>
+    <span class="Constant">5'b11100</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> vb <span class="Special">&amp;</span> va<span class="Special">;</span>
+    <span class="Constant">5'b11101</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> vb <span class="Special">|</span> va<span class="Special">;</span>
+    <span class="Constant">5'b11110</span> <span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> vb <span class="Special">^</span> va<span class="Special">;</span>
+    <span class="Statement">default</span><span class="Special">:</span> outp<span class="Special">[</span><span class="Constant">15</span><span class="Special">:</span><span class="Constant">0</span><span class="Special">]</span> <span class="Special">&lt;=</span> <span class="Constant">16'h00</span><span class="Special">;</span>
+  <span class="Statement">endcase</span>
+<span class="Statement">end</span>
+<span class="Statement">endmodule</span>
+</pre>
+<!--end content-->
+</div>
+
+<script>
+</script>
+</body>
+</html>
+

@@ -1,0 +1,406 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  //list of interesting legal words http://kuancheen.blogspot.com/2005/07/legal-and-formal-adverbs.html
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+body ol li
+{
+  padding: 2px;
+}
+body ol li:first-child p
+{
+  margin-top: 0px;
+}
+body ol li:last-child p
+{
+  margin-bottom: 0px;
+}
+table
+{
+  border-collapse:collapse;
+}
+tr:first-child th, tr:first-child td
+{
+  border-bottom: 1px solid #000;
+  font-weight: normal;
+  padding-top: 8px;
+}
+tr:last-child td, tr:last-child th
+{
+  border-bottom: 1px solid #000;
+}
+td, th
+{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:1px;
+}
+/*
+  Use the lt class for a table that needs to be compact.
+  Its not nice to look at, but saves paper.
+*/
+.lt tr td, .lt tr th
+{
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left:2px;
+  padding-right: 2px;
+}
+.mname
+{
+  
+}
+
+/*VIM syntax*/
+/*codeblock-vhdl: VHDL*/
+.codeblock-vhdl .Constant { /*color: #ff6060;*/ color: #f00; }
+.codeblock-vhdl .Special { color: #ff8500; }
+.codeblock-vhdl .Statement { /*color: #eaea00;*/ color: #04b;}
+.codeblock-vhdl .Type { color: #60d060; }
+
+/*codeblock-tcl: Tcl/TK */
+.codeblock-tcl .Constant { color: #f00; }
+.codeblock-tcl .Comment { color: #80a0ff; }
+
+/*codeblock-v: Verilog*/
+.codeblock-v .Constant { color: #f00; }
+.codeblock-v .Special { color: #ff8500; }
+.codeblock-v .PreProc { color: #ff80ff; }
+.codeblock-v .Statement { color: #04b; }
+.codeblock-v .Comment { color: #90b0ff; }
+
+/*codeblock-c: C*/
+.codeblock-c .Constant { color: #f00; }
+.codeblock-c .PreProc { color: #ff80ff; }
+.codeblock-c .Statement { color: #04b; }
+.codeblock-c .Comment { color: #90b0ff; }
+
+/*codeblock-php: PHP/HTML*/
+.codeblock-php .Title { color: #ff00ff; font-weight: bold; }
+.codeblock-php .htmlUnderline { text-decoration: underline; }
+.codeblock-php .htmlItalic { font-style: italic; }
+.codeblock-php .Constant { color: #f00; }
+.codeblock-php .Identifier { color: #40ffff; }
+.codeblock-php .PreProc { color: #ff80ff; }
+.codeblock-php .htmlBoldItalic { font-weight: bold; font-style: italic; }
+.codeblock-php .Statement { color: #04b; }
+.codeblock-php .htmlBold { font-weight: bold; }
+.codeblock-php .Special { color: #ff8500; }
+.codeblock-php .Comment { color: #90b0ff; }
+.codeblock-php .Type { color: #60d060; }
+
+.codeblock
+{
+white-space: pre-wrap; font-family: monospace; color: #000; background-color: #fff;
+font-size: 10px;
+counter-reset: lss;
+border: 1px solid #000;
+}
+.popline { counter-increment:lss; }
+/*
+this cannot be used due to too many sections.
+.codeblock .popline:before {content: counters(lss, ".", decimal-leading-zero) ""; color: #f00; font-size:10px; background-color: #fff; border-right: 1px solid #600; font-weight: bold;} 
+*/
+.linenum
+{
+  color: #f00;
+  border-right: 1px solid #600;
+}
+/*end VIM Syntax*/
+</style>
+<script>
+//Line Number Script
+//(C) 2010-2013 Rich Marino. All Rights Reserved.
+onload=function()
+{
+  //make the getElementsByClassName method
+  if (document.getElementsByClassName == undefined)
+  {
+    document.getElementsByClassName = function(className)
+    {
+      var hasClassName = new RegExp("(?:^|\\s)" + className + "(?:$|\\s)");
+      var allElements = document.getElementsByTagName("*");
+      var results = [];
+      var element;
+      for( var i = 0; (element = allElements[i]) != null; i++ )
+      {
+        var elementClass = element.className;
+        if (elementClass && elementClass.indexOf(className) != -1 && hasClassName.test(elementClass))
+        {
+          results.push(element);
+        }
+      }
+      return results;
+    }
+  }
+  
+  //now actually take care of the text
+  wrapCodeBlocks('codeblock');
+}
+
+function wrapText(element)
+{
+  var newString = '';
+  var lines = element.innerHTML.split("\n");
+  
+  var lx = ('' + lines.length ).length;
+  var mxl = 60;
+  for( var i in lines )
+  {
+    var num = '' + i;
+    while(num.length < lx)
+    {
+      num = ' ' + num;
+    }
+    newString += "<span class=linenum>";
+    newString += num + "</span><span class=popline>";
+    /*
+    //uncomment this if you want to put a mark at the character specified by mxl above.
+    if( lines[i].length > mxl )
+    {
+      newString += lines[i].substring(0,mxl) + "<span style='border-right: 1px solid #f00;'></span>";
+      newString += lines[i].substring(mxl);
+    }
+    else
+    {
+      newString += lines[i];
+    }
+    */
+    newString += lines[i];
+    newString += "</span>\n";
+  }
+  element.innerHTML = newString + '';
+}
+
+function wrapCodeBlocks(type)
+{
+  var codeblocks = document.getElementsByClassName(type);
+  for( var cb in codeblocks )
+  {
+    if( typeof( codeblocks[cb]) == 'object'  ){
+      wrapText( codeblocks[cb] );
+    }
+  }
+}
+</script>
+
+</head>
+<body>
+<div class="main">
+<!--begin content-->
+<span class="mname">Richard A. Marino</span>
+<h1>EEN316<br/>Maruika Wei, Rich Marino, Brian Hasenstab</h1>
+<h2>Final Project: Calculator</h2>
+<h3>Abstract</h3>
+<p>The project consists of a calculator with the capability of storing many numbers at once. It can also be provided as an IP core for use in other projects, if desired.</p>
+<h3>Design</h3>
+<h4>Registers</h4>
+<p>Registers will be implemented as an array of general purpose memory, R0 through R8. There will be no restrictions on which registers may be used for what purpose, the architecture is very open.</p>
+<p>When specifying an OpCode, at least one register will be specified (depending on the instruction). The first register will be where the result is stored. A <tt>MOV</tt> instruction is also available, which copies between the registers.</p>
+<!--<tr><td>Register</td><td>ID</td><td>Description</td></tr>
+<tr><td>Accumulator</td><td>00</td><td>Output register. Its the destination of operations. E.g. A + B would be stored here.</td></tr>
+<tr><td>A</td><td>01</td><td>General Purpose</td></tr>
+<tr><td>B</td><td>10</td><td>General Purpose</td></tr>
+<tr><td>C</td><td>11</td><td>General Purpose</td></tr>-->
+
+</table>
+<h4>OpCode List</h4>
+<table>
+Instructions have 4-bit OPCode, either:
+<ul>
+<li>3-bit A and 3-bit B inputs.</li>
+<li>A 3-bit destination and An 8-bit <!--unsigned--> number</li>
+</ul><tr><td>Instruction</td><td>OpCode</td><td>Description</td></tr>
+<tr><td>0000</td><td> MOV</td><td> <ul>
+  <li>Move contents of B into A.</li>
+  <li>0000 00 00 is MOV A A, to prevent a glitch</li>
+  <li>To clear a register, use XOR A A.</li>
+</ul>
+</td></tr>
+<tr><td>0001</td><td> LD</td><td> Load into a register from switches. So, 0001 01 would load into register 1 </td></tr>
+<tr><td>0010</td><td> ADD</td><td> D = A + B</td></tr>
+<tr><td>0011</td><td> SUB</td><td> D = A - B</td></tr>
+<tr><td>0100</td><td> MULT</td><td> D = A * B</td></tr>
+<!--<tr><td>0101</td><td> DIV</td><td> D = A / B</td></tr>-->
+<tr><td>0110</td><td> EXP</td><td> D = A POW B</td></tr>
+<tr><td>0111</td><td> SQ</td><td> D = A * A (ignores B)</td></tr>
+<!--<tr><td>1000</td><td> SQRT</td><td> D = SQRT A (ignores B)</td></tr>-->
+<!--<tr><td>1000</td><td> Reserved</td><td> Reserved.</td></tr>-->
+<!--<tr><td>1001</td><td> RS</td><td> D = A &gt;&gt; 1 (ignores B)</td></tr>-->
+<!--<tr><td>1010</td><td> LS</td><td> D = A &lt;&lt; 1 (ignores B)</td></tr>-->
+<tr><td>1011</td><td> ACC</td><td> D = A + 1</td></tr>
+<tr><td>1100</td><td> DEC</td><td> D = A - 1 </td></tr>
+<!--<tr><td>1101</td><td> XOR</td><td> D = A XOR B </td></tr>-->
+<!--<tr><td>1110</td><td> INV</td><td> D = !A </td></tr>-->
+<tr><td>1110</td><td> M16</td><td> D = A * 16 </td></tr>
+<tr><td>1111</td><td> M10</td><td> D = A * 10 </td></tr>
+</table>
+
+<h4>Input</h4>
+<ul>
+<li>18 switches -- left-most will be opcode (4), followed by A and B (3 each). Right-most 8-bits will be numerical input, if applicable.</li>
+<li>Execute button -- this will do whatever operation is specified by the OpCode.</li>
+</ul>
+<h4>Output</h4>
+The 7-segment display shows the contents of the first register (where the result of the operation will be stored). This value is also displayed in 8 green LEDs. The contents of different registers may be viewed by simply changing the value of A. (One does not need to push the execute button to change the display.)
+<h3>Port Map</h3>
+<img alt='port table' height='600px' src='data:image/png;base64,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'>
+<p><tt>WRITE_ENABLE</tt> (the button/clock) is wired to <tt>PIN_G26</tt>.
+
+<h3>Difficulties encountered</h3>
+<p>We encountered some difficulties with certain VHDL functions not being operable in Quartus. These were division and XOR. XOR was particularly important, and was going to be used for an XOR instruction, Invert instruction (XOR 0xFF), and the shifting instructions.</p>
+<p>Some time was also wasted due to a file getting corrupted on a computer, some work was lost.</p>
+<!--end content-->
+<h3>Conclusion</h3>
+<p>In conclusion, a working calculator was produced, but it was lacking some initial features due to difficulties programming. To simplify design, a tightly integrated design was used.</p>
+
+<h3>Code</h3>
+<h4><a href="data:text/x-vhdl;base64,bGlicmFyeSBpZWVlOw0KdXNlIGllZWUuc3RkX2xvZ2ljXzExNjQuYWxsOw0KdXNlIGllZWUuc3RkX2xvZ2ljX2FyaXRoLmFsbDsNCnVzZSBpZWVlLnN0ZF9sb2dpY191bnNpZ25lZC5hbGw7DQoNCmVudGl0eSBwcm9qMSBpcw0KICBwb3J0KA0KICAgIE9QQ09ERSA6IGluIHN0ZF9sb2dpY192ZWN0b3IgKDMgZG93bnRvIDApOw0KICAgIEEgOiBpbiB1bnNpZ25lZCAoMiBkb3dudG8gMCk7DQogICAgQiA6IGluIHVuc2lnbmVkICgyIGRvd250byAwKTsNCiAgICBJTlBJTlMgOiBpbiB1bnNpZ25lZCAoIDcgZG93bnRvIDAgKTsNCiAgICBPVVRQSU5TIDogb3V0IHVuc2lnbmVkICggNyBkb3dudG8gMCApIDsNCiAgICBTRVZFTl9TRUdfTCA6IG91dCB1bnNpZ25lZCAoNiBkb3dudG8gMCApOw0KICAgIFNFVkVOX1NFR19IIDogb3V0IHVuc2lnbmVkICg2IGRvd250byAwICk7DQogICAgV1JJVEVfRU5BQkxFIDogaW4gc3RkX2xvZ2ljDQogICk7DQplbmQgZW50aXR5Ow0KDQphcmNoaXRlY3R1cmUgYmVoYXYgb2YgcHJvajEgaXMNCiAgdHlwZSByYW1fdHlwZSBpcyBhcnJheSAoMCB0byA3KSBvZiB1bnNpZ25lZCAoNyBkb3dudG8gMCk7DQogIHNpZ25hbCB0bXBfcmFtOiByYW1fdHlwZTsNCmJlZ2luDQogIHByb2Nlc3MgKFdSSVRFX0VOQUJMRSkNCiAgYmVnaW4NCiAgICBPVVRQSU5TIDw9IHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKTsNCiAgICBpZihXUklURV9FTkFCTEUnZXZlbnQgQU5EIFdSSVRFX0VOQUJMRSA9ICcxJykgdGhlbg0KICAgICAgaWYoIE9QQ09ERSA9ICIwMDAwIiApIFRIRU4NCiAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpIDw9IHRtcF9yYW0oY29udl9pbnRlZ2VyKEIpKTsNCiAgICAgIGVsc2lmKCBPUENPREUgPSAiMDAwMSIgKSBUSEVODQogICAgICAgIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSA8PSBJTlBJTlM7DQogICAgICBlbHNpZiggT1BDT0RFID0gIjAwMTAiICkgVEhFTg0KICAgICAgICB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgPD0gdG1wX3JhbShjb252X2ludGVnZXIoQSkpICsgdG1wX3JhbShjb252X2ludGVnZXIoQikpOw0KICAgICAgZWxzaWYoIE9QQ09ERSA9ICIwMDExIiApIFRIRU4NCiAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpIDw9IHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSAtIHRtcF9yYW0oY29udl9pbnRlZ2VyKEIpKTsNCiAgICAgIGVsc2lmKCBPUENPREUgPSAiMDEwMCIgKSBUSEVODQogICAgICAgIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSA8PSB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgKiB0bXBfcmFtKGNvbnZfaW50ZWdlcihCKSk7DQogICAgICBlbHNpZiggT1BDT0RFID0gIjAxMTAiICkgVEhFTiAtLVBPVw0KICAgICAgICBpZiggdG1wX3JhbSggY29udl9pbnRlZ2VyKEIpICkgPSAxKSB0aGVuDQogICAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpIDw9IA0KICAgICAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpOw0KICAgICAgICBlbHNpZiggdG1wX3JhbSggY29udl9pbnRlZ2VyKEIpICkgPSAyKSB0aGVuDQogICAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpIDw9IA0KICAgICAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpICogdG1wX3JhbShjb252X2ludGVnZXIoQSkpOw0KICAgICAgICBlbHNpZiggdG1wX3JhbSggY29udl9pbnRlZ2VyKEIpICkgPSAzKSB0aGVuDQogICAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpIDw9IA0KICAgICAgICAgICAgKHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSAqIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKQ0KICAgICAgICAgICAgICogdG1wX3JhbShjb252X2ludGVnZXIoQSkpKTsNCiAgICAgICAgZWxzaWYoIHRtcF9yYW0oIGNvbnZfaW50ZWdlcihCKSApID0gNCkgdGhlbg0KICAgICAgICAgIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSA8PSANCiAgICAgICAgICAgICh0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgKiB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkNCiAgICAgICAgICAgICAqIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSAqIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSk7DQogICAgICAgIGVsc2lmKCB0bXBfcmFtKCBjb252X2ludGVnZXIoQikgKSA9IDUpIHRoZW4NCiAgICAgICAgICB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgPD0gDQogICAgICAgICAgICAodG1wX3JhbShjb252X2ludGVnZXIoQSkpICogdG1wX3JhbShjb252X2ludGVnZXIoQSkpDQogICAgICAgICAgICAgKiB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgKiB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkNCiAgICAgICAgICAgICAqIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSk7DQogICAgICAgIGVsc2lmKCB0bXBfcmFtKCBjb252X2ludGVnZXIoQikgKSA9IDYpIHRoZW4NCiAgICAgICAgICB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgPD0gDQogICAgICAgICAgICAodG1wX3JhbShjb252X2ludGVnZXIoQSkpICogdG1wX3JhbShjb252X2ludGVnZXIoQSkpDQogICAgICAgICAgICAgKiB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgKiB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkNCiAgICAgICAgICAgICAqIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSAqIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSk7ICAgICAgICAgIA0KICAgICAgICBlbmQgaWY7DQogICAgICBlbHNpZiggT1BDT0RFID0gIjAxMTEiICkgVEhFTiAtLVNRDQogICAgICAgIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSA8PSB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgKiB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSk7DQogICAgICBlbHNpZiggT1BDT0RFID0gIjEwMTAiICkgVEhFTiAtLVNMDQogICAgICAgIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSA8PSB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgKDYgZG93bnRvIDApICsgMjsNCiAgICAgIGVsc2lmKCBPUENPREUgPSAiMTAxMSIgKSBUSEVOIC0tQUNDDQogICAgICAgIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSA8PSB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgKyAxOw0KICAgICAgZWxzaWYoIE9QQ09ERSA9ICIxMTAwIiApIFRIRU4gLS1ERUMNCiAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpIDw9IHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSAtIDE7DQogICAgICBlbHNpZiggT1BDT0RFID0gIjExMTAiICkgVEhFTiAtLU0xNg0KICAgICAgICB0bXBfcmFtKGNvbnZfaW50ZWdlcihBKSkgPD0gdG1wX3JhbShjb252X2ludGVnZXIoQSkpICogY29udl91bnNpZ25lZCgxNiwgNyk7DQogICAgICBlbHNpZiggT1BDT0RFID0gIjExMTEiICkgVEhFTiAtLU1URU4NCiAgICAgICAgdG1wX3JhbShjb252X2ludGVnZXIoQSkpIDw9IHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSAqIGNvbnZfdW5zaWduZWQoMTAsIDcpOw0KICAgICAgZW5kIGlmOw0KICAgIGVuZCBpZjsNCiAgICBjYXNlIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSAoMyBkb3dudG8gMCkgaXMNCiAgICAgIFdIRU4gIjAwMDAiID0+IFNFVkVOX1NFR19MIDw9ICIxMDAwMDAwIjsNCiAgICAgIFdIRU4gIjAwMDEiID0+IFNFVkVOX1NFR19MIDw9ICIxMTExMDAxIjsNCiAgICAgIFdIRU4gIjAwMTAiID0+IFNFVkVOX1NFR19MIDw9ICIwMTAwMTAwIjsNCiAgICAgIFdIRU4gIjAwMTEiID0+IFNFVkVOX1NFR19MIDw9ICIwMTEwMDAwIjsNCiAgICAgIFdIRU4gIjAxMDAiID0+IFNFVkVOX1NFR19MIDw9ICIwMDExMDAxIjsNCiAgICAgIFdIRU4gIjAxMDEiID0+IFNFVkVOX1NFR19MIDw9ICIwMDEwMDEwIjsNCiAgICAgIFdIRU4gIjAxMTAiID0+IFNFVkVOX1NFR19MIDw9ICIwMDAwMDEwIjsNCiAgICAgIFdIRU4gIjAxMTEiID0+IFNFVkVOX1NFR19MIDw9ICIxMTExMDAwIjsNCiAgICAgIFdIRU4gIjEwMDAiID0+IFNFVkVOX1NFR19MIDw9ICIwMDAwMDAwIjsNCiAgICAgIFdIRU4gIjEwMDEiID0+IFNFVkVOX1NFR19MIDw9ICIwMDEwMDAwIjsNCiAgICAgIFdIRU4gIjEwMTAiID0+IFNFVkVOX1NFR19MIDw9ICIwMDAxMDAwIjsNCiAgICAgIFdIRU4gIjEwMTEiID0+IFNFVkVOX1NFR19MIDw9ICIwMDAwMDExIjsNCiAgICAgIFdIRU4gIjExMDAiID0+IFNFVkVOX1NFR19MIDw9ICIxMDAwMTEwIjsNCiAgICAgIFdIRU4gIjExMDEiID0+IFNFVkVOX1NFR19MIDw9ICIwMTAwMDAxIjsNCiAgICAgIFdIRU4gIjExMTAiID0+IFNFVkVOX1NFR19MIDw9ICIwMDAwMTEwIjsNCiAgICAgIFdIRU4gIjExMTEiID0+IFNFVkVOX1NFR19MIDw9ICIwMDAxMTEwIjsNCiAgICAgIFdIRU4gT1RIRVJTID0+IFNFVkVOX1NFR19MIDw9ICIwMTExMTExIjsNCiAgICBlbmQgY2FzZTsNCiAgICBjYXNlIHRtcF9yYW0oY29udl9pbnRlZ2VyKEEpKSAoNyBkb3dudG8gNCkgaXMNCiAgICAgIFdIRU4gIjAwMDAiID0+IFNFVkVOX1NFR19IIDw9ICIxMDAwMDAwIjsNCiAgICAgIFdIRU4gIjAwMDEiID0+IFNFVkVOX1NFR19IIDw9ICIxMTExMDAxIjsNCiAgICAgIFdIRU4gIjAwMTAiID0+IFNFVkVOX1NFR19IIDw9ICIwMTAwMTAwIjsNCiAgICAgIFdIRU4gIjAwMTEiID0+IFNFVkVOX1NFR19IIDw9ICIwMTEwMDAwIjsNCiAgICAgIFdIRU4gIjAxMDAiID0+IFNFVkVOX1NFR19IIDw9ICIwMDExMDAxIjsNCiAgICAgIFdIRU4gIjAxMDEiID0+IFNFVkVOX1NFR19IIDw9ICIwMDEwMDEwIjsNCiAgICAgIFdIRU4gIjAxMTAiID0+IFNFVkVOX1NFR19IIDw9ICIwMDAwMDEwIjsNCiAgICAgIFdIRU4gIjAxMTEiID0+IFNFVkVOX1NFR19IIDw9ICIxMTExMDAwIjsNCiAgICAgIFdIRU4gIjEwMDAiID0+IFNFVkVOX1NFR19IIDw9ICIwMDAwMDAwIjsNCiAgICAgIFdIRU4gIjEwMDEiID0+IFNFVkVOX1NFR19IIDw9ICIwMDEwMDAwIjsNCiAgICAgIFdIRU4gIjEwMTAiID0+IFNFVkVOX1NFR19IIDw9ICIwMDAxMDAwIjsNCiAgICAgIFdIRU4gIjEwMTEiID0+IFNFVkVOX1NFR19IIDw9ICIwMDAwMDExIjsNCiAgICAgIFdIRU4gIjExMDAiID0+IFNFVkVOX1NFR19IIDw9ICIxMDAwMTEwIjsNCiAgICAgIFdIRU4gIjExMDEiID0+IFNFVkVOX1NFR19IIDw9ICIwMTAwMDAxIjsNCiAgICAgIFdIRU4gIjExMTAiID0+IFNFVkVOX1NFR19IIDw9ICIwMDAwMTEwIjsNCiAgICAgIFdIRU4gIjExMTEiID0+IFNFVkVOX1NFR19IIDw9ICIwMDAxMTEwIjsNCiAgICAgIFdIRU4gT1RIRVJTID0+IFNFVkVOX1NFR19IIDw9ICIwMTExMTExIjsNCiAgICBlbmQgY2FzZTsgICAgDQogIGVuZCBwcm9jZXNzOw0KZW5kIGFyY2hpdGVjdHVyZTsNCg=="><img src="data:image/png;base64,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"></a>Proj1.vhd</h4>
+<pre class='codeblock codeblock-vhdl'>
+<span class="Statement">library</span> ieee<span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_1164<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_arith<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+<span class="Statement">use</span> ieee<span class="Special">.</span>std_logic_unsigned<span class="Special">.</span><span class="Statement">all</span><span class="Special">;</span>
+
+<span class="Statement">entity</span> proj1 <span class="Statement">is</span>
+  <span class="Statement">port</span><span class="Special">(</span>
+    OPCODE <span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic_vector</span> <span class="Special">(</span><span class="Constant">3</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+    A <span class="Type">:</span> <span class="Statement">in</span> <span class="Type">unsigned</span> <span class="Special">(</span><span class="Constant">2</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+    B <span class="Type">:</span> <span class="Statement">in</span> <span class="Type">unsigned</span> <span class="Special">(</span><span class="Constant">2</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+    INPINS <span class="Type">:</span> <span class="Statement">in</span> <span class="Type">unsigned</span> <span class="Special">(</span> <span class="Constant">7</span> <span class="Statement">downto</span> <span class="Constant">0</span> <span class="Special">);</span>
+    OUTPINS <span class="Type">:</span> <span class="Statement">out</span> <span class="Type">unsigned</span> <span class="Special">(</span> <span class="Constant">7</span> <span class="Statement">downto</span> <span class="Constant">0</span> <span class="Special">)</span> <span class="Special">;</span>
+    SEVEN_SEG_L <span class="Type">:</span> <span class="Statement">out</span> <span class="Type">unsigned</span> <span class="Special">(</span><span class="Constant">6</span> <span class="Statement">downto</span> <span class="Constant">0</span> <span class="Special">);</span>
+    SEVEN_SEG_H <span class="Type">:</span> <span class="Statement">out</span> <span class="Type">unsigned</span> <span class="Special">(</span><span class="Constant">6</span> <span class="Statement">downto</span> <span class="Constant">0</span> <span class="Special">);</span>
+    WRITE_ENABLE <span class="Type">:</span> <span class="Statement">in</span> <span class="Type">std_logic</span>
+  <span class="Special">);</span>
+<span class="Statement">end</span> <span class="Statement">entity</span><span class="Special">;</span>
+
+<span class="Statement">architecture</span> behav <span class="Statement">of</span> proj1 <span class="Statement">is</span>
+  <span class="Statement">type</span> ram_type <span class="Statement">is</span> <span class="Statement">array</span> <span class="Special">(</span><span class="Constant">0</span> <span class="Statement">to</span> <span class="Constant">7</span><span class="Special">)</span> <span class="Statement">of</span> <span class="Type">unsigned</span> <span class="Special">(</span><span class="Constant">7</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">);</span>
+  <span class="Statement">signal</span> tmp_ram<span class="Type">:</span> ram_type<span class="Special">;</span>
+<span class="Statement">begin</span>
+  <span class="Statement">process</span> <span class="Special">(</span>WRITE_ENABLE<span class="Special">)</span>
+  <span class="Statement">begin</span>
+    OUTPINS <span class="Type">&lt;=</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">));</span>
+    <span class="Statement">if</span><span class="Special">(</span>WRITE_ENABLE<span class="Type">'event</span> <span class="Type">AND</span> WRITE_ENABLE <span class="Type">=</span> <span class="Constant">'1'</span><span class="Special">)</span> <span class="Statement">then</span>
+      <span class="Statement">if</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;0000&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>B<span class="Special">));</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;0001&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span> INPINS<span class="Special">;</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;0010&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">+</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>B<span class="Special">));</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;0011&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">-</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>B<span class="Special">));</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;0100&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>B<span class="Special">));</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;0110&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span> <span class="Comment">--POW</span>
+        <span class="Statement">if</span><span class="Special">(</span> tmp_ram<span class="Special">(</span> conv_integer<span class="Special">(</span>B<span class="Special">)</span> <span class="Special">)</span> <span class="Type">=</span> <span class="Constant">1</span><span class="Special">)</span> <span class="Statement">then</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+            tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">));</span>
+        <span class="Statement">elsif</span><span class="Special">(</span> tmp_ram<span class="Special">(</span> conv_integer<span class="Special">(</span>B<span class="Special">)</span> <span class="Special">)</span> <span class="Type">=</span> <span class="Constant">2</span><span class="Special">)</span> <span class="Statement">then</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+            tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">));</span>
+        <span class="Statement">elsif</span><span class="Special">(</span> tmp_ram<span class="Special">(</span> conv_integer<span class="Special">(</span>B<span class="Special">)</span> <span class="Special">)</span> <span class="Type">=</span> <span class="Constant">3</span><span class="Special">)</span> <span class="Statement">then</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+            <span class="Special">(</span>tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span>
+             <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">)));</span>
+        <span class="Statement">elsif</span><span class="Special">(</span> tmp_ram<span class="Special">(</span> conv_integer<span class="Special">(</span>B<span class="Special">)</span> <span class="Special">)</span> <span class="Type">=</span> <span class="Constant">4</span><span class="Special">)</span> <span class="Statement">then</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+            <span class="Special">(</span>tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span>
+             <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">)));</span>
+        <span class="Statement">elsif</span><span class="Special">(</span> tmp_ram<span class="Special">(</span> conv_integer<span class="Special">(</span>B<span class="Special">)</span> <span class="Special">)</span> <span class="Type">=</span> <span class="Constant">5</span><span class="Special">)</span> <span class="Statement">then</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+            <span class="Special">(</span>tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span>
+             <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span>
+             <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">)));</span>
+        <span class="Statement">elsif</span><span class="Special">(</span> tmp_ram<span class="Special">(</span> conv_integer<span class="Special">(</span>B<span class="Special">)</span> <span class="Special">)</span> <span class="Type">=</span> <span class="Constant">6</span><span class="Special">)</span> <span class="Statement">then</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+            <span class="Special">(</span>tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span>
+             <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span>
+             <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">)));</span>
+        <span class="Statement">end</span> <span class="Statement">if</span><span class="Special">;</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;0111&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span> <span class="Comment">--SQ</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">));</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;1010&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span> <span class="Comment">--SL</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Special">(</span><span class="Constant">6</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">)</span> <span class="Type">+</span> <span class="Constant">2</span><span class="Special">;</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;1011&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span> <span class="Comment">--ACC</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">+</span> <span class="Constant">1</span><span class="Special">;</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;1100&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span> <span class="Comment">--DEC</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">-</span> <span class="Constant">1</span><span class="Special">;</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;1110&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span> <span class="Comment">--M16</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> conv_unsigned<span class="Special">(</span><span class="Constant">16</span><span class="Special">,</span> <span class="Constant">7</span><span class="Special">);</span>
+      <span class="Statement">elsif</span><span class="Special">(</span> OPCODE <span class="Type">=</span> <span class="Constant">&quot;1111&quot;</span> <span class="Special">)</span> <span class="Statement">THEN</span> <span class="Comment">--MTEN</span>
+        tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">&lt;=</span>
+          tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Type">*</span> conv_unsigned<span class="Special">(</span><span class="Constant">10</span><span class="Special">,</span> <span class="Constant">7</span><span class="Special">);</span>
+      <span class="Statement">end</span> <span class="Statement">if</span><span class="Special">;</span>
+    <span class="Statement">end</span> <span class="Statement">if</span><span class="Special">;</span>
+    <span class="Statement">case</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Special">(</span><span class="Constant">3</span> <span class="Statement">downto</span> <span class="Constant">0</span><span class="Special">)</span> <span class="Statement">is</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0000&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;1000000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0001&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;1111001&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0010&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0100100&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0011&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0110000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0100&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0011001&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0101&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0010010&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0110&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0000010&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0111&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;1111000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1000&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0000000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1001&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0010000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1010&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0001000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1011&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0000011&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1100&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;1000110&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1101&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0100001&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1110&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0000110&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1111&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0001110&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Statement">OTHERS</span> <span class="Type">=&gt;</span> SEVEN_SEG_L <span class="Type">&lt;=</span> <span class="Constant">&quot;0111111&quot;</span><span class="Special">;</span>
+    <span class="Statement">end</span> <span class="Statement">case</span><span class="Special">;</span>
+    <span class="Statement">case</span> tmp_ram<span class="Special">(</span>conv_integer<span class="Special">(</span>A<span class="Special">))</span> <span class="Special">(</span><span class="Constant">7</span> <span class="Statement">downto</span> <span class="Constant">4</span><span class="Special">)</span> <span class="Statement">is</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0000&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;1000000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0001&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;1111001&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0010&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0100100&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0011&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0110000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0100&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0011001&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0101&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0010010&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0110&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0000010&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;0111&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;1111000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1000&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0000000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1001&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0010000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1010&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0001000&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1011&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0000011&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1100&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;1000110&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1101&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0100001&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1110&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0000110&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Constant">&quot;1111&quot;</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0001110&quot;</span><span class="Special">;</span>
+      <span class="Statement">WHEN</span> <span class="Statement">OTHERS</span> <span class="Type">=&gt;</span> SEVEN_SEG_H <span class="Type">&lt;=</span> <span class="Constant">&quot;0111111&quot;</span><span class="Special">;</span>
+    <span class="Statement">end</span> <span class="Statement">case</span><span class="Special">;</span>
+  <span class="Statement">end</span> <span class="Statement">process</span><span class="Special">;</span>
+<span class="Statement">end</span> <span class="Statement">architecture</span><span class="Special">;</span>
+</pre>
+
+</div>
+</body>
+</html>

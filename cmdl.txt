@@ -1,0 +1,372 @@
+Command Line List
+
+Install .net Framework 3.0 on Win8 when having a bad day
+DISM /Online /Enable-Feature /FeatureName:NetFx3 /All /LimitAccess /Source:c:\setup\sources\sxs\
+
+NTFS Compress OS Drive (NT6+)
+compact /s /c /a /i /EXE:LZX /f H:\*
+
+Open ICMP 
+netsh advfirewall firewall set rule group="@FirewallAPI.dll,-28502" new enable=yes
+
+Find files using dir
+dir /s /b D:\windows\cmd.exe 
+(search all subdirectories of D:\windows for cmd.exe)
+
+Copy all of the dll files in subdirectory to a flat folder
+for /r %i in (*.dll) do xcopy /Y "%i" D:\myfolder
+
+NetCat remote shell:
+nc -l 8989
+nc -e C:\windows\System32\cmd.exe server_ip 8989
+
+Show wifi networks
+netsh wlan show networks [[interface=]"Wi-Fi"] [[mode=]ssid/bssid]
+Show all of the things
+netsh wlan show all [[interface=]"Wi-Fi"]
+
+Set static ip address
+netsh int ip set address name="Ethernet" static _ip_ _sub_ _gw_ metric_
+Add static ip
+netsh int ip add address _ip_ _sub_ _gw_
+Set static dns server
+netsh int ip set dns name="Ethernet" static 8.8.8.8
+Set dhcp dns server
+netsh int ip set dns name="Ethernet" dhcp
+Add a dns server (lower index = higher preference. Default - lowest preference)
+netsh int ip add dns name=Ethernet 8.8.4.4
+
+ EnableMenuItem( GetSystemMenu(hwnd, 0), SC_CLOSE, MF_BYCOMMAND | MF_GRAYED)); 
+
+cmd /c start
+
+Small Perfmon (Windows Resource Manager):
+perfmon.exe /res
+
+---Annoying Laptop Setting Fixes---
+(Since I forget how to do this every time I reinstall)
+
+Fixing that annoying backlight on Intel Graphics:
+-right click desktop > Graphics Properties
+-Power
+-On Battery
+-Display Power Saving Technology -> OFF
+-Apply
+(This setting applies to both on battery and on AC power. I find it extremely annoying...))
+
+Processor Throttling -- and Intel Turbo:
+It does not work when Hyper-V role is enabled. :-( 
+Power Saver: Min Processor Speed = 5% Max Processor Speed = 5%. High Perf Min = 100% Max = 100%.
+
+---End laptop stuff---
+can all of the firewall rules:
+netsh adv set all state off
+
+Netsh MTU:
+netsh interface ipv4 show interfaces
+netsh interface ipv4 set subinterface 1 mtu=1500 store=persistent
+
+Disable pagefile from command line:
+wmic pagefileset create name="C:\pagefile.sys"
+wmic pagefileset delete
+
+Disable MS account prompt: Disconnect network during oobe.
+
+UAC: UserAccountControlSettings.exe
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\EnableLUA (0 = off 1 = on)
+
+Windows + Pause = open SysDM.cpl
+
+Set Input Locale to US English/International Keyboard: DISM /image:C:\test\offline /Set-InputLocale:0409:00020409 
+
+Make powershell stop asking if I'm sure I want to do anything:
+$ConfirmPreference = "None"
+
+Amusing SLUI error codes:
+SLUI.exe 0x2a 0x00000000
+(change the 4-byte number...)
+
+SNMP APC PDU (not tested, from http://thenetworksherpa.com/using-snmp-to-switch-apc-power-outlets/):
+snmpset -c $snmp_write_community $pdu_ip_address 1.3.6.1.4.1.318.1.1.12.3.3.1.1.4.$outlet integer 3
+More SNMP APC PDU Stuff
+Use SNMPSET.EXE (from net-snmp) from here if you are on Windows: http://www.elifulkerson.com/articles/net-snmp-windows-binary-unofficial.php
+The above command line is correct. For example:
+snmpset -v 1 -c private 192.168.31.1 1.3.6.1.4.1.318.1.1.4.4.2.1.3.5 integer 1
+This will turn outlet 5 (last number of the MIB) on, on the APC PDU at 192.168.31.1. The snmp community is private (default write community)
+Integers are
+1 on
+2 off
+3 reboot
+4 This causes an error? 
+5 on with delay
+6 off with delay
+7 reboot with delay
+
+GCC Subsystem win32:
+gcc win32.c -Wl,--subsystem,windows
+
+Windows/Virtualbox: Using USB Input Devices in a VM:
+Plug the mouse/keyboard in and disable it in Device Manager on the host. Then VirtualBox can capture it. Strangely, it appears that once this is done, capturing in the VM will work reasonably consistently until at least a reboot.
+Of course, USB Video Out + USB Mouse + USB Keyboard in the VM = another entire computer :-p. Or just put the two VirtualBox Windows on another screen.
+
+Examine open SSH tunnels (BSD):
+netstat -np tcp | grep '.22'
+
+defaults write com.apple.finder AppleShowAllFiles 1
+
+Make the Pantech UML295 work on OpenWRT
+-Pantech UML295 uses RNDIS / cdc-ether to provide internet access. That is, it provides a "USB Ethernet Port"
+-The modem's IP address is 192.168.32.2. It will assign the first DHCP client 192.168.32.50. It provides DHCP, DNS, NAT and an HTTP server for configuration (mbb.vzw.com = 192.168.32.50).
+-It's unlocked.
+-Get USB Working.
+-Install kmod-usb-net and kmod-usb-net-cdc-ether.
+-Plug modem in, reboot. Another ethernet adapter appears.
+-The modem can be made to automatically connect (setting in web UI)
+-The modem is GSM unlocked. It doesn't like T-Mobile's LTE in the USA. But it works really well on 3G.
+
+Windows PE 5.x: Networking start
+regsvr32 /s netcfgx.dll
+factory -minint
+netcfg -v -winpe
+net start dhcp
+net start nla
+
+Outlook: Delete all settings to first run
+% reg.exe delete HKCU\Software\Microsoft\Office\15.0\Outlook\Profiles\Outlook /f
+% reg.exe add HKCU\Software\Microsoft\Office\15.0\Outlook\Profiles\Outlook
+
+diagtrack and dmwappushsvc
+echo "" > c:\ProgramData\Microsoft\Diagnosis\etlogs\autologger\AutoLogger-Diagtrack-Listener.etl
+cacls  AutoLogger-Diagtrack-Listener.etl /d SYSTEM
+
+VLC Streaming:
+HTML5 Video from WebCam: 
+\vlc.exe" dshow:// :dshow-vdev= :dshow-adev= :live-caching=0 :sout=#transcode{vcodec=theo,vb=200,scale=1}:http{mux=ogg,dst=:8080/test} :sout-keep
+
+HTML5 Video from http stream
+"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe" http://localhost:5004/auto/v4  :network-caching=400 :sout=#transcode{vcodec=theo,vb=200,height=100,acodec=vorbis,ab=32,channels=1samplerate=44100}:http{mux=ogg,dst=:8080/test} :sout-keep
+
+HTML5 embed format
+<video width="160" src="http://127.0.0.1:8080/" autoplay type="video/ogg; codecs=theora"></video>
+
+.Net Framework Development Oddness
+"error CS0012: The type 'System.Object' is defined in an assembly that is not referenced. You must add a reference to assembly 'System.Runtime, Version=4.0.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'."
+  When this happens for building class library, change the Target Framework version may fix it.
+
+Various Datacenter Device Matters
+Factory Resetting 3Com (HP) SuperStack 3 Switch 4200 26-Port
+  Serial: 19200 baud, 8 data bits, 1 stop bit, no parity, nor hardware flow control. 
+  Default Username: Admin
+  Default Password: [empty string]
+  Reset password: Log in over serial as recover\recover, then hard reset within 30 seconds (per on screen instructions).
+  Reset to Factory: Log in to the switch, go to system, management, initialize.
+  The Factory Reset may not reset the IP address.
+
+APC 7900 series PDUs
+  The IP of a device can be found by holding the button for 2 seconds.  It will then be scrolled on the display, preceded by "IP".
+  Serial: 9600 baud, 8 data bits, 1 stop bit, no parity, nor hardware flow control.
+  Default user name: apc
+  Default password: apc
+  Add a ' -c' to password to login in console mode on firmware 2+. (e.g. 'apc -c' instead of 'apc' for a password).
+  
+  In order of performance for repeated commands, from fastest to slowest:
+  SSH console, Telnet console, Serial console (9600 baud), SNMP.  
+  (HTTP is hard to automate, and SSH/Telnet/Serial in non-console mode are unnecessarily difficult to automate).
+  SSH automation was able to flip a relay at an incredibly high rate of speed (in excess of 15 Hz), to the point of potentially causing a dangerous situation around an extremely incompetent (or maleficent) person.  (this could likely be used to destroy motors or burn out light bulbs in a relatively short period of time.)
+ 
+ Factory Reset for APC PDUs:
+  Connect via serial cable.  Press the reset (pinhole) button. When status light (on ethernet) starts flashing green/orange, immediately press the reset button again (within 1 second, hold for 10 seconds).  Press enter on the keyboard until a login prompt appears. Username and password will be reset to default. 
+  Interactive factory reset can be found in system menu.
+
+Avocent DSR2020
+  Serial: 9600 baud, 8 data bits, 1 stop bit, no parity, nor hardware flow control.
+  (doesn't seem to require auth when accessed via serial)
+  Default Username: admin
+  Default Password: [empty string]
+
+Registry dumps
+Appwiz.cpl contents
+reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall\ /s
+
+
+Airline Data
+Code,Aliance,Country,ITAColor,Name
+UA  *A  US  Blue          United
+DL  ST  US  Maroon        Delta
+AA  OW  US  Red           American
+AS  --  US  SkyBlue       Alaska
+B6  --  US  DeepSkyBlue   JetBlue
+WN  --  US  Houston       Southwest
+AC  *A  CA  Pink          Air Canada
+CX  OW  HK  SeaGreen      Cathay Pacific
+LH  *A  DE  Gold          Lufthansa
+QR  OW  QR  Purple        Qatar
+EK  --  AE                Emirates
+EY  --  AE                Ethiad
+
+A very annoying 2014
+http://www.gcmap.com/mapui?P=color:maroon,jfk-sea,color:skyblue,sea-ewr,ewr-sea,color:deepskyblue,sea-jfk-jax,color:blue,jax-iah-sea,pdx-ewr-fll,color:deepskyblue,hpn-fll
+A very United 2015
+http://www.gcmap.com/mapui?P=color:blue,jfk-sfo-pdx,+sea-sfo-jfk,+jfk-sfo-sea,+sea-ewr,+jfk-sfo-sea,+sea-sfo-bur,+bur-sfo-sea,+sea-ord-sav,+chs-iah-sea,+sea-ord,+ord-iah,+iah-sea,+color:red,+yvr-yyz-lga,+lga-yyz-yvr,+color:blue,+sea-ewr
+
+
+Get rid of the taskbar thumbnails on Win8+
+[begin]
+Windows Registry Editor Version 5.00
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband]
+"NumThumbnails"=dword:00000000
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced]
+"ExtendedUIHoverTime"=dword:41fffffe
+[end]
+
+Use the Administrator account on Windows Vista/7/8/10 (Pro only)
+Log on as admin privileged account
+run lusrmgr.msc
+set Administrator password (must meet policy requirements)
+right click Administrator, properties, uncheck account is disabled.
+Now you can log in as administrator.
+Store apps do not work with built-in Admin account.
+Everything runs as Administrator while logged on with built-in Admin account.
+
+Sudo for Windows:
+http://code.kliu.org/misc/elevate/
+To do it programatically, you use ShellExecute with the verb set to runas.
+
+Make EXE files run as Admin (UAC):
+Edit the manifest for the exe, such that TrustInfo level is set to requireAdministrator
+<assembly>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+</assembly>
+
+Use Reshack to replace a manifest (for en-us...):
+reshack -addoverwrite OldExe.exe NewExe.exe newmanifest.manifest, manifest, 1, 1033
+
+Windows send to customizations:
+php-cli.cmd and php-cli-public.cmd
+shortcut to notepad.exe
+
+#PHP-cli.cmd
+explorer http://localhost:8000
+if exist "%~1\" (
+  php -S localhost:8000 -t "%~1"
+) else (
+  php -S localhost:8000 -t "%~dp1"
+)
+pause
+#end PHP-cli.cmd
+
+#PHP-cli-public.cmd
+explorer http://127.0.0.1/
+rem check if arg is file or dir
+if exist "%~1\" (
+  php -S 0.0.0.0:80 -t "%~1"
+  ) else (
+  php -S 0.0.0.0:80 -t "%~dp1"
+)
+pause
+#end PHP-cli-public.cmd
+
+Useful Shell Commands
+Shell:sendto
+Shell:Start Menu
+shell:StartMenuAllPrograms
+shell:ThisPCDesktopFolder
+shell:User Pinned
+
+Useful Shell Mods
+Force Console LogonUI: rename or delete Windows.UI.Logon.dll (falls back to Console). 
+Disable DWM: replace DWM with an exe that doesn't do anything and exits.
+Disable Themes on 8.1+: Kill \Sessions\<ID>\Windows\ThemeSection shared memory in WinLogon (see "Classic Theme on Windows 8" on ThinkPads.com.  Breaks explorer context menus on Win10)
+
+Windows 10 lightweight fixing:
+-Disabling MpsSvc: Use offling registry to set start to 4.
+-Disable Metro: disable tiledatamodelsvc and StateRepository in registry
+-Old Task Manager: Pull it from WinRE.wim or boot.wim on install CD.  Remember to copy en-us\taskmgr.exe.mui
+-Old Calculator: win32calc.exe. Can rename to calc.exe
+-Console Logon Screen on Windows 10: Remove Windows.UI.Logon.dll
+-Get rid of DWM: Remove dwm.exe and dwm*.dll (except dwmapi.dll) from system32
+-Get rid of themes: rename or remove %systemroot%\resources\themes folder.  Now has classic.  Use registry or 3rd party tool to fix sizing.
+-Fix context menu in explorer: HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Explorer\FlightedFeatures\ImmersiveContextMenu = 0
+-Fix shitty explorer window when DWM is not enabled: Use OldNewExplorer (figure out what it does)
+-Fix shell colors when switching to lock screen: Remove  HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\DefaultColors.
+
+Windows 10 Service Cleanup (delete files)
+\Program Files\Windows Defender
+\Windows\System32\dcpsvc.dll
+\Windows\System32\diagsvcs
+
+Windows 8/10 - disable ThemeSection using Handle.exe
+@echo off
+FOR /F "delims=^T" %%G IN ('Handle ThemeSection') do set output=%%G
+FOR /F "tokens=6" %%G IN ('echo %output%') DO set handleid=%%G
+FOR /F "tokens=3" %%G IN ('echo %output%') DO set pid=%%G
+echo %handleid%
+echo %pid%
+Handle -c %handleid% -p %pid% -y
+
+Kill Transparency on Explorer Windows
+SetWindowCompositionAttribute.exe class CabinetWClass accent 1 0 0 0
+
+Shell setup for smallwe.7z with DWM
+cmd /c themebomb.cmd && start rexplore && start AccentFix && start penetwork && taskkill -f -im rexplore.exe && start we
+cmd /c themebomb.cmd && start rexplore && start AccentFix && start penetwork
+
+
+TakeOwn Context Menu Registry
+<--begin-->
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\runas]
+@="Take Ownership"
+"NoWorkingDirectory"=""
+
+[HKEY_CLASSES_ROOT\*\shell\runas\command]
+@="cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F"
+"IsolatedCommand"="cmd.exe /c takeown /f \"%1\" && icacls \"%1\" /grant administrators:F"
+
+[HKEY_CLASSES_ROOT\Directory\shell\runas]
+@="Take Ownership"
+"NoWorkingDirectory"=""
+
+[HKEY_CLASSES_ROOT\Directory\shell\runas\command]
+@="cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t"
+"IsolatedCommand"="cmd.exe /c takeown /f \"%1\" /r /d y && icacls \"%1\" /grant administrators:F /t"
+<--end-->
+
+Porsche Design P'8115 Polar Optics 56 Rec 19
+
+Windows Embedded Components 
+Base: IE, WMP, Remote Desktop
++Diagnostics\User
++User Interface\Windows Shell\System Control Panel
++User Interface\Windows Shell\Windows Explorer Shell Resources
+*User Interface\Windows Shell\Accessories
+*User Interface\Windows Shell\Photo Viewer
+*System Management Utilities
+
+Using TCC and the GCC Resource Compiler to add resources to a tcc binary
+-Create a .res file with the relevant resources (using Resource Hacker or visual Studio)
+-run the resource compiler: windres myresscript.res myresobj.o
+-when compiling with tcc, compile the object in: tcc win32.c rmicon.o
+(the resource object does not seem to be bitness specific)
+
+Using let's encrypt certs on Blackberry 10:
+Install multiCERT from the Blackberry World store.  This includes the certs required.
+
+gzip compress file without delete:
+gzip -c9 test.txt > test.txt.gz
+base64 encode:
+php -r "file_put_contents('logo.svg.base64',base64_encode(file_get_contents('logo.svg')));"
+
+Chip commands
+Wi-Fi connection
+nmtui - tui wifi manager
+ifconfig - is owned by root, must sudo
+
+Transmission Jail port: 9091 by default.

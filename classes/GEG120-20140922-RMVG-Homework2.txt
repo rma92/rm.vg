@@ -1,0 +1,67 @@
+Richard A. Marino
+PHYSICAL GEOOGRAPHY GEG 120 
+HOMEWORK 02 
+Due Date: Friday, October 3rd
+ (11:00 AM) 
+How to submit: Upload answer file (.doc, .pdf or .jpg file with answers via Blackboard); also, submit hard copies in 
+class on the due date 
+
+SECTION I: NAME THE PHENOMENON / EFFECT / MECHANISM (5 points) 
+-The occurrence of higher temperature in urban areas as compared to surrounding rural areas:
+    _Latent Heat_ 
+-The absorption of longwave terrestrial radiation by atmospheric gases such as carbon dioxide and methane: 
+    _Greenhouse Effect_ 
+-Mechanism /method of heat transfer involved when you touch a hot surface:
+    _Conduction_
+- The name of the isotherm that connects all points of highest mean temperature:
+    _Thermal Equator_ 
+- The zone of convergence of the trade winds:
+    _Intertropical Convergence Zone_
+
+SECTION II: TRUE OR FALSE (10 points) 
+- Tropospheric ozone protects us from the harmful UV rays of the sun: 
+    _False (Stratospheric Ozone protects)_ 
+- The lower atmosphere gets heated mostly from terrestrial radiation and to a lesser extent from insolation: 
+    _False (Mostly insolation)_
+- At the Equator, low angle of insolation, variable day lengths, and high seasonal variations create an energy 
+deficit:
+    _False (Stable)_ 
+- In the Northern Hemisphere, the coldest time of the year occurs in December at the time of the winter solstice: 
+    _False (Slight delay)_
+- Nitrogen and oxygen are the most abundant greenhouse gases in the atmosphere: 
+    _False (not greenhouse gases)_ 
+- You would expect a tropical island to have a high degree of continentality: 
+    _False (Well, it does snow in Hawaii...)_
+- Evaporation is a cooling mechanism: 
+    _True (see a Swamp or Evaporative Cooler, but don't use it in Miami)_
+- Weather (rain, fog, storms etc) occur primarily in the troposphere: 
+    _True_ 
+- Ozone depletion is caused due to the greenhouse effect: 
+    _False_ 
+- Closer the isobar -> steeper the pressure gradient -> weaker the wind: 
+    _False (Steeper pressure gradient makes stronger wind)_ 
+
+SECTION III: CIRCLE THE CORRECT ANSWER CHOICE (5 points) 
+- Reykjavik, due to its _costal_ (coastal/inland) location, enjoys a _maritime_ (continental/maritime) 
+climate. 
+- Land has a _lower_ (higher / lower) specific heat than water and therefore heats more _quickly_ (slowly 
+/ quickly). This is one of the main reasons why temperature in the interior of large landmasses is more 
+_extreme_ (extreme / moderate) than temperature in coastal areas. 
+
+SECTION III: TEMPERATURE MEASUREMENTS (5 points) 
+1) If the temperature at the surface of Earth (at sea level) is 40°C, what is the temperature at 2000 meters if 
+the normal lapse rate is 6.4 °C/1000 m? Show your work 
+2000[m] / 1000 [m] = x / 6.4 °C;
+2 * 6.4 [°C] = x;
+12.8 [°C] change; 
+40 - 12.8 [°C] = 
+27.2 [°C] = Temperature at 2000 meters.
+
+2) What is the temperature at which the 0
+Celsius and the 0
+Farenheight scales coincide? Show your work 
+C = 5/9 * (F - 32)
+x = 5/9 * (x - 32)
+x = -40.
+
+Student Name: _Richard A. Marino_

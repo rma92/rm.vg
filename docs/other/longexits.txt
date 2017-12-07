@@ -1,0 +1,38 @@
+Longest Sections of Highway in the United States with no Exits
+1. FL-91 (FL Turnpike): Exit 193 (Yeehaw Junction) to Exit 242/244 (Kissimmee/St. Cloud): 48.9 miles/51 miles
+2. FL-91 (FL Turnpike): Exit 152 (Ft Pierce) to Exit 193 (Yeehaw Junction): 40.5 miles
+3. I-80 (UT): Exit 4 (Bonneville Speedway) to Exit 41 (Knowlls): 37.4 miles
+4. I-70 (PA Turnpike, East): Exit 110 (Somerset) to Exit 146 (Bedford): 35.5 miles
+5. I-75 (Alligator Alley, FL): Exit 80 (SR29) to Exit 49 (Snake Rd): 30.6 miles
+6. I-335 (KS Turnpike): Exit 147 (US 56) to Exit 177 (I-470): 30.3 miles
+7. I-90 (MA Pike): Exit 3 (Westfield) to Exit 2 (Lee): 29.9 miles
+8. I-44 (OK Will Rogers Turnpike, West) Exit 283 (US 69) to Exit 255 (E Will Rogers Blvd): 28.4 miles
+9. I-40 (CA) Exit 50 (Ludlow) to Exit 78 (Kelso): 28.4 miles
+10. I-44 (OK H.E.Bailey Turnpike, East) Exit 53 (US 277) to Exit 80 (US 277/US 81): 27.6 miles
+11. I-70 (PA Turnpike, West): Exit 146 (Bedford) to Brotherton Rd (27.3 mi)
+12. I-75 (Alligator Alley, FL, North): Exit 23 (US 27) to Exit 49 (Snake Rd): 26.2 miles
+13. I-70 (CO, West): Exit 75 to Exit 49: 26 miles
+14. I-75 (Alligator Alley, FL, South): Exit 49 (Snake Rd) to Exit 23 (US 27): 25.7 miles
+15. I-76 (PA Turnpike): Exit 226 (Carlisle) to Exit 201 (Blue Mountain): 25 miles
+16. I-80 (IN Toll Road): Exit 144 (Angola/I-69) to Exit 121 (Howe/LaGrange): 23.8 miles
+Statistics:
+by state:
+5	FL
+3	PA
+2	OK
+1	CA
+1	UT
+1	CO
+1	IN
+1	KS
+1	MA
+"Next Cash Exit 52 Miles":
+https://maps.google.com/maps?saddr=Unknown+road&daddr=Unknown+road&hl=en&ll=28.303134,-81.361184&spn=0.010655,0.019805&sll=28.287527,-81.350906&sspn=0.010657,0.019805&geocode=FWSdrwEdeLUm-w%3BFayppgEdDpst-w&mra=dme&mrsp=0&sz=16&t=m&z=16&layer=c&cbll=28.30286,-81.360926&panoid=2hRIXQ7edmn2bE6hTGOEyQ&cbp=12,177.11,,2,-3.38
+Bonus: Longest place with no services: AK-11/North Slope Haul Road, Coldfoot, AK to Deadhorse, AK (240 Miles)
+https://maps.google.com/maps?q=coldfoot,+ak&hl=en&ll=67.253772,-150.17875&spn=0.00234,0.009903&sll=28.302869,-81.360927&sspn=0.010731,0.019805&hnear=Coldfoot,+Yukon-Koyukuk,+Alaska&t=m&z=17&layer=c&cbll=67.253598,-150.179084&panoid=v4J6zXfvCedMt-W5m3wMhQ&cbp=12,68.87,,1,3.56
+
+Source:
+http://content.usatoday.com/communities/driveon/post/2011/08/longest-distances-between-exits-on-US-freeways-415029/1#.UXb-vbXV_W9
+A reporter claims that TomTom claims that the longest section with no exits is on the PA Turnpike:
+http://philadelphia.cbslocal.com/2011/08/22/study-pa-turnpike-has-longest-stretch-of-highway-without-an-exit/
+(obviously failing to notice the Florida section)

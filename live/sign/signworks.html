@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      .bgs
+      {
+        border: 2px solid white;
+        border-radius: 10px;
+        background-color: #0f0;
+        padding: 10px;
+      }
+      .draw
+      {
+        border: 2px solid black;
+        min-height: 30px;
+      }
+      .tab
+      {
+        border: 2px solid red;
+      }
+    </style>
+    <script>
+    var dwidth = 800;
+    var dheight = 300;    
+    var curx = 0;
+    var cury = 0;
+
+
+    var ui_cur_id = 0;
+    
+    function addSignUI()
+    {
+      var a1 = document.getElementById('tab2');
+      document.getElementById('tab2');
+        var divtest = document.createElement("div");
+        divtest.innerHTML = '<textarea id=signpanel' + ui_cur_id + '>[US-1]\nSign Panel\n[ArrowDown*2.5d315]</textarea><textarea id=signpaneltab' + ui_cur_id + '>[EXIT 1]</textarea>';
+      a1.appendChild(divtest);
+      ui_cur_id++;
+    }
+
+    function clearcanvas()
+    {
+      var canvas = document.getElementById('canvas1');
+      var context = canvas.getContext('2d');
+      context.clearRect(0, 0, dwidth, dheight);
+    }
+    
+    function drawShield( height, type, contents )
+    {
+      var baseURI = 'http://rm.vg/sign/?';
+      var signText = baseURI + 'h=' + height + '&type=' + type + '&num=' + contents;
+      var canvas = document.getElementById('canvas1');
+      var context = canvas.getContext('2d');
+
+      var imageObj = new Image();
+      imageObj.onload = function()
+      {
+        context.drawImage(imageObj, curx + 4, cury + 4);
+        curx = 8 + imageObj.width;
+      };
+      imageObj.src = signText;
+    }
+
+    var imagesLoaded = 0;
+    var imagesCache = new Array();
+    var imagesCacheTab = new Array();      
+    function draw_all_cached()
+    {
+      if(imagesLoaded >= 2 * ui_cur_id)
+      {
+        var canvas = document.getElementById('canvas1');
+        var context = canvas.getContext('2d');
+        //get the maximum height of the exit tabs.
+        var max_tab_height = 0;
+        for(tabImg in imagesCacheTab)
+        {
+          if(imagesCacheTab[tabImg].height > max_tab_height)
+            max_tab_height = imagesCacheTab[tabImg].height;
+        }
+        //and the maximum height of the panels.
+        var max_panel_height = 0;
+        for(tabImg in imagesCache)
+        {
+          if(imagesCache[tabImg].height > max_panel_height)
+            max_panel_height = imagesCache[tabImg].height;
+        }
+        curx = 0;
+        cury = max_tab_height + max_panel_height;
+        for(var i = 0; i < ui_cur_id; ++i)
+        {
+          context.drawImage(imagesCacheTab[i], curx + 4 + imagesCache[i].width - imagesCacheTab[i].width, cury + 2 - imagesCacheTab[i].height  - imagesCache[i].height);
+          context.drawImage(imagesCache[i], curx + 4, cury + 4 - imagesCache[i].height);
+          curx += 8 + imagesCache[i].width;
+
+        }
+        imagesLoaded = 0;
+      }
+    }
+    function draw_all()
+    {
+      clearcanvas();
+      curx = 0;
+      cury = 0;
+      var baseURI = 'http://rm.vg/sign/?';
+      var background = 0x007757;
+      var foreground = 0xffffff;
+
+      imagesLoaded = 0;
+      for(var i = 0; i < ui_cur_id; ++i)
+      { 
+        imagesCache[i] = new Image();
+        imagesCache[i].onload = function()
+        {
+          imagesLoaded++;
+          setTimeout(draw_all_cached, 100);
+        }
+        text1 = document.getElementById('signpanel' + i).value.split('\n');
+        var signText =  baseURI + 'h=32&fore=' + String(foreground) + '&back=' + String(background) + '&type=text&num=';
+        for(line in text1)
+        {
+          signText += text1[line] + "%0A";
+        }
+        imagesCache[i].src = signText;
+
+        tab1 = document.getElementById('signpaneltab' + i).value;
+        imagesCacheTab[i] = new Image();
+        if(tab1.length > 0)
+        { 
+
+          imagesCacheTab[i].onload = function()
+          {
+            imagesLoaded++;
+            setTimeout(draw_all_cached, 100);
+          }
+          var signTabText =  baseURI + 'h=32&fore=' + String(foreground) + '&back=' + String(background) + '&type=text&num=';
+          signTabText += tab1;
+          imagesCacheTab[i].src = signTabText;
+        }
+        else
+        {
+          ++imagesLoaded;
+        }
+        //document.getElementById('signpanel' + i).value
+        //setTimeout(draw(document.getElementById('signpanel' + i).value), 100 * i);
+      }
+    }
+    </script>
+  </head>
+  <body>
+  <canvas style="background:#00ffff;" class=draw id=canvas1 width=800px height=300px>
+
+  </canvas>
+  <div class=tabbox>
+    <div class="tab" id="tab1">
+      <select id=shieldtype>
+        <option>us</option>
+        <option>i</option>
+        <option>us48</option>
+      </select>
+      Number:
+      <input id=shieldnum>
+      Height: 
+      <input id=shieldheight value=128>px
+      <button onclick="drawShield(document.getElementById('shieldheight').value, document.getElementById('shieldtype').value, document.getElementById('shieldnum').value)"><b>Draw Shield</b></button>
+    </div>
+    <div class="tab" id="tab2">
+      <button onclick="clearcanvas();"><b>Clear</b></button>
+      <button onclick="addSignUI();"><b>Add Sign</b></button>
+      <button onclick="draw_all();"><b>Draw</b></button>
+      Tab2 
+    </div>
+  </div>
+
+  This works well. (28 Dec 2013)
+  ToDo: Make a way of moving the exit tabs between left, center, and right; Make a way to change colors; Make arrows separate sign panels to the side of the normal one; SERVER: add OAPL; SERVER: Add some way of drawing lines in the foreground (e.g. Georgia and for OAPL).
+
+  </body>
+</html>
+

@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>EEN204 Lab 1</title>
+</head>
+<body>
+<table>
+<tr><td>
+EEN204 Lab 1: Voltage Division
+</td></tr>
+<tr><td>Richard A. Marino</td></tr>
+<tr><td>02 SEP 2014</td></tr>
+</table>
+<p><b>Purpose:</b> The purpose of this lab is to introduce a new student to the basics of electric measurements through the use of a simple voltage divider circuit.</p>
+
+<h1>Equipment</h1>
+<ul>
+  <li>1 Variable Resistance Box</li>
+  <li>1 Digital Voltmeter (DVM)</li>
+  <li>1 DC Power supply</li>
+  <li>1 Function generator</li>
+  <li>1 Oscilloscope</li>
+</ul>
+
+<h1>Preliminary Work</h1>
+Fig. 1.1 shows a voltage divider circuit. For this circuit find:
+<ol>
+  <li>The current I in terms of V<sub>s</sub>, R<sub>1</sub>, and R<sub>L</sub>;
+  I = V<sub>s</sub> / (R<sub>L</sub> + R<sub>1</sub>)
+  </li>
+  <li>The voltage across R<sub>L</sub>;
+  V = I &middot; R<sub>L</sub> = (V<sub>s</sub> / (R<sub>L</sub> + R<sub>1</sub>) ) &middot; R<sub>L</sub>
+  </li>
+  <li>The DC power delivered to R<sub>L</sub>;
+  P = I<sup>2</sup> &middot; R<sub>L</sub> =  (V<sub>s</sub> / (R<sub>L</sub> + R<sub>1</sub>) )<sup>2</sup> &middot; R<sub>L</sub>
+  </li>
+  <li>The power supplied by the source.
+  P = I<sup>2</sup> &middot; (R<sub>L</sub> + R<sub>1</sub>) 
+  = (V<sub>s</sub> / (R<sub>L</sub> + R<sub>1</sub>) )<sup>2</sup> &middot; (R<sub>L</sub> + R<sub>1</sub>)
+  </li>
+</ol>
+
+<h1>DC Measurements</h1>
+<h2>DVM</h2>
+<table>
+<tr><th>&nbsp;</th><th colspan=2>Measured</th><th colspan=3>Calculated</th></tr>
+<tr><th>R<sub>L</sub> (K&Omega;)</th><th>V<sub>R1</sub> (V)</th> <th>V<sub>RL</sub> (V)</th> <th>V<sub>R1</sub>(V)</th> <th>V<sub>RL</sub>(V)</th> <th>% Error (V<sub>RL</sub>)</th></tr>
+<tr><td>1</td><td>4.56</td><td>0.45</td><td> 4.55 </td><td> 0.45 </td><td> 0%</td></tr>
+<tr><td>5</td><td>3.32</td><td>1.70</td><td> 3.34 </td><td> 1.67 </td><td> 1.7%</td></tr>
+<tr><td>10</td><td>2.49</td><td>2.52</td><td> 2.50 </td><td> 2.50 </td><td> 2.6%</td></tr>
+<tr><td>15</td><td>1.99</td><td>3.02</td><td> 2.00 </td><td> 3.00 </td><td> 0.6%</td></tr>
+<tr><td>20</td><td>1.66</td><td>3.36</td><td> 1.67 </td><td> 3.34 </td><td> 0.6%</td></tr>
+<tr><td>40</td><td>0.99</td><td>4.02</td><td> 1.00 </td><td> 4.01 </td><td> 0.2%</td></tr>
+<tr><td colspan=6>V<sub>s</sub> (Measured) = 5.01 [V]</td></tr>
+</table>
+
+<h2>Scope</h2>
+<table>
+<tr><th>&nbsp;</th><th colspan=2>Measured</th><th colspan=3>Calculated</th></tr>
+<tr><th>R<sub>L</sub> (K&Omega;)</th><th>V<sub>R1</sub> (V)</th> <th>V<sub>RL</sub> (V)</th> <th>V<sub>R1</sub>(V)</th> <th>V<sub>RL</sub>(V)</th> <th>% Error (V<sub>RL</sub>)</th></tr>
+<tr><td>1</td><td>4.66</td><td>0.50</td><td> 4.55 </td><td> 0.45 </td><td> 11%</td></tr>
+<tr><td>5</td><td>3.43</td><td>1.76</td><td> 3.34 </td><td> 1.67 </td><td> 5%</td></tr>
+<tr><td>10</td><td>2.56</td><td>2.57</td><td> 2.50 </td><td> 2.50 </td><td> 3%</td></tr>
+<tr><td>15</td><td>2.07</td><td>3.12</td><td> 2.00 </td><td> 3.00 </td><td> 4%</td></tr>
+<tr><td>20</td><td>1.75</td><td>3.44</td><td> 1.67 </td><td> 3.34 </td><td> 3%</td></tr>
+<tr><td>40</td><td>1.04</td><td>4.15</td><td> 1.00 </td><td> 4.01 </td><td> 3.7%</td></tr>
+<tr><td colspan=6>V<sub>s</sub> (Measured) = 5.01 [V]</td></tr>
+</table>
+
+<p>Actual Value of R<sub>1</sub> = 9.89 [k&Omega;]</p>
+<h1>AC Measurements</h1>
+<h2>DVM</h2>
+
+<table>
+<tr><th>&nbsp;</th><th colspan=2>Measured</th><th colspan=3>Calculated</th></tr>
+<tr><th>R<sub>L</sub> (K&Omega;)</th><th>V<sub>R1</sub> (V)</th> <th>V<sub>RL</sub> (V)</th> <th>V<sub>R1</sub>(V)</th> <th>V<sub>RL</sub>(V)</th> <th>% Error (V<sub>RL</sub>)</th></tr>
+<tr><td>1</td><td>4.59 </td><td>0.32</td><td> 4.55 </td><td> 0.45 </td><td> 31%</td></tr>
+<tr><td>5</td><td>3.34</td><td>1.70</td><td> 3.34 </td><td> 1.67 </td><td> 1.7%</td></tr>
+<tr><td>10</td><td>2.51</td><td>2.54</td><td> 2.50 </td><td> 2.50 </td><td> 1.6%</td></tr>
+<tr><td>15</td><td>2.01</td><td>3.04</td><td> 2.00 </td><td> 3.00 </td><td> 1.3%</td></tr>
+<tr><td>20</td><td>1.67</td><td>3.37</td><td> 1.67 </td><td> 3.34 </td><td> 0.8%</td></tr>
+<tr><td>40</td><td>0.95</td><td>4.04</td><td> 1.00 </td><td> 4.01 </td><td> 1.0%</td></tr>
+<tr><td colspan=6>V<sub>rms</sub> (Measured) = 5.08 [V]</td></tr>
+</table>
+
+<h2>Scope</h2>
+<table>
+<tr><th>&nbsp;</th><th colspan=2>Measured</th><th colspan=3>Calculated</th></tr>
+<tr><th>R<sub>L</sub> (K&Omega;)</th><th>V<sub>R1</sub> (V)</th> <th>V<sub>RL</sub> (V)</th> <th>V<sub>R1</sub>(V)</th> <th>V<sub>RL</sub>(V)</th> <th>% Error (V<sub>RL</sub>)</th></tr>
+<tr><td>1</td><td> 4.56</td><td> 0.48</td><td> 4.55 </td><td> 0.45 </td><td> 6%</td></tr>
+<tr><td>5</td><td> 3.32</td><td> 1.72</td><td> 3.34 </td><td> 1.67 </td><td> 3%</td></tr>
+<tr><td>10</td><td> 2.48</td><td> 2.56</td><td> 2.50 </td><td> 2.50 </td><td> 2%</td></tr>
+<tr><td>15</td><td> 1.98</td><td> 3.06</td><td> 2.00 </td><td> 3.00 </td><td> 2%</td></tr>
+<tr><td>20</td><td> 1.64</td><td> 3.48</td><td> 1.67 </td><td> 3.34 </td><td> 4%</td></tr>
+<tr><td>40</td><td> 0.96</td><td> 4.08</td><td> 1.00 </td><td> 4.01 </td><td> 2%</td></tr>
+<tr><td colspan=6>V<sub>p-p</sub> (Measured) = 5.04 [V]</td></tr>
+</table>
+
+<h1>Discussion</h1>
+<p>a) Comment on the benefits of using either the DVM or the SCOPE for particular situations.</p>
+<p>The DVM is easier to use, as it's ground can be placed anywhere. It cannot, however, measure frequency, the shape of the waveform, or peak-to-peak voltage. In that case, the oscilloscope must be used.</td>
+<p>b) Find the current in the circuit in Fig 1.1 when R<sub>L</sub> = 50 [k&Omega;].</p>
+  <p>I = V<sub>s</sub>/(R<sub>1</sub>+R<sub>2</sub>); I = 5 [V] / ( 10 [k&Omega;] + 50 [k&Omega;] ); I = 0.083 [mA] </p>
+<p>c) In the circuit, R<sub>1</sub> is fixed. When is maximum power delivered to R<sub>2</sub>? Why?</p>
+<p>d) Prepare a table indicating the possible measurements that can be carried out using the equipment you used during the experiment.</p>
+<table>
+<tr><th>SCOPE</th><th>Either</th><th>DVM</th></tr>
+<tr><td>
+<ul>
+  <li>Frequency and shape of AC waveform</li>
+  <li>AC Peak-to-peak Voltage</li>
+</ul>  
+</td><td>
+<ul>
+  <li>AC RMS Voltage*</li>
+  <li>DC Voltage to ground</li>
+</ul>
+</td><td>
+<ul>
+  <li>Resistance</li>
+  <li>DC Voltage with arbitrary ground</li>
+  <li>AC or DC current*</li>
+</ul>
+</td></tr>
+<tr><td colspan=3> *Provided that the DVM is actually a true-RMS meter (the one in the lab is)</td></tr>
+</table>
+<h1>Conclusion</h1>
+<p>In this experiment, we became familiar with two electrical measuring devices -- the digital volt meter, and the oscilloscope. The oscilloscope can provide more information when measuring AC signals, but can be cumbersome to connect, due to it's grounding requirements. The digital volt meter can easy to use, but cannot measure peak-to-peak voltage.</p>
+
+
+<!--
+<table>
+<tr><th>&nbsp;</th><th colspan=2>Measured</th><th colspan=3>Calculated</th></tr>
+<tr><th>R<sub>L</sub> (K&Omega;)</th><th>V<sub>R1</sub> (V)</th> <th>V<sub>RL</sub> (V)</th> <th>V<sub>R1</sub>(V)</th> <th>V<sub>RL</sub>(V)</th> <th>% Error (V<sub>RL</sub>)</th></tr>
+<tr><td>1</td><td> </td><td> </td><td> 4.55 </td><td> 0.45 </td><td> %</td></tr>
+<tr><td>5</td><td> </td><td> </td><td> 3.34 </td><td> 1.67 </td><td> %</td></tr>
+<tr><td>10</td><td> </td><td> </td><td> 2.50 </td><td> 2.50 </td><td> %</td></tr>
+<tr><td>15</td><td> </td><td> </td><td> 2.00 </td><td> 3.00 </td><td> %</td></tr>
+<tr><td>20</td><td> </td><td> </td><td> 1.67 </td><td> 3.34 </td><td> %</td></tr>
+<tr><td>40</td><td> </td><td> </td><td> 1.00 </td><td> 4.01 </td><td> %</td></tr>
+<tr><td colspan=6>V<sub>s</sub> (Measured) = 5.01 [V]</td></tr>
+</table>
+-->
+</body>
+</html>

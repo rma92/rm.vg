@@ -1,0 +1,133 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+body ol li
+{
+  padding: 2px;
+}
+body ol li:first-child p
+{
+  margin-top: 0px;
+}
+body ol li:last-child p
+{
+  margin-bottom: 0px;
+}
+table
+{
+  border-collapse:collapse;
+}
+tr:first-child th, tr:first-child td
+{
+  border-bottom: 1px solid #000;
+  font-weight: normal;
+  padding-top: 8px;
+}
+tr:last-child td, tr:last-child th
+{
+  border-bottom: 1px solid #000;
+}
+td, th
+{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:1px;
+}
+.mname
+{
+  
+}
+</style>
+</head>
+<body>
+<div class="main">
+<span class="mname">Richard A. Marino</span>
+<h1>EEN567<br/>Database Design & Management</h1>
+<h2>Assignment 3</h2>
+
+<ol>
+  <li>
+    <p>
+      <b>(15 points)</b> [Exercise 3.2] Compare and contrast the two-tier client-server architecture for traditional DBMSs with the three-tier client-server architecture. Why is the latter architecture more appropriate for the Web? 
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>(15 points)</b> [Exercise 3.11] Describe the internal architecture of Oracle.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>(15 points)</b> [Exercise 4.5] Discuss the differences between the candidate keys and the primary key of a relation. Explain what is meant by a foreign key. How do foreign keys of relations relate to candidate keys? Give examples to illustrate your answer.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>(15 points)</b> Consider the instance of the <b>Student</b> relation in Table 1.
+      <center>
+        <table>
+        <tr><th>sid</th><th>fname</th><th>lname</th><th>login</th><th>age</th><th>GPA</th></tr>
+        <tr><td>50000</td><td>John</td><td>Smith</td><td>john02@ece</td><td>19</td><td>3.3</td></tr>
+        <tr><td>53200</td><td>Mary</td><td>Harper</td><td>mary05@cs</td><td>18</td><td>3.0</td></tr>
+        <tr><td>54534</td><td>Steve</td><td>Anderson</td><td>steve10@math</td><td>20</td><td>3.5</td></tr>
+        <tr><td>56980</td><td>John</td><td>Henderson</td><td>john05@ece</td><td>18</td><td>2.9</td></tr>
+        <tr><td>57825</td><td>Helen</td><td>Smith</td><td>helen01@cs</td><td>19</td><td>3.8</td></tr>
+        <tr><td>59298</td><td>Aidan</td><td>Clarkson</td><td>aidan04@ece</td><td>18</td><td>3.3</td></tr>
+        </table>
+        <br/>
+        Table 1: A database instance of the <b>Student</b> relation
+      </center>
+      <ol type="a">
+        <li>
+          Give an example of an attribute (or set of attributes) that you can deduce <i>is not</i> a candidate key, based on this database instance being legal.
+        </li>
+        <li>
+          Is there any example of an attribute (or set of attributes) that you can deduce <i>is</i> a candidate key, based on this instance of the dtabase being legal?
+        </li>
+      </ol>
+    </p>
+  </li>
+  <li>
+  <p><b>(40 points)</b> The following tables form part of a database held in a relational DBMS:</p>
+  Hotel (<u>hotelNo</u>, hotelName, city)<br/>
+  Room (<u>roomNo</u>, <u>hotelNo</u>, type, price)<br/>
+  Booking (<u>hotelNo</u>, <u>guestNo</u>, <u>dateFrom</u>, dateTo, roomNo)<br/>
+  Guest (<u>guestNo</u>, guestName, guestAddress)<br/>
+  <ul>
+    <li>Hotel contains hotel details and hotelNo is the primary key;</li>
+    <li>Room contains room details for each hotel and (roomNo, hotelNo) forms the primary key;</li>
+    <li>Booking contains details of the bookings and (hotelNo, guestNo, dateFrom) forms the primary key;</li>
+    <li>Guest contains guest details, and guestNo is the primary key.</li>
+  </ul>
+  <ol>
+    <li>[Exercise 4.8] Identify the foreign keys in this schema. Explain how the entity and referential integrity rules apply to these relations.</li>
+    <li>[Exercise 4.9] Produce some sample tables for these relations that observe the relational integrity rules. Suggest some general constraints that would be appropriate for this schema.</li>
+  </ol>
+  </li>
+</ol>
+</div>
+</body>
+</html>
+

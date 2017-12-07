@@ -1,0 +1,26 @@
+SimCity 4 Command Line Options
+-w				Window Mode
+-f				Full Screen Mode
+-audio:off			No audio.
+-d:xx				Software | OpenGL | DirectX
+-CustomResolution:enabled	enables custom resolutions
+-r:WxYxZ			Screen Resolution, Z is 32 or 16 bit depth
+-Intro:off			No Intro videos.
+-CPUCount:x			Number of CPUs. Multiple threads seems buggy, CPUCount:1 won't crash.
+-EH:off				Reduces the shadow quality
+-CPUPriority:low		Low CPU Priority
+-IgnoreMissingModelDataBugs:xx	[on|off] disables brown boxes (shows nothing on error)
+-BackgorundLoader:xx		[on|off] enables loading non-visible models in background
+-l:english			[English | German | UK English | Traditional Chinese | Japanese]
+-AllowMultipleInstances		Allows Multiple Instances
+-CustomCursors:disabled		Disables Cursors.
+-Cursors:xx			[disabled | bw | color16 | color256 | fullcolor]
+-ExceptionHandling:off		Disables exception handling.
+-gp				Pauses the game when you switch windows.
+-IME:xx				[enabled|disabled] Enables in game IME on Asian systems.
+-RenderProp:,value		Sets a render property 
+-Restart			Only used internally for restarting the application
+-UserDir:path			Specifies the user directory.
+-Writelog:xx			[on|off] Allows writing 'computer-config-log.txt'.
+-CodePage:id			Set MSVCRT Codepage.
+-ConfigLog:xx			[server|off] The default server for computer-config-log.txt is studiotech.max.ad.ea.com.

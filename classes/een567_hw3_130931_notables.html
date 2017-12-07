@@ -1,0 +1,179 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  //list of interesting legal words http://kuancheen.blogspot.com/2005/07/legal-and-formal-adverbs.html
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+body ol li
+{
+  padding: 2px;
+}
+body ol li:first-child p
+{
+  margin-top: 0px;
+}
+body ol li:last-child p
+{
+  margin-bottom: 0px;
+}
+table
+{
+  border-collapse:collapse;
+}
+tr:first-child th, tr:first-child td
+{
+  border-bottom: 1px solid #000;
+  font-weight: normal;
+  padding-top: 8px;
+}
+tr:last-child td, tr:last-child th
+{
+  border-bottom: 1px solid #000;
+}
+td, th
+{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:1px;
+}
+.mname
+{
+  
+}
+</style>
+</head>
+<body>
+<div class="main">
+<span class="mname">Richard A. Marino</span>
+<h1>EEN567<br/>Database Design & Management</h1>
+<h2>Assignment 3</h2>
+
+<ol>
+  <li>
+    <p>
+      <b>(15 points)</b> [Exercise 3.2] Compare and contrast the two-tier client-server architecture for traditional DBMSs with the three-tier client-server architecture. Why is the latter architecture more appropriate for the Web? 
+    </p>
+    <p>
+      A determination between layers, and tiers should be mentioned beforehand. Layers are a way to logically break code into components. Tiers are physical nodes on which to place the aforementioned components.
+    </p>
+    <p>A <b>two-<i>layer</i></b> architecture contains two layers, the Data layer, and the layer that handles both Logic and Presentation. These layers can be distributed onto multiple machines to make a <b>two-<i>tier</i></b> system.</p>
+    <p>A <b>three-<i>layer</i></b> architecture contains three layers, the Presentation layer, the Logic layer, and the Data layer. These layers can be distributed onto multiple machines to make a <b>two-<i>tier</i></b>, <i>or</i> <b>three-<i>tier</i></b> system. This system separates the logic from the storage and presentation layers, allowing it to run on an independent machine, if desired.</p>
+    <p>In the case of the web, a <b>three-<i>tier</i></b>, <b>three-<i>layer</i></b> system is extremely desirable. In a web application, the presentation layer will likely be considered the web browser of the user, while the web server running some application (written in PHP, ASP.NET, Java Server Pages, etc.) which accesses the database be the logic layer. The Data layer/tier would be the actual database. In a web application, this more distributed model is preferable, as it allows for better security (reducing the chances of Denial of Service attacks), and better load balancing.</p>
+  </li>
+  <li>
+    <p>
+      <b>(15 points)</b> [Exercise 3.11] Describe the internal architecture of Oracle.
+    </p>
+    <p>
+      An Oracle database instance is contained primarily within a single process acting as a system service. The process contains the memory structures and threads that are needed to access the database.
+    </p>
+    <p>
+      When a client connects to the instance, it connects via a shadow thread. The shadow thread then connects directly with the process monitor. The memory structures (within the process) include a shared pool of library cache, and a data dictionary cache, a database buffer cache, and a redo log buffer.
+    </p>
+    <p>
+      Other threads running within the process include the required <b>database writer</b>, <b>log writer</b>, <b>process monitor</b>, and <b>system monitor</b>. Additionally, the optional features <b>checkpoint process</b>, <b>archive process</b>, and <b>distributed recovery process</b> run as threads within the process.
+    </p>
+    <p>
+      There is also an internal Oracle Database containing data files, control files, and redo log files. Additional data associated with this database is the parameter file, password file, and archived log files.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>(15 points)</b> [Exercise 4.5] Discuss the differences between the candidate keys and the primary key of a relation. Explain what is meant by a foreign key. How do foreign keys of relations relate to candidate keys? Give examples to illustrate your answer.
+    </p>
+    <p>
+      A <b>superkey</b> is the set of attributes of a relation variable for which it holds that in all relations assigned to that variable, there are no distinct tuples that have the same values for these attributes. That is, the superkey can be used to select exactly one row in the database in a reliable and consistent manner.
+    </p>
+    <p>
+      A <b>candidate key</b> is a minimal superkey for a particular relation; a set of attributes for which no two tuples contain the same values for these attributes, and there is no proper subset of these attributes that will adequately allow for uniqueness (i.e. the set is minimal). There may be multiple candidate keys for a particular relation.
+    </p>
+    <p>
+    A <b>primary key</b> is a candidate key that is selected as the main index into the relation. There may only be one primary key in a particular relation. The remaining candidate keys are called <b>alternate keys</b>. It is preferred to select the primary key that is most efficient to compare when performing an action against the database (e.g. integers are preferred over strings or blobs, as the former can be compared in significantly less time than the latter).
+    </p>
+    <p>
+    A <b>foreign key</b> is a field in a relation that refers to records in another relation. For example, we can have a table of high schools, which contains the address and city of a particular school, as well as a state-assigned ID, which will be used as the primary key. Another table contains a list of all students in the state. This table contains the student's first and last name, student ID (primary key), and the high-school ID (a foreign key). In this case, if one wishes to look up the city in which a student goes to school, he can perform a join between the two tables, and get this information by selecting data from the table of high schools as well as the table of students.
+    </p>
+  </li>
+  <li>
+    <p>
+      <b>(15 points)</b> Consider the instance of the <b>Student</b> relation in Table 1.
+      <center>
+        <table>
+        <tr><th>sid</th><th>fname</th><th>lname</th><th>login</th><th>age</th><th>GPA</th></tr>
+        <tr><td>50000</td><td>John</td><td>Smith</td><td>john02@ece</td><td>19</td><td>3.3</td></tr>
+        <tr><td>53200</td><td>Mary</td><td>Harper</td><td>mary05@cs</td><td>18</td><td>3.0</td></tr>
+        <tr><td>54534</td><td>Steve</td><td>Anderson</td><td>steve10@math</td><td>20</td><td>3.5</td></tr>
+        <tr><td>56980</td><td>John</td><td>Henderson</td><td>john05@ece</td><td>18</td><td>2.9</td></tr>
+        <tr><td>57825</td><td>Helen</td><td>Smith</td><td>helen01@cs</td><td>19</td><td>3.8</td></tr>
+        <tr><td>59298</td><td>Aidan</td><td>Clarkson</td><td>aidan04@ece</td><td>18</td><td>3.3</td></tr>
+        </table>
+        <br/>
+        Table 1: A database instance of the <b>Student</b> relation
+      </center>
+      <ol type="a">
+        <li>
+          Give an example of an attribute (or set of attributes) that you can deduce <i>is not</i> a candidate key, based on this database instance being legal.
+          <ul>
+            <li>Obviously, the <b>age</b>, <b>fname</b>, <b>lname</b>, and <b>GPA</b> attributes would be inadequate candidate keys, considering that there are duplicates of all of those attributes.</li>
+            <li>The remaining fields are the <b>sid</b>, and <b>login</b>.
+          </ul>
+        </li>
+        <li>
+          Is there any example of an attribute (or set of attributes) that you can deduce <i>is</i> a candidate key, based on this instance of the database being legal?
+          <ul>
+            <li>Assuming the database is implemented in a competent, and prudent manner, <b>sid</b> would be a candidate key.</li>
+            <li>Additionally, <b>login</b> would also be a reasonable candidate key. However, it could not be considered competent, and prudent to make it a primary key, as operations dealing with strings are slow compared to integers, which would ultimately lead to the database suffering performance penalties similar to that of the University of Miami CaneLink system.</li>
+          </ul>
+        </li>
+      </ol>
+    </p>
+  </li>
+  <li>
+  <p><b>(40 points)</b> The following tables form part of a database held in a relational DBMS:</p>
+  Hotel (<u>hotelNo</u>, hotelName, city)<br/>
+  Room (<u>roomNo</u>, <u>hotelNo</u>, type, price)<br/>
+  Booking (<u>hotelNo</u>, <u>guestNo</u>, <u>dateFrom</u>, dateTo, roomNo)<br/>
+  Guest (<u>guestNo</u>, guestName, guestAddress)<br/>
+  <ul>
+    <li>Hotel contains hotel details and hotelNo is the primary key;</li>
+    <li>Room contains room details for each hotel and (roomNo, hotelNo) forms the primary key;</li>
+    <li>Booking contains details of the bookings and (hotelNo, guestNo, dateFrom) forms the primary key;</li>
+    <li>Guest contains guest details, and guestNo is the primary key.</li>
+  </ul>
+  <ol>
+    <li>[Exercise 4.8] Identify the foreign keys in this schema. Explain how the entity and referential integrity rules apply to these relations.
+      <ul>
+        <li>Hotel: No foreign keys.</li>
+        <li>Room: <b>hotelNo</b> is a foreign key, into the <b>Hotel</b> table. It should contain a number that matches to a hotel in the aforementioned table.</li>
+        <li>Booking: <b>hotelNo</b> is a foreign key, into the <b>Hotel</b> table. It should contain a number that matches to a hotel in the aforementioned table. Additionally, <b>GuestNo</b> is a foreign key into the Guest table, wherein it references a guest.</ul>
+    </li>
+    <li>[Exercise 4.9] Produce some sample tables for these relations that observe the relational integrity rules. Suggest some general constraints that would be appropriate for this schema.
+    
+    </li>
+  </ol>
+  </li>
+</ol>
+</div>
+</body>
+</html>
+

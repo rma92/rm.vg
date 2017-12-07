@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+#c1, #c2
+{
+  border: 1px solid red;
+}
+#c1
+{
+  position: absolute;
+  top:0;
+  left:0;
+  right:0;
+  top:0;
+}
+#c2
+{
+  display:none;
+}
+/*22992 23040 23056*/
+</style>
+</head>
+<body>
+<canvas id=c1 width=640 height=480>
+</canvas>
+<canvas id=c2 width=640 height=28999>
+</canvas>
+</body>
+<script>
+var w = 400; h = 400;
+var x = 0; y = 0;
+var mX = 0; mY = 0; mOn = true;
+var lasttime = 0;
+var redrawdelay = 13;//ms between frames
+
+var textX = 0;
+var textY = 0;
+var textLH = 16;
+
+//puts <a href=$url> around urls.
+function linkify(text)//http://stackoverflow.com/questions/6707476/how-to-find-if-a-text-contains-url-string
+{
+  var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  return text.replace(exp,"<a href='$1'>$1</a>"); 
+}
+
+function dosomething()
+{
+  var c2 = document.getElementById('c2');//document.createElement('canvas');
+  var ctx = c2.getContext('2d');
+
+  var canvas = document.getElementById('c1');
+  var ctx2 = canvas.getContext('2d');file:///home/rmarino1/Documents/html/canvastest/index.html
+  ctx.fillStyle = "#FFAAAA";
+  ctx.fillRect( 0, 0, 640, 8000 );
+  ctx.fillStyle = "#000000";
+  for(i = 0; i < 100; ++i )
+  {
+    
+    ctx.beginPath();
+    ctx.moveTo( Math.random() * 600, Math.random() * 600);
+    ctx.strokeStyle = "rgb(" 
+                    + parseInt(92 + Math.random() * 128) 
+                    + ","
+                    + parseInt(92 + Math.random() * 128) 
+                    + ","
+                    + parseInt(92 + Math.random() * 128) 
+                    + ")";
+
+    ctx.lineTo( Math.random() * 600, Math.random() * 600 ); 
+    ctx.stroke();
+  }
+  //make text.
+}
+
+function textWrite(s)
+{ 
+  var c2 = document.getElementById('c2');//document.createElement('canvas');
+  var ctx = c2.getContext('2d');
+  ctx.font = "16px sans";
+  var lines = [];
+  var buff = s.split("\n");
+  var i2;
+  var i;
+  var j;
+  var max_width = 400 - textX;
+  for(i2 = 0; i2 < buff.length; ++i2 )
+  {
+    var text = buff[i2] + " ";
+    while( text.length )
+    {
+      for( i=text.length; ctx.measureText(text.substr(0,i)).width > max_width; --i);
+      result = text.substr(0,i);
+      if( i !== text.length ) for( j=0; result.indexOf(" ",j) !== -1; j=result.indexOf(" ",j)+1);
+      lines.push( result.substr(0, j || result.length ) );
+      //width = Math.max( width, ctx.measureText( lines[ lines.length-1]).width );
+      text = text.substr( lines[ lines.length-1].length, text.length );
+    }
+
+    //lines.push( buff[i2] );
+  }
+  //c2.height = c2.height + (buff.length * 16 );
+  for(i2 = 0; i2 < lines.length; ++i2 )
+  {
+    ctx.fillText( lines[i2], textX, textY + textLH);
+    textY += textLH;
+    
+  }
+
+ 
+}
+
+function load_comments(sub, c)
+{
+  var url = "https://www.reddit.com/r/" + sub + "/comments/" + c + "/.json";
+  var xh = new XMLHttpRequest();
+  xh.onreadystatechange = function()
+  {
+    console.log( xh.readyState + " " + xh.status );
+    if( xh.readyState == 4 )
+    {
+      if( xh.status == 200 )
+      {
+        obj = JSON.parse( xh.responseText );
+        var s = render_comments(sub, obj);
+        //cache_set( c, s );
+        //document.getElementById("ox").innerHTML += s;
+      }
+    }
+  };
+  xh.open("GET", url, true);
+  xh.send(null);
+}
+
+function render_comments(sub, obj)
+{
+  var str =  ""; 
+  str += linkify( obj[0].data.children[0].data.selftext );//.replace(/(?:\r\n|\r|\n)/g, '<br/>') );
+  str += "\n---------------------------\n";
+  for( var i = 0; i < obj[1].data.children.length; ++i )
+  {
+    str += "\n" + parseCommentTree( obj[1].data.children[i], sub ) + "\n";
+  }
+  str += "";
+  return str;
+}
+
+function parseCommentTree( co, sub)
+{ //or use body_html.
+  var str = "";
+  if( co.kind == 't1' )
+  {
+    var b = co.data.body;
+    b = linkify( b );
+
+//    b = b.replace( /(?:\r\n|\r|\n)/g, '<br/>');
+    //filter bodytext to get links
+
+    textWrite (co.data.score 
+    + " " + co.data.author 
+    + " " + co.data.id + "\n");
+
+    textWrite( b + "\n" );
+    if( co.data.replies )
+    {
+      for( var i = 0; i < co.data.replies.data.children.length; ++i )
+      {
+        if( co.data.replies.data.children[i].kind == "more" )
+        { 
+          //var tt = "cx" + ++reddit_link_counter;
+          //str += "<li id='" + tt + "'>" 
+          //+ "<button onclick=\"loadMoreComments(\'" + co.data.link_id + "\', \'" + sub + "\', \'" + co.data.replies.data.children[i].data.children + "\',\'" + tt + "\')\">M</button></li>";
+        }
+        else
+        {
+          textX += 10;
+          str += "<li>" + parseCommentTree( co.data.replies.data.children[i], sub ) + "</li>";
+          textX -= 10;
+        }
+      }
+//      str += "</ul>";
+    }
+    str += "";
+  }//kind == t1
+  return str;
+}
+
+function redraw()
+{
+  var c = document.getElementById('c1');
+  var ctx = c.getContext('2d');
+  var c2 = document.getElementById('c2');
+  var now = new Date().getTime();
+
+  ctx.clearRect(0,0,400,400);
+  ctx.drawImage( c2, x, y, w, h, 0, 0, w, h);
+
+  var now2 = new Date().getTime();
+  ctx.fillText(parseFloat( 1000/ (now - lasttime) ),0,12);
+    lasttime = now;
+}
+
+function redrawSch()
+{
+  //deal with momentum.
+  if( mOn )
+  {
+    mX *= .96 ;
+    mY *= .96 ;
+    mX = Math.floor( mX );
+    mY = Math.floor( mY );
+    //mX = Math.max( mX, 0);
+    //mY = Math.max( mY, 0);
+    if( x - mX >= 0 && x - mX <= 400)
+      x -= mX;
+    if( y - mY >= 0 )
+      y -= mY;
+  }
+  redraw();
+  setTimeout( redrawSch, redrawdelay);
+  
+}
+setTimeout( redrawSch, redrawdelay);
+dosomething();
+document.body.addEventListener("keydown", function(event){
+  event.preventDefault();
+  console.log( event.keyCode );
+  if( event.keyCode == 38 ) y -= 2;
+  if( event.keyCode == 40 ) y += 2;
+  if( event.keyCode == 37 ) x -= 2;
+  if( event.keyCode == 39 ) x += 2;
+});
+
+document.body.addEventListener("mousemove", function(event)
+{
+  if( event.buttons & 1 ) 
+  {
+    mOn = false;
+    var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+    var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+    if( x - movementX >= 0 && x - movementX <= 400)
+    {
+      x -= movementX;
+      mX = movementX;
+    }
+    if( y - movementY >= 0 )
+    {
+      y -= movementY;
+      mY = movementY;
+    }
+//    console.log( event.buttons);
+  }
+});
+document.body.addEventListener("mouseup", function(event)
+{
+  mOn = true;
+});
+//up 38; down 40; left 37; right 39; enter 13; esc 27
+//load_comments("dolan", "5rjv1m");
+load_comments("The_Donald", "5tukvz");
+//https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=max&explaintext&titles=Google&redirects=
+
+
+</script>
+</html>
+

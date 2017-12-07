@@ -1,0 +1,102 @@
+<?php
+$_lport = 80;
+$_ltimefstr = '%Y-%m-%d %H:%M:%S';
+date_default_timezone_set('America/New_York');
+$pages['/index.html'] = "<!DOCTYPE HTML>\r\n<html><head><title>Hi</title></head><body><h1>It Works!</h1></body></html>";
+$pagetypes['/index.html'] = 'text/html';
+$pages['/'] = $pages['/index.html'];
+$pagetypes['/'] = 'text/html';
+$pages[404] = "404 not found.";
+$pagetypes[404] = 'text/html';
+
+$soc = socket_create( AF_INET, SOCK_STREAM, SOL_TCP );
+socket_bind( $soc, '0.0.0.0', $_lport );
+socket_listen( $soc );
+socket_set_nonblock( $soc );//Make it asynchronous.
+$clients = array( $soc );
+$clientdata = array();
+while( 1 )
+{
+  if( socket_select( $read = $clients, $write = NULL, $except = NULL, 15) < 1 )
+  {
+    continue;
+  }
+  
+  //new connection?
+  if( in_array( $soc, $read ) )
+  {
+    while( @($c = socket_accept($soc)) != FALSE)
+    {
+      socket_getpeername( $c, $cip, $cport);
+      echo '[', strftime($_ltimefstr) , '] Client Connected: [' . $cip . ':' . $cport . "]\n";
+      $clients[ $cip . ':' . $cport ] = $c;
+      $clientdata[ $cip . ':' . $cport ] = '';
+      $key = array_search( $soc, $read );
+      unset( $read[$key] );
+    }
+  }
+
+  foreach( $read as $c )
+  {
+    if( $c == $soc ) { continue; }
+    $data = @socket_read( $c, 1024, PHP_NORMAL_READ );
+    socket_getpeername( $c, $cip, $cport );
+    if( $data === false )
+    {
+      //client disconnected
+      $k = array_search( $c, $clients );
+      echo '[', strftime($_ltimefstr) , '] Client [', $cip, ':', $cport, "] Disconnected\n";
+      unset( $clients[$k] );
+      continue;
+    }
+    $data = trim( $data, "\0" );
+    $clientdata[ $cip . ':' . $cport ] .= $data;
+    if( strrpos( $clientdata[ $cip . ':' . $cport ], "\r\n\r\n" ) )
+    {
+      //echo "==data from " , $cip , ':' , $cport , "==\n", $clientdata[ $cip . ':' . $cport ], "\n==\n";     
+      $lines = explode( "\n", $clientdata[ $cip . ':' . $cport ]);
+      $f = explode( ' ', $lines[0] );
+      
+      $rqvars = array();
+      if( isset( $f[1] ) )
+      {
+        $rq = explode( '?', $f[1]);
+        if( isset( $rq[1] ) )
+        {//parameters
+          $rqq = explode( '&', $rq[1] );
+          foreach( $rqq as $r )
+          {
+            $vars = explode( '=', $r );
+            $rqvars[ $vars[0] ] = urldecode( $vars[1] );
+          }
+        }
+      }
+      $page = '';//the file requested is in $rq[0];
+      $pagetype = 'text/html';
+      $http_str = '500 Internal Server Error';
+      echo '[', strftime($_ltimefstr) , '] Client [', $cip, ':', $cport, '] requests "', $rq[0], "\"\n";
+      if( isset( $pages[ $rq[0] ] ) )
+      {
+        $http_str = '200 OK';
+        $page = $pages[ $rq[0] ];
+        if( isset( $pagetypes[ $rq[0] ] ) )
+        {
+          $pagetype = $pagetypes[ $rq[0] ];
+        }
+      }
+      else
+      {//404
+        $page = $pages[ 404 ];
+        $http_str = '404 Not Found';
+      }
+      //send data
+      echo '[', strftime($_ltimefstr) , '] Client [', $cip, ':', $cport, '] gets "', $http_str, "\"\n";
+      $send_buf = 'HTTP/1.1 ' . $http_str . "\r\nContent-Length: " . strlen($page) . "\r\nConnection:close\r\nContent-Type: " . $pagetype . "\r\n\r\n" . $page;
+      socket_write( $c, $send_buf, strlen( $send_buf ));
+      socket_close( $c );
+      $k = array_search( $c, $clients );
+      unset ($clients[$k] );
+    }
+  }
+}
+?>

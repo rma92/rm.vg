@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Can Pyramid Tool</title>
+<script>
+function calc()
+{
+  var h = document.getElementById('heightbox').value;
+  var kind = document.getElementById('type').value;
+  var tot = -1024;
+  if(kind == 1)//square
+  {
+    tot = 0;
+    for( var i = h; i > 0; --i)
+    {
+      tot += i * i;
+    }
+  }
+  else if(kind == 2)//triangle
+  {
+    tot = 0;
+    for(var i = h; i > 0; --i)
+    {
+      for(var j = i; j > 0; --j)
+      {
+        tot += parseInt(j);
+      }
+    }
+  }
+  else if(kind == 3)//linear
+  {
+    tot = 0;
+    for(var i = h; i > 0; --i)
+    {
+      tot += parseInt(i);
+    }
+  }
+  alert(
+  "Cans Needed: " + 
+    tot);
+}
+</script>
+</head>
+<body>
+<div style="border:1px solid black;padding:10px;">
+<table>
+<tr>
+<td>Height [Cans]</td>
+<td>
+<input type=number name=heightbox id=heightbox value=2 />
+</td>
+</tr>
+<tr>
+<td>
+Footprint Shape<br/>
+(assuming each row has one less can)
+</td>
+<td>
+<select name=type id=type>
+  <option value=1>Square</option>
+  <option value=2 selected>Triangle</option>
+  <option value=3>Linear</option>
+</select>
+</td>
+</tr>
+<tr>
+<td colspan=2>
+<button onclick="calc()">How many cans?</button>
+</td>
+</tr>
+<tr>
+<td>
+<span id="textOut"> </span>
+</td>
+</tr>
+</table>
+</div>
+</body>
+</html>
+

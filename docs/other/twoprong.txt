@@ -1,0 +1,11 @@
+Two Prong Outlet Rant (regarding antique materials at the University of Miami College of Engineering)
+Richard A. Marino
+
+It's 2013.  We are learning material from 1981.  The microprocessor professor doesn't even acknowledge that the 286 exists -- or even the 8086 for that matter!
+1981 was 32 years ago.  If you learned 32 year old material about computers in 1981, there'd be very little to learn (that'd be 1949).  Transistors barely even existed at that point!
+For comparison, modern electrical outlets were invented in 1905, and became standard by 1915.  
+Grounded outlets were around by 1937, first appeared in the National Electric Code in 1947 (required in laundry rooms), became mandatory in most places in 1958, and everywhere in 1961.  1961 was 52 years ago.  
+There were 46 years between 1915 and 1961.  Two prong outlets have now been against Code for longer than the period where they were normal and had not been superseded by grounded outlets.  
+We really shouldn't be seeing two prong outlets anywhere in the United States anymore.  Likewise, we really shouldn't be seeing 32 year old crap in a supposedly modern engineering school in this century.
+
+[The Home Depot still sells two-prong outlets, specifically for replacement installations, the only time they are legal to install.]

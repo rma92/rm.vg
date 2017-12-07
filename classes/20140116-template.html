@@ -1,0 +1,397 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<!--
+Template 2.0 (Jan 2014)
+ . Easier to insert VIM code.
+ . Two columns of printed text (only print view).
+Template 1.1 (Late Sep 2013)
+ . Added Code highlighting and line numbers (C, Verilog, VHDL).
+Template 1.0 (Early Sep 2013)
+ . Initial Clean release 
+(C) 2012-2014 Rich Marino
+-->
+
+<!--
+At the time of this writing (14 Jan 2014) only IE11 seems to support the column module of CSS3 correctly...even with prefixes.
+-->
+<style>
+@media print
+{
+  body
+  {
+    font-family: "Garamound", "Times New Roman", serif;
+    font-size: 12px; /* 10 for IEEE, 12 for better readability */
+    column-count: 2;
+    column-gap: 2em;
+    /* column-rule: thin solid black; */
+  }
+  h1.pagetitle, h1.subtitle1, .author
+  {
+    column-span: all;
+    break-before: column;
+    break-inside: avoid-column;
+    break-after: avoid-column;
+  }
+  p
+  {
+  }
+  h1.pagetitle
+  {
+    page-break-before: always; 
+    page-break-after: avoid;
+    text-align: center;
+    font-size: 24px;
+  }
+  body>h1:first-of-type
+  {
+    page-break-before: avoid;
+  }
+  h1.subtitle1
+  {
+    font-size: 14px; /* 14 for IEEE */
+    text-align: center;
+    page-break-before: avoid;
+    page-break-after: avoid;
+  }
+  h1
+  {
+    font-size: 16px;
+  }
+  h2
+  {
+    font-size: 14px;
+  }
+  li
+  {
+  }
+  table
+  {
+    border-collapse: collapse;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    break-inside: avoid-column;
+  }
+  table tr:nth-child(odd)
+  {
+    background-color: #fff;
+  }
+  table tr:nth-child(even)
+  {
+    background-color: #ffff99;
+    
+    border: 1px solid #ffff99;
+  }
+  table th, table td
+  {
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+  table th
+  {
+    border-bottom: thin solid black;
+  }
+  #toc_link_s
+  {
+    display: none;
+  }
+  .imagetable img
+  {
+    width: 320px;
+  }
+}
+@media screen
+{
+  body
+  {
+    color: #000;
+    background-color:#EEE;
+    font-family: "Helvetica", "Arial", "Verdana", sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+  h1, h2, h3, h4
+  {
+    font-family: "ClearviewHwy-4-W", "Verdana", "Arial", sans-serif;
+  }
+  h1.pagetitle
+  {
+    text-align: center;
+    font-size: 24px;
+  }
+  h1.subtitle1
+  {
+    font-size: 20px;
+  }
+  h1
+  {
+    text-align: left;
+    font-size: 20px;
+  }
+  h2
+  {
+    text-align: left;
+    font-size: 18px;
+  }
+  h3
+  {
+    text-align: left;
+    font-size: 16px;
+  }
+  .mname
+  {
+    position: fixed;
+    top: 0;
+  }
+  table
+  {
+    border-collapse: collapse;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+  }
+  table tr:nth-child(odd)
+  {
+    background-color: #EEE;
+  }
+  table tr:nth-child(even)
+  {
+    background-color: #ffff99;
+    border: 1px solid #ffff99;
+  }
+  table th, table td
+  {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  table th
+  {
+    border-bottom: thin solid black;
+  }
+}
+#toc
+{
+  border: thin dotted black;
+  display: table;
+  margin: 8px;
+  padding: 8px;
+  padding-right: 8px;
+}
+#toc_title
+{
+  font-size: 12px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 8px;
+  padding-right: 8px;  
+  text-align:center;
+}
+#toc_outp ul
+{
+  list-style:none;
+  list-style-type:none;
+  margin: 0;
+  padding-top:0;
+  padding-bottom: 0;
+  padding-left:16px;
+  text-indent: 0;
+}
+.imagetable
+{
+  caption-side: bottom;
+}
+table.code
+{
+  border: thin solid black;
+}
+</style>
+
+<script>
+//Table of Contents.
+var h1c = 0;
+var h2c = 0;
+var h3c = 0;
+var h4c = 0;
+var h5c = 0;
+var tta = "["; //to the left of the title number.
+var ttb = "] "; //to the right of the title number.
+function buildRec(nodes, elm, lv)
+{
+  var node;
+  // filter
+  do
+  {
+    node = nodes.shift();
+  } while(node && !(/^h[123456]$/i.test(node.tagName)));
+  // process the next node
+  if(node)
+  {
+    var ul, li, cnt;
+    var curLv = parseInt(node.tagName.substring(1));
+      if(curLv == lv)
+      { // same level append an il
+        cnt = 0;
+      }
+      else if(curLv < lv)
+      { // walk up then append il
+        cnt = 0;
+        do
+        {
+          elm = elm.parentNode.parentNode;
+          cnt--;
+        } while(cnt > (curLv - lv));
+      }
+      else if(curLv > lv)
+      { // create children then append il
+        cnt = 0;
+        do
+        {
+          li = elm.lastChild;
+          if(li == null)
+          {
+            li = elm.appendChild(document.createElement("li"));
+          }
+          elm = li.appendChild(document.createElement("ul"));
+          cnt++;
+        } while(cnt < (curLv - lv));
+      }
+      li = elm.appendChild(document.createElement("li"));
+      // replace the next line with archor tags or whatever you want
+      var secID = "";
+      if(curLv == 1)
+      {
+        secID = ++h1c;
+        h2c = 0;
+        h3c = 0;
+        h4c = 0;
+        h5c = 0;
+      }
+      else if(curLv == 2)
+      {
+        secID = h1c + "." + ++h2c;
+        h3c = 0;
+        h4c = 0;
+        h5c = 0;
+      }
+      else if(curLv == 3)
+      {
+        secID = h1c + "." + h2c + "." + ++h3c;
+        h4c = 0;
+        h5c = 0;
+      }
+      else if(curLv == 4)
+      {
+        secID = h1c + "." + h2c + "." + h3c + "." + ++h4c;
+        h5c = 0;
+      }
+      else if(curLv == 5)
+      {
+        secID = h1c + "." + h2c + "." + h3c + "." + h4c + "." + ++h5c;
+      }
+      else
+      {
+        secID = "";
+      }
+      li.innerHTML = tta + "<a href=\"#sec" + secID + "\">" + secID + "</a>" + ttb + node.innerHTML;
+      node.innerHTML = tta + "<a name=\"sec" + secID + "\">" + secID + "</a>" + ttb + node.innerHTML;
+      // recursive call
+      buildRec(nodes, elm, lv + cnt);
+    }
+}
+
+function makeLinks()
+{
+  var all = document.getElementById("content").getElementsByTagName("*");
+  var nodes = []; 
+  for(var i = all.length; i--; nodes.unshift(all[i]));
+  var result = document.createElement("ul");
+  buildRec(nodes, result, 1);
+  document.getElementById("toc_outp").appendChild(result);
+}
+
+var toc_vis_state = 1
+function toggleToc()
+{
+  if(toc_vis_state == 1)
+  {
+    document.getElementById("toc_outp").style.display = "none";
+    toc_vis_state = 0;
+    document.getElementById("toc_link").innerHTML = "Show";
+  }
+  else
+  {
+    document.getElementById("toc_outp").style.display = "table";
+    toc_vis_state = 1;
+    document.getElementById("toc_link").innerHTML = "Hide";
+  }
+}
+
+</script>
+</head>
+<body>
+<h1 class=pagetitle>Paper Title</h1>
+<h1 class=subtitle1>Subtitle</h1>
+<div class="author">
+Richard A. Marino<br/>
+Windows Devices and Networking<br/>
+Microsoft Corporation<br/>
+Redmond, Washington, United States<br/>
+r@rm1.me<br/>
+</div>
+<div id=toc>
+<div id=toc_title><b>Contents</b> <span id=toc_link_s> [<a id=toc_link href="javascript:toggleToc()">Hide</a>] </span> </div>
+  <div id=toc_outp>
+    The table of contents requires JavaScript. 
+  </div>
+</div>
+<div id=content>
+<!--content-->
+<h1>The Section of the Lorem Ipsum</h1>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in volutpat lacus, sed placerat massa. Nam suscipit pharetra magna, lacinia convallis mauris semper id. Nam iaculis diam ac placerat malesuada. Vivamus dictum leo nisi, vitae mattis lorem sagittis ac. Aenean hendrerit enim eros, eget interdum lorem tincidunt sed. Maecenas in iaculis magna. Duis tincidunt ligula eget felis laoreet, vel gravida felis feugiat. Nulla rutrum, diam eu cursus facilisis, dolor lectus tempus ligula, auctor congue velit urna non libero. Suspendisse placerat mauris tortor, at consequat leo iaculis vel. Sed ac diam accumsan, fringilla orci sed, congue neque. Mauris sit amet ligula sagittis, rhoncus nibh eget, egestas mi. Suspendisse et felis lobortis ligula auctor interdum id nec nulla. Vestibulum tincidunt neque sed convallis tincidunt. Proin vulputate arcu vel placerat laoreet. Nullam porta, mauris nec ultrices dapibus, est justo ultrices est, non suscipit tortor sem eget odio. Maecenas ligula dui, rutrum eu erat eu, eleifend scelerisque erat.</p>
+
+<p>Etiam est odio, hendrerit nec magna quis, tempor vehicula ante. Curabitur at lorem sed arcu adipiscing gravida. Morbi at tellus id nulla vestibulum lacinia. Curabitur pretium est id sapien sagittis hendrerit. Donec vestibulum ac orci id tempus. Sed fringilla mi eu sapien accumsan, eget laoreet leo sollicitudin. Maecenas pulvinar interdum faucibus. Proin at nibh at augue tincidunt volutpat vitae id velit. Nam lacinia sit amet urna a molestie. Ut euismod suscipit suscipit. Vivamus eu dignissim neque. Sed consequat nulla feugiat erat iaculis pharetra. Ut tempus ipsum eros, id tristique erat dignissim sit amet. Aliquam dictum ipsum eget libero placerat pretium. Aenean eget volutpat mi. Nam dictum elit nisi, eu tempus turpis facilisis vitae.</p>
+<h1>The Other Section of the Lorem Ipsum</h1>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in volutpat lacus, sed placerat massa. Nam suscipit pharetra magna, lacinia convallis mauris semper id. Nam iaculis diam ac placerat malesuada. Vivamus dictum leo nisi, vitae mattis lorem sagittis ac. Aenean hendrerit enim eros, eget interdum lorem tincidunt sed. Maecenas in iaculis magna. Duis tincidunt ligula eget felis laoreet, vel gravida felis feugiat. Nulla rutrum, diam eu cursus facilisis, dolor lectus tempus ligula, auctor congue velit urna non libero. Suspendisse placerat mauris tortor, at consequat leo iaculis vel. Sed ac diam accumsan, fringilla orci sed, congue neque. Mauris sit amet ligula sagittis, rhoncus nibh eget, egestas mi. Suspendisse et felis lobortis ligula auctor interdum id nec nulla. Vestibulum tincidunt neque sed convallis tincidunt. Proin vulputate arcu vel placerat laoreet. Nullam porta, mauris nec ultrices dapibus, est justo ultrices est, non suscipit tortor sem eget odio. Maecenas ligula dui, rutrum eu erat eu, eleifend scelerisque erat.</p>
+
+<p>Etiam est odio, hendrerit nec magna quis, tempor vehicula ante. Curabitur at lorem sed arcu adipiscing gravida. Morbi at tellus id nulla vestibulum lacinia. Curabitur pretium est id sapien sagittis hendrerit. Donec vestibulum ac orci id tempus. Sed fringilla mi eu sapien accumsan, eget laoreet leo sollicitudin. Maecenas pulvinar interdum faucibus. Proin at nibh at augue tincidunt volutpat vitae id velit. Nam lacinia sit amet urna a molestie. Ut euismod suscipit suscipit. Vivamus eu dignissim neque. Sed consequat nulla feugiat erat iaculis pharetra. Ut tempus ipsum eros, id tristique erat dignissim sit amet. Aliquam dictum ipsum eget libero placerat pretium. Aenean eget volutpat mi. Nam dictum elit nisi, eu tempus turpis facilisis vitae.</p>
+<h2>2A</h2>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in volutpat lacus, sed placerat massa. Nam suscipit pharetra magna, lacinia convallis mauris semper id. Nam iaculis diam ac placerat malesuada. Vivamus dictum leo nisi, vitae mattis lorem sagittis ac. Aenean hendrerit enim eros, eget interdum lorem tincidunt sed. Maecenas in iaculis magna. Duis tincidunt ligula eget felis laoreet, vel gravida felis feugiat. Nulla rutrum, diam eu cursus facilisis, dolor lectus tempus ligula, auctor congue velit urna non libero. Suspendisse placerat mauris tortor, at consequat leo iaculis vel. Sed ac diam accumsan, fringilla orci sed, congue neque. Mauris sit amet ligula sagittis, rhoncus nibh eget, egestas mi. Suspendisse et felis lobortis ligula auctor interdum id nec nulla. Vestibulum tincidunt neque sed convallis tincidunt. Proin vulputate arcu vel placerat laoreet. Nullam porta, mauris nec ultrices dapibus, est justo ultrices est, non suscipit tortor sem eget odio. Maecenas ligula dui, rutrum eu erat eu, eleifend scelerisque erat.</p>
+<h2>2B</h2>
+<p>Etiam est odio, hendrerit nec magna quis, tempor vehicula ante. Curabitur at lorem sed arcu adipiscing gravida. Morbi at tellus id nulla vestibulum lacinia. Curabitur pretium est id sapien sagittis hendrerit. Donec vestibulum ac orci id tempus. Sed fringilla mi eu sapien accumsan, eget laoreet leo sollicitudin. Maecenas pulvinar interdum faucibus. Proin at nibh at augue tincidunt volutpat vitae id velit. Nam lacinia sit amet urna a molestie. Ut euismod suscipit suscipit. Vivamus eu dignissim neque. Sed consequat nulla feugiat erat iaculis pharetra. Ut tempus ipsum eros, id tristique erat dignissim sit amet. Aliquam dictum ipsum eget libero placerat pretium. Aenean eget volutpat mi. Nam dictum elit nisi, eu tempus turpis facilisis vitae.</p>
+<h2>2C</h2>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in volutpat lacus, sed placerat massa. Nam suscipit pharetra magna, lacinia convallis mauris semper id. Nam iaculis diam ac placerat malesuada. Vivamus dictum leo nisi, vitae mattis lorem sagittis ac. Aenean hendrerit enim eros, eget interdum lorem tincidunt sed. Maecenas in iaculis magna. Duis tincidunt ligula eget felis laoreet, vel gravida felis feugiat. Nulla rutrum, diam eu cursus facilisis, dolor lectus tempus ligula, auctor congue velit urna non libero. Suspendisse placerat mauris tortor, at consequat leo iaculis vel. Sed ac diam accumsan, fringilla orci sed, congue neque. Mauris sit amet ligula sagittis, rhoncus nibh eget, egestas mi. Suspendisse et felis lobortis ligula auctor interdum id nec nulla. Vestibulum tincidunt neque sed convallis tincidunt. Proin vulputate arcu vel placerat laoreet. Nullam porta, mauris nec ultrices dapibus, est justo ultrices est, non suscipit tortor sem eget odio. Maecenas ligula dui, rutrum eu erat eu, eleifend scelerisque erat.</p>
+<h1>The Section With The Figures</h1>
+<h2>Hi</h2>
+<table class=imagetable>
+<caption><b>Figure X.</b> Rich Marino</caption>
+<tr><td>
+<img src="rich.png" style="width:100px;height:100px;border-radius:50%/50%;border:6px double #999;">
+</td></tr>
+</table>
+<p>Etiam est odio, hendrerit nec magna quis, tempor vehicula ante. Curabitur at lorem sed arcu adipiscing gravida. Morbi at tellus id nulla vestibulum lacinia. Curabitur pretium est id sapien sagittis hendrerit. Donec vestibulum ac orci id tempus. Sed fringilla mi eu sapien accumsan, eget laoreet leo sollicitudin. Maecenas pulvinar interdum faucibus. Proin at nibh at augue tincidunt volutpat vitae id velit. Nam lacinia sit amet urna a molestie. Ut euismod suscipit suscipit. Vivamus eu dignissim neque. Sed consequat nulla feugiat erat iaculis pharetra. Ut tempus ipsum eros, id tristique erat dignissim sit amet. Aliquam dictum ipsum eget libero placerat pretium. Aenean eget volutpat mi. Nam dictum elit nisi, eu tempus turpis facilisis vitae.</p>
+
+<table>
+<caption><b>Table I</b> A Table.</caption>
+<tr><th>State</th><th>Population (Millions)</th><th>GDP ($Millions)</th></tr>
+<tr><td>California </td><td> 37.3</td><td> 2,080,600</td></tr>
+<tr><td>Texas </td><td> 25.1</td><td> 2,080,600</td></tr>
+<tr><td>New York</td><td> 19.4</td><td> 2,080,600</td></tr>
+<tr><td>Florida </td><td> 18.8</td><td> 2,080,600</td></tr>
+</table>
+
+<h3>H3</h3>
+<table class=imagetable>
+  <caption><b>Image I</b> Podob</caption>
+  <tr><td>
+    <img style="width: 200px" src="http://rm.vg/troll.png"/>
+  </td></tr>
+</table>
+<h4>H4</h4>
+<h5>h5</h5>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in volutpat lacus, sed placerat massa. Nam suscipit pharetra magna, lacinia convallis mauris semper id. Nam iaculis diam ac placerat malesuada. Vivamus dictum leo nisi, vitae mattis lorem sagittis ac. Aenean hendrerit enim eros, eget interdum lorem tincidunt sed. Maecenas in iaculis magna. Duis tincidunt ligula eget felis laoreet, vel gravida felis feugiat. Nulla rutrum, diam eu cursus facilisis, dolor lectus tempus ligula, auctor congue velit urna non libero. Suspendisse placerat mauris tortor, at consequat leo iaculis vel. Sed ac diam accumsan, fringilla orci sed, congue neque. Mauris sit amet ligula sagittis, rhoncus nibh eget, egestas mi. Suspendisse et felis lobortis ligula auctor interdum id nec nulla. Vestibulum tincidunt neque sed convallis tincidunt. Proin vulputate arcu vel placerat laoreet. Nullam porta, mauris nec ultrices dapibus, est justo ultrices est, non suscipit tortor sem eget odio. Maecenas ligula dui, rutrum eu erat eu, eleifend scelerisque erat.</p>
+
+<h5>Moar h5</h5>
+<p>Etiam est odio, hendrerit nec magna quis, tempor vehicula ante. Curabitur at lorem sed arcu adipiscing gravida. Morbi at tellus id nulla vestibulum lacinia. Curabitur pretium est id sapien sagittis hendrerit. Donec vestibulum ac orci id tempus. Sed fringilla mi eu sapien accumsan, eget laoreet leo sollicitudin. Maecenas pulvinar interdum faucibus. Proin at nibh at augue tincidunt volutpat vitae id velit. Nam lacinia sit amet urna a molestie. Ut euismod suscipit suscipit. Vivamus eu dignissim neque. Sed consequat nulla feugiat erat iaculis pharetra. Ut tempus ipsum eros, id tristique erat dignissim sit amet. Aliquam dictum ipsum eget libero placerat pretium. Aenean eget volutpat mi. Nam dictum elit nisi, eu tempus turpis facilisis vitae.</p>
+</div>
+</body>
+<script> document.getElementById("toc_outp").innerHTML = ""; makeLinks(); </script>
+</html>

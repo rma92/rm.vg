@@ -1,0 +1,139 @@
+<?
+function resize_image_smart($orig, $dest_width=null, $dest_height=null)
+{
+  $orig_width = imagesx($orig);
+  $orig_height = imagesy($orig);
+  $vertical_offset = 0;
+  $horizontal_offset = 0;
+  if($dest_width == null)
+  {
+    if($dest_height == null)
+    {
+      die('$dest_width and $dest_height cant both be null!');
+    }
+    // height is locked
+    $dest_width = $dest_height * $orig_width / $orig_height;
+  } else {
+    if($dest_height == null)
+    {
+      // width is locked
+      $dest_height = $dest_width * $orig_height / $orig_width;
+    } else {
+      // both dimensions are locked
+      $vertical_offset = $dest_height - ($orig_height * $dest_width) / $orig_width;
+      $horizontal_offset = $dest_width - ($dest_height * $orig_width) / $orig_height;
+      if($vertical_offset < 0) $vertical_offset = 0;
+      if($horizontal_offset < 0) $horizontal_offset = 0;
+    }
+  }
+  $img = imagecreatetruecolor($dest_width, $dest_height);
+  imagesavealpha($img, true);
+  imagealphablending($img, false);
+  $transparent = imagecolorallocatealpha($img, 0, 0, 0, 127);
+  imagefill($img, 0, 0, $transparent);
+  imagecopyresampled($img, $orig, round($horizontal_offset / 2),
+                                  round($vertical_offset / 2),
+                                  0,
+                                  0,
+                                  round($dest_width - $horizontal_offset),
+                                  round($dest_height - $vertical_offset),
+                                  $orig_width,
+                                  $orig_height);
+  return $img;
+}
+
+function imagettftextSp($image, $size, $angle, $x, $y, $color, $font, $text, $spacing = 0)
+{        
+    if ($spacing == 0)
+    {
+        imagettftext($image, $size, $angle, $x, $y, $color, $font, $text);
+    }
+    else
+    {
+        $temp_x = $x;
+        for ($i = 0; $i < strlen($text); $i++)
+        {
+            $bbox = imagettftext($image, $size, $angle, $temp_x, $y, $color, $font, $text[$i]);
+            $temp_x += $spacing + ($bbox[2] - $bbox[0]);
+        }
+    }
+}
+
+function ih($text, $xout, $yout, $title = 'INTERSTATE', $state = '')
+{
+if(strlen($text) > 2)
+{
+  $baseimg = imagecreatefrompng ('iblankw.png');
+}
+else
+{
+  $baseimg= imagecreatefrompng ('iblank.png');
+}
+$baseimg_x = imagesx( $baseimg );
+//number
+$font_size = 240;//should be 300?
+if(strlen($text) > 3)
+{
+  $font_file = './T2000DOTHWYB.ttf';
+}
+else
+{
+  $font_file = './T2000DOTHWYD.ttf';
+}
+$text_color = imagecolorallocate($baseimg, 255, 255, 255);
+$type_space = imagettfbbox( $font_size, 0, $font_file, $text);
+$text_width = abs($type_space[4] - $type_space[0]);
+$text_x = ( $baseimg_x - $text_width) /2 - 15 ;
+if(strlen($state) > 0)
+{
+  $text_y = 440;
+}
+else
+{
+  $text_y = 440; //601 - 138?
+}
+imagettftextSp ($baseimg, $font_size, 0, $text_x, $text_y, $text_color, $font_file, $text);
+//title
+$font_size = 66;//should be 300?
+$font_file = './T2000DOTHWYC.ttf';
+$text_color = imagecolorallocate($baseimg, 255, 255, 255);
+$type_space = imagettfbbox( $font_size, 0, $font_file, $title);
+$text_width = abs($type_space[4] - $type_space[0]);
+$text_x = ( $baseimg_x - $text_width) /2 - 6;
+$text_y = 113; //601 - 138?
+imagettftextSp ($baseimg, $font_size, 0, $text_x, $text_y, $text_color, $font_file, $title);
+
+//state
+$font_size = 38;//should be 300?
+$font_file = './T2000DOTHWYC.ttf';
+$text_color = imagecolorallocate($baseimg, 255, 255, 255);
+$type_space = imagettfbbox( $font_size, 0, $font_file, $state);
+$text_width = abs($type_space[4] - $type_space[0]);
+$text_x = ( $baseimg_x - $text_width) /2 - 6;
+$text_y = 187; //601 - 138?
+imagettftextSp ($baseimg, $font_size, 0, $text_x, $text_y, $text_color, $font_file, $state);
+
+
+$x = resize_image_smart($baseimg, $xout, $yout);//should be 300?
+imagedestroy($baseimg);
+return $x;
+}
+
+header('Content-type: image/png');
+//2 digit: 601 x 601
+//3 digit: 751 x 601 ratio 1.249
+//4 digit: uses 3 digit shield with B font.
+//$ret = ih('H201', 205, 164, 'INTERSTATE', 'HAWAII');
+
+$state = '';
+$title = 'INTERSTATE';
+$text = '395';
+if(isset($_REQUEST['num'])) $text = $_REQUEST['num'];
+if(isset($_REQUEST['state'])) $state = $_REQUEST['state'];
+if(isset($_REQUEST['title'])) $title = $_REQUEST['title'];
+$h = 256;
+$w = (strlen($text) > 2)?(1.25 * $h):$h;
+$ret = ih($text, $w, $h, $title, $state);
+imagepng($ret);
+$imagedestroy($ret);
+?>

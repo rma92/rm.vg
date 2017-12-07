@@ -1,0 +1,79 @@
+Tunnel Supplies Information
+==Contents==
+I. Tunnel Supplies Found in Store Room
+II. Costs to obtain items
+XX. Version History
+==
+
+I. Tunnel Supplies Found in Store Room
+Q = quantity
+V = cost of obtaining another or eq (based on my guess), at retail
+I = name
+Q	V	I
+1	15	8 outlet surge protector
+12	5-10	6 outlet surge protector
+6	5-20	Spotlight
+15	5*	Lamps
++	10-20	Blacklights
+1	5-20	Powered Computer Speakers (buy at CompUSA)
+1	30	Xenon undercabinet lights 5 string
+1	5-10	VGA Cable
+
+*plus bulbs (cheap)
++ Many, didn't count.
+
+II. Costs to obtain items
+V = cost
+S = store where this price was found
+I = item
+V	S	I
+8	hd	halogen spot bulb (2 for 12)
+8.50	hd	clamp light fixture (8", $6 ffor 4"
+4.60	hd	4x crappy CFL bulb (60 watt eq)
+2	hd	4x incandescent
+12-15	hd	Blacklight Tube (depends on size)
+115	hd	30x florescent tubes F32T8, 48 in)
+59	hd 	30x F40T12 (48 in)
+13	hd	4' shop light (T12, 34W x2)
+3.50	hd	Tube guard (various sizes, rough est)
+5	hd	flatplug 7' 16/2 extension cord (3 outlet)
+7	hd	flatplug 12' 16/2 extension cord (3 outlet)
+1.50	hd	6 ft 16/2 extension cord (3 outlet)
+2.50 	hd 	12 ft 16/2 extension cord (3 outlet)
+20	hd 	75' cord with tritap
+17	hd	100' 16/3 (10 amps only) extension cord
+80	hd 	100' 12/3 (15 amps) heavy duty extension cord
+35 	hd 	Lithonia 6 V emergency light (can be bought with cord for same price!)4	hd 	6 outlet power strip
+50	hd	12 outlet belkin power strip (buy two cheapos instead) (contains EMI filter allegedly)
+12	hd	plug in lamp dimmer
+1.70	w	4x incandescent bulb
+5.00	w	4x crappy cfl (60 w eq)
+14.42	w	12x crappy cfl (60 w eq)
+12.44	w	floodlight (all wattages, 1x bulb)
+10.97	w	f48t8 (32W x2) shoplight (no bulbs)
+6.47	w	8" clamp light
+0.77	w	cheater plug
+1.37	w	6ft 16/2 ext cord 3 outlets
+2.77	w	15ft 16/2 ext cord 3 outlets
+7.97	w	10 ft 16/3 ext cord 3 outlets
+5.97	w	3x 8" ext cord
+6.27	w	2 way split ext cord
+5.97	w	8ft 16/2 pigtail
+8.97	w	9ft 14/3 ext cord
+8.88	w	25ft 16/3 ext cord
+18.97	w	25ft 14/3 ext cord
+9.27	w	20ft 16/3
+12.77	w	50ft 16/3 
+21.97	w	50ft 14/3
+44.97	w	50ft 12/3
+16.77	w	100ft 16/3 (bad bad, and usually Out of stock)
+35.97	w	100ft 14/3 ext cord
+68.97	w	100ft 12/3 ext cord
+23.97	w	120ft 16/2 ext cord
+29.97	w	30 amp l14-30 to 2x 5-20
+
+w = Wal-Mart
+hd = Home Depot
+
+XX. Version History
+2013-03-01	Initial Version, Rich Marino (http://rm.vg/)

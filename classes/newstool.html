@@ -1,0 +1,293 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  //list of interesting legal words http://kuancheen.blogspot.com/2005/07/legal-and-formal-adverbs.html
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+body ol li
+{
+  padding: 2px;
+}
+body ol li:first-child p
+{
+  margin-top: 0px;
+}
+body ol li:last-child p
+{
+  margin-bottom: 0px;
+}
+table
+{
+  border-collapse:collapse;
+}
+tr:first-child th, tr:first-child td
+{
+  border-bottom: 1px solid #000;
+  font-weight: normal;
+  padding-top: 8px;
+}
+tr:last-child td, tr:last-child th
+{
+  border-bottom: 1px solid #000;
+}
+td, th
+{
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top:3px;
+  padding-bottom:1px;
+}
+/*
+  Use the lt class for a table that needs to be compact.
+  Its not nice to look at, but saves paper.
+*/
+.lt tr td, .lt tr th
+{
+  padding-top:0px;
+  padding-bottom:0px;
+  padding-left:2px;
+  padding-right: 2px;
+}
+/*
+  make a box...
+*/
+.textbox
+{
+  border: 1px solid black;
+}
+.mname
+{
+  
+}
+
+/*VIM syntax*/
+/*codeblock-vhdl: VHDL*/
+.codeblock-vhdl .Constant { /*color: #ff6060;*/ color: #f00; }
+.codeblock-vhdl .Special { color: #ff8500; }
+.codeblock-vhdl .Statement { /*color: #eaea00;*/ color: #04b;}
+.codeblock-vhdl .Type { color: #60d060; }
+
+/*codeblock-tcl: Tcl/TK */
+.codeblock-tcl .Constant { color: #f00; }
+.codeblock-tcl .Comment { color: #80a0ff; }
+
+/*codeblock-v: Verilog*/
+.codeblock-v .Constant { color: #f00; }
+.codeblock-v .Special { color: #ff8500; }
+.codeblock-v .PreProc { color: #ff80ff; }
+.codeblock-v .Statement { color: #04b; }
+.codeblock-v .Comment { color: #90b0ff; }
+
+/*codeblock-c: C*/
+.codeblock-c .Constant { color: #f00; }
+.codeblock-c .PreProc { color: #ff80ff; }
+.codeblock-c .Statement { color: #04b; }
+.codeblock-c .Comment { color: #90b0ff; }
+
+/*codeblock-php: PHP/HTML*/
+.codeblock-php .Title { color: #ff00ff; font-weight: bold; }
+.codeblock-php .htmlUnderline { text-decoration: underline; }
+.codeblock-php .htmlItalic { font-style: italic; }
+.codeblock-php .Constant { color: #f00; }
+.codeblock-php .Identifier { color: #40ffff; }
+.codeblock-php .PreProc { color: #ff80ff; }
+.codeblock-php .htmlBoldItalic { font-weight: bold; font-style: italic; }
+.codeblock-php .Statement { color: #04b; }
+.codeblock-php .htmlBold { font-weight: bold; }
+.codeblock-php .Special { color: #ff8500; }
+.codeblock-php .Comment { color: #90b0ff; }
+.codeblock-php .Type { color: #60d060; }
+
+.codeblock
+{
+white-space: pre-wrap; font-family: monospace; color: #000; background-color: #fff;
+font-size: 10px;
+counter-reset: lss;
+border: 1px solid #000;
+}
+.popline { counter-increment:lss; }
+/*
+this cannot be used due to too many sections.
+.codeblock .popline:before {content: counters(lss, ".", decimal-leading-zero) ""; color: #f00; font-size:10px; background-color: #fff; border-right: 1px solid #600; font-weight: bold;} 
+*/
+.linenum
+{
+  color: #f00;
+  border-right: 1px solid #600;
+}
+/*end VIM Syntax*/
+</style>
+<script>
+//Line Number Script
+//(C) 2010-2013 Rich Marino. All Rights Reserved.
+onload=function()
+{
+  //make the getElementsByClassName method
+  if (document.getElementsByClassName == undefined)
+  {
+    document.getElementsByClassName = function(className)
+    {
+      var hasClassName = new RegExp("(?:^|\\s)" + className + "(?:$|\\s)");
+      var allElements = document.getElementsByTagName("*");
+      var results = [];
+      var element;
+      for( var i = 0; (element = allElements[i]) != null; i++ )
+      {
+        var elementClass = element.className;
+        if (elementClass && elementClass.indexOf(className) != -1 && hasClassName.test(elementClass))
+        {
+          results.push(element);
+        }
+      }
+      return results;
+    }
+  }
+  
+  //now actually take care of the text
+  wrapCodeBlocks('codeblock');
+}
+
+function wrapText(element)
+{
+  var newString = '';
+  var lines = element.innerHTML.split("\n");
+  
+  var lx = ('' + lines.length ).length;
+  var mxl = 60;
+  for( var i in lines )
+  {
+    var num = '' + i;
+    while(num.length < lx)
+    {
+      num = ' ' + num;
+    }
+    newString += "<span class=linenum>";
+    newString += num + "</span><span class=popline>";
+    /*
+    //uncomment this if you want to put a mark at the character specified by mxl above.
+    if( lines[i].length > mxl )
+    {
+      newString += lines[i].substring(0,mxl) + "<span style='border-right: 1px solid #f00;'></span>";
+      newString += lines[i].substring(mxl);
+    }
+    else
+    {
+      newString += lines[i];
+    }
+    */
+    newString += lines[i];
+    newString += "</span>\n";
+  }
+  element.innerHTML = newString + '';
+}
+
+function wrapCodeBlocks(type)
+{
+  var codeblocks = document.getElementsByClassName(type);
+  for( var cb in codeblocks )
+  {
+    if( typeof( codeblocks[cb]) == 'object'  ){
+      wrapText( codeblocks[cb] );
+    }
+  }
+}
+</script>
+
+</head>
+<body>
+<div class="main">
+<!--begin content-->
+<span class="mname">Richard A. Marino</span>
+<h1>Newsletter Tool<br/>Functional Spec</h1>
+The newsletter tool is a tool that is designed to produce newsletters for a special application at the University of Miami relatively automatically.
+<h2>Features Required</h2>
+<ul>
+<li><b>List of Newsletters</b> - this is a list of newsletters, in case multiple are to be created.
+  <ul>
+    <li>CREATE TABLE newsletters (NEWSLETTER_NAME text, SECTION_CSV text, HEAD text, FOOT text)</li>
+    <li><b>NEWSLETTER_NAME</b> is the name of the newsletter. This will be displayed to users.</li>
+    <li><b>SECTION_CSV</b> is a CSV of sections in the newsletter. For example <span class=textbox>highlights of the week,announcements,career connections</span> for the EAB newsletter. <b>These will be h1's, for purposes of styling.</b></li>
+    <li><b>HEAD</b> - This contains everything before the automatically generated content.</li>
+    <li><b>FOOT</b> - This contains everything after the automatically generated content.</li>
+  </ul>
+  Wildcards that will be replaced (in HEAD and FOOT) during generation:
+  <ul>
+    <li>$$date$$ -- the date of the newsletter.</li>
+    <li>$$month_calender$$ -- the month calendar</li>
+  </ul>
+</li>
+<li><b>List of Events</b> - a list of upcoming events (submitted by the organizer of events) will be maintained in a database.
+  <ul>
+    <li>CREATE TABLE events (NEWSLETTER_NAME text, TITLE text, BODY text, DATE datetime, DATE_START datetime, SECTION integer, COMMENTS text, CONTACTNAME text, CONTACTEMAIL text, CONTACTPHONE text, REMOVED int);</li>
+    <li>NEWSLETTER_NAME is the newsletter to put the message in.</li>
+    <li>TITLE is the title of the event.</li>
+    <li>BODY is the HTML body of the form.</li>
+    <li>DATE is the date at which the event will occur (unix timestamp)</li>
+    <li>DATE_START is the date from which the event will be mentioned in the newsletter</li>
+    <li>COMMENTS contains comments to the editor (not included in the generated newsletter)</li>
+    <li>SECTION is the section in the body of the newsletter that the event will appear in.</li>
+    <li>REMOVED allows us to mark something as invisible. These items will be in the database for reference, but will not be put in any newsletters.</li>
+    <li><b>CONTACTNAME</b>, <b>CONTACTEMAIL</b>, and <b>CONTACTPHONE</b> are the name, email address, and telephone number of the person who submitted the request.</li>
+    <li>When one begins creation of an issue of a newsletter, all events for that newsletter will be selected automatically:</li>
+      <ul>
+        <li>SELECT * FROM events WHERE NEWSLETTER_NAME = :nname AND DATE_START &lt; :ndate AND DATE &gt; :ndate ORDER BY DATE AND REMOVED = 0;</li>
+      </ul>
+    </li>
+  </ul>
+</li>
+<li><b>Image files in database</b> - Images that will be included in newsletters will be stored in a database on the server, and hotlinked in the body of the newsletter. A drag and drop interface for uploading can be used. <b>Important: base64 data uri images work in Outlook.com, but when sending, they are truncated to 1024 bytes, so the image needs to be smaller than 1000 bytes when base64 encoded.</b>
+<br/>
+A variable in the main program will contain the full path (e.g. http://rm.vg/news/news.php) to the path. This will be appended to get the image.<br/>
+e.g. <span class=textbox>http://rm.vg/news/news.php?image=<somehash>.png</span>.
+</li>
+<li><b>User/password table</b> - very basic authentication with change password for the control panel.</li>
+</ul>
+
+<h2>Public User Interfaces</h2>
+User Interfaces that do not require authentication are as follows:
+<ul>
+  <li><b>Submit a newsletter item</b> - form that inserts an item to events when submitted.</li>
+  <li><b>Log-in screen</b> - this is necessary for authenticating...</li>
+  <li><b>Get file</b> - get a file. No UI, simply spits out the file.</li>
+  <li><b>Get Newsletter</b> - ?news.php?newsletter_name=[name]&date=[unix timestamp] will result in generation of the newsletter for that day</li>
+</ul>
+<h2>Private User Interfaces</h2>
+User Interfaces that require authentication are as follows:
+<ul>
+  <li><b>Main Control Panel</b> - Add/Edit/Delete User, Add/Edit/Delete newsletter, Add/Edit/Delete event, Make newsletter for [enter date]</li>
+</ul>
+<h2>Development Summary</h2>
+This should be able to be developed easily within a couple hours, possibly will be developed without the files on server initially.<br/>
+Milestones:
+<ul>
+  <li>Database internals, submit form working, generate newsletters that exist</li>
+  <li>Control Panel and Users working.</li>
+  <li>Optional: Files working -- this is of low importance since it could be made a requirement that images are added when sending the newsletter.</li>
+</ul>
+<h2>Other Details</h2>
+The result of this will be a webpage, which should be pasted into a mail program (even Outlook.com) for touchup editing, and sending.<br/>
+It may be made a requirement of the newsletter editor that images are maintained separate from this system.<br/>
+<!--end content-->
+</div>
+</body>
+</html>
+
+

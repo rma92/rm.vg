@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Sign Tool</title>
+<style>
+#signs
+{
+  border: 2px solid red;
+}
+</style>
+<script>
+var base = "http://rm.vg/sign/";
+
+function ol()
+{
+  var ox = document.getElementById('signs');
+  ox.innerHTML = '<img src="' + base + '?num=95&state=D.C.' + '"/>';
+}
+</script>
+</head>
+<body onload="ol()">
+<div id=signs>
+&nbsp;
+</div>
+</body>
+</html>

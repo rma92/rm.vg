@@ -1,0 +1,134 @@
+
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+<TITLE>Arduino Stuff - Rich A. Marino</TITLE>
+<link rel="stylesheet" href="/rm.css"> 
+</HEAD>
+<BODY>
+<h1><a href="/index.html">Rich A. Marino</a>&nbsp;&nbsp;|&nbsp;&nbsp;<span class="ht1">Arduino Stuff</span></h1>
+These are my notes related to Arduino.
+<h2>Using Arduino on Windows 8 (Driver Signing Issue)</h2>
+Due to the mandated driver signing on Windows 8, the inbuilt Arduino drivers will not work. A solution is to install an alternative driver written by
+Microsoft for a similar device. I use this with an Arduino Uno.*
+<ol>
+<li>Plug in the Arduino</li>
+<li>Open Device Manager (search for devmgmt.msc)</li>
+<li>Go to unknown devices. Select the Unknown Device.</li>
+<li>Right-click the unknown device, and choose Update Driver...</li>
+<li>Choose "Browse my computer for driver software".</li>
+<li>Choose "Let me pick from a list of device drivers on my computer".</li>
+<li>Choose "Modems", and click Next.</li>
+<li>For Manufacturer, choose "Compaq".</li>
+<li>Choose "Ricochet Wireless USB Modem" (should be last item on list)</li>
+<li>Click Yes on the warning.</li>
+<li>The driver installs. That modem uses the same USB-Serial chip as the Arduino.</li>
+<li>Open the Arduino software. Choose Tools > Serial Port and select appropriately.</li>
+</ol>
+
+*This works for me. I take no liability if it doesn't work for you, or causes damage. USE AT YOUR OWN RISK!
+
+<h2>Blinking an LED</h2>
+This is an elementary code to blink an LED. Note the use of constants (boardLED), the setup function, and the loop function that will run indefinately.
+<div style="border: 1px solid black;">
+<tt>
+int boardLED = 13;<br>
+<br>
+void setup()<br>
+{<br>
+    pinMode(boardLED, OUTPUT);<br>
+}<br>
+<br>
+void loop()<br>
+{<br>
+  digitalWrite(boardLED, HIGH);<br>
+  delay(270);<br>
+  digitalWrite(boardLED, LOW);<br>
+  delay(100);<br>
+}<br>
+</tt>
+</div>
+
+<h2>Using a Button</h2>
+One should be familiar with the concepts of pull-up or pull-down resistors. 
+Run a wire from one side of the switch to Vcc. Put a resistor on the other 
+side, and connect to the ground. Put a connection from the side with the resistor
+into a numbered pin on the Arduino.
+This code runs a toggle switch
+<div style="border: 1px solid black;">
+<tt>
+int boardLED = 13;<br>
+int button = 2;<br>
+boolean state = LOW;<br>
+<br>
+void setup()<br>
+{<br>
+  pinMode(boardLED, OUTPUT);<br>
+  pinMode(button, INPUT);<br>
+}<br>
+<br>
+void loop()<br>
+{  <br>
+  if(digitalRead(button) == HIGH && state == LOW)<br>
+  {<br>
+    state = HIGH;<br>
+  }<br>
+  else if(digitalRead(button) == HIGH && state == HIGH)<br>
+  {<br>
+    state= LOW;<br>
+  }<br>
+  digitalWrite(boardLED, state);<br>
+}<br>
+</tt>
+</div>
+
+<h2>Debouncing</h2>
+The Arduino is imperfect. When the state of a button changes, there 
+is some fluctuation for some while, which makes getting an accurate 
+reading troublesome. One solution is to put a capacitor in series
+with the button, but this can also be solved in software:
+<div style="border: 2px solid black;">
+<tt>
+int boardLED = 13;<br>
+int button = 2;<br>
+boolean led_state = LOW;<br>
+boolean last_state = LOW;<br>
+boolean current_state = LOW;<br>
+void setup()<br>
+{<br>
+  pinMode(boardLED, OUTPUT);<br>
+  pinMode(button, INPUT);<br>
+}<br>
+<br>
+boolean debounce (boolean button_state)<br>
+{<br>
+  boolean current = digitalRead(button);<br>
+  if(button_state != current)<br>
+  {<br>
+     delay(5); //5 ms delay<br>
+     current = digitalRead(button); //debounced value <br>
+  }<br>
+}<br>
+<br>
+void loop()<br>
+{  <br>
+  current_state = debounce(last_state);<br>
+  if(last_state == LOW && current_state == HIGH)<br>
+  {<br>
+    led_state = !led_state;<br>
+  }<br>
+  digitalWrite(boardLED, led_state);<br>
+  last_state = current_state;<br>
+}<br>
+</tt>
+</div>
+It is worth noting that the delay must be enough time for the 
+switch to finish bouncing, but short enough time so that the press is responsive.
+The Arduino runs at 400,000 fps on an empty loop.
+A digitalWrite takes 25 microseconds.
+A digitalRead takes 3 microseconds.
+
+
+<br></BODY>
+</HTML>
+

@@ -1,0 +1,85 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+.main
+{
+  font-family:  times, serif;
+  font-size: 12px;
+  width:500px;
+  margin: 0 auto;
+}
+h1
+{
+  text-align: center;
+  font-size: 16px;
+}
+h2
+{
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid black;
+  padding-bottom: 4px;
+}
+ol li
+{
+  padding: 8px;
+}
+.mname
+{
+  
+}
+</style>
+</head>
+<body>
+<div class="main">
+<span class="mname">Richard A. Marino</span>
+<h1>EEN567<br/>Database Design & Management</h1>
+<h2>Assignment 2</h2>
+
+<ol>
+<li>
+<p>
+<b>(20 points)</b> Explain the difference between external, conceputal, and internal schemas. How are these different schema layers related to the concepts of logical and physical data independence?
+</p>
+
+<p>The <b>External Schema</b> is a formal definition for user views. The <b>Conceptual Schema</b> integrates the external schema into the <b>Internal Schema</b>, which defines the physical storage structures (e.g. tables, etc.). The External Schema is the most abstract, and logical of the schemas, while the Internal the least abstract, and most closely related to physical modeling.</p>
+<p>The three schemas are all linked, in that in a top-down approach, starting with an External Schema, the Conceptual and Internal Schemas are influenced based on it's design.</p>
+
+</li>
+<li>
+<p><b>(15 points)</b> [Exercise 2.3] What is a data model? Discuss the main types of data model.</p>
+<p>A <b>data model</b> is a description of real-world or other objects represented by a computer system, as well as their properties (attributes) and relationships. There are multiple types of data models, including <b>Database or Record-based Models</b>, <b>Entity-Relationship Models</b>, <b>Semantic Models</b>, <b>Functional Models.</b>, and <b>Physical Data Models</b>.</p>
+
+<p>A <b>Record-based Model</b>, or <b>Database Model</b> specifies a means of storing data in a database. Subtypes include the <b>Relational Data Model</b>, which specifies the overall structure of a database and high-level descriptions of implementation (e.g. data types, links between tables, etc.). Most modern commercial systems are based on this model. These data models do not provide adequate facilities for explicitly specifying the semantics/constraints of the data (e.g. range). Other subtypes include the <b>Network Data Model</b>, which represents data in a graph (data structure), and the <b>Hierarchial Model</b>, which represents data in a tree. The <b>Flat Model</b>, a trivial 2 dimensional array of data, may or may not be included. It may be too trivial for inclusion.</p>
+
+<p>An <b>Entity-Relationship Model</b>, also called <b>E.R. Model</b>, consists of a diagram of entities with lines, or arrows representing links (the relationships) between entities. For example, in a medical data record system, financial records and medical records may be linked by a patient's social security number.</p>
+
+<p>A <b>Semantic Model</b> defines the meaning of data within the context of interrelationships with other data. It is an abstraction of data in the system, to the point that it is sometimes called a <b>Conceptual Data Model</b>. The logical data structure of an actual database system cannot satisfy the requirements for semantic specifications of data due to limitations of the types of models implemented in a database. It is therefore necessary to define semantic usage of the data.</p>
+
+<p>A <b>Functional Model</b> is a structured representation of the functions of a system. This is useful in an object-oriented environment where entities may contain specified functions, in addition to properties. The functions that may be specified included activities, actions, processes, and operations of a particular entity.</p>
+
+<p>A <b>Physical Data Model</b> defines how data will actually be stored, given constraints, and facilities of an actual database management system. This may include files, or actual information about tables in a database. This is a fairly low level data model.</p>
+
+</li>
+
+<li>
+<p>
+<b>(15 points)</b> [Exercise 2.5] Describe the types of facility that you would expect to be provided in a multi-user DBMS.
+</p>
+<p>A multi-user DBMS would be expected to provide facilities that allow for multiple simultaneous users to access the data in a practical, safe, secure, and robust manner.</p>
+
+<p>Such features would obviously include a <b>Security facility</b> to authenticate users, and prevent inappropriate access of data by other users, or third-parties. This could include simple authentication (a table or file containing usernames and passwords), but it would be preferable to include a more robust system that can be linked to another authentication system such as Active Directory, or a RADIUS server. Access Control Lists would also be extremely desirable, to ensure data integrity.</p>
+
+  <p><b>Concurrency Control</b>, a <b>Query Language</b> and a <b>View Mechanism</b> of some variety would also be expected, with the first of particular importance. Considering the nature of a multi-user database system, having a facility to maintain the ability of multiple interactions with the database at any given time would be extremely desirable.</p>
+
+<p>Considering the cost associated with both the database system itself, and the presumed value of the data that will be stored in the database, at least some nature of <b>Crash Recovery</b> or backup system would be expected.</p>
+
+<p>It would also be expected that the database may be accessed and managed over a network, and to support clustering.</p>
+</li>
+</ol>
+</div>
+</body>
+</html>
+

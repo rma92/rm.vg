@@ -1,0 +1,87 @@
+<?
+/* PHP B-tree (Primative)
+  (C) 2013 Rich Marino
+*/
+class btree
+{
+  //This represents a leaf in the btree.
+  public $data;
+  public $key;
+  public $ptrs;
+  function __construct($m_key = '')
+  {
+    $this->ptrs = array();
+    $this->key = $m_key;
+    $this->data = $m_data;
+  }
+
+  function addt($m_key, $m_data, $i = 0)
+  {
+    /*
+      The b-tree is indexed by the key. For example, if
+      the key is 'cat', starting with the base tree, you will look
+      to see if there is a leaf for 'c'. If not, a leaf will be created
+      at ptrs['c']. Then addt will be 
+      Algorithm:
+        If $i >= strlen($key), we are at the correct place. So, insert the data in this leaf, and return.
+        If not, see if there is a leaf for $this->ptrs[ $m_key[$i] ]; If not, create a leaf there ( = new leaf (substr($key, 0, $i)). Call 
+          $this->ptrs[ $m_key[$i] ].addt($m_key, $m_data, $i+1);
+    */
+    if( $i >= strlen($m_key) )
+    {
+      $this->data = $m_data;
+      return TRUE;
+    }
+    else
+    {
+      if( !array_key_exists( $m_key[$i], $this->ptrs ) )
+      {
+        $this->ptrs[ $m_key[$i] ] = new btree( substr($m_key, 0, 1+$i) );
+      }
+      return $this->ptrs[ $m_key[$i] ]->addt( $m_key, $m_data, 1+$i );
+    }
+  } /*! function addt*/
+
+  /*
+    returns the data for a particular leaf
+  */
+  function get($m_key, $i = 0)
+  {
+    if( $i == strlen($m_key) )
+    {
+        return $this->data;
+    }
+    else if( $i > strlen($m_key))
+    { //something really bad happened.
+      return FALSE;
+    }
+    else
+    {
+      if( !array_key_exists( $m_key[$i], $this->ptrs ) )
+      { //if the key doesn't exist, false.
+        return FALSE;
+      }
+      else
+      {
+        return $this->ptrs[ $m_key[$i] ]->get( $m_key, 1+$i );
+      }
+    }
+  } /* ! function get*/
+}; /*! class btree*/
+
+$tree = new btree();
+$tree->addt('hi', 1);
+$tree->addt('bob', 2);
+$tree->addt('hello', 3);
+$tree->addt('h', 42);
+
+var_dump( $tree->get('hi') );
+var_dump( $tree->get('hello') );
+var_dump( $tree->get('herro') );
+var_dump( $tree->get('bob') );
+var_dump( $tree->get('he') );
+var_dump( $tree->get('h') );
+$tree->addt('h', 55);
+var_dump( $tree->get('h') );
+//var_dump($tree);
+?>
