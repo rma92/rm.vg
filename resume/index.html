@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
-<!--In Edge, set the print scale to 87%, set left and right margin to 0.4", top and bottom to 0.31" for letter. Turn off header and footer, but this made a large file-->
-<!--In Firefox, set the print scale to 85%, set left and right margin to 0.4", and set top and bottom to 0.28" for letter.  Turn off header and footer, use Save as PDF, should get a small file.-->
+<!--In Edge, set the print scale to 84%, set left and right margin to 0.31", top and bottom to 0.19" for letter. Turn off header and footer, but this made a large file-->
+<!--In Firefox, set the print scale to 79%, set left and right margin to 0.31", and set top and bottom to 0.28" for letter.  Turn off header and footer, use Save as PDF, should get a small file.-->
 <html>
 <head>
 <title>Rich A. Marino, Software Engineer, Technologist, Resume (long)</title>
@@ -112,13 +112,15 @@ table{ border:0; width:100%; }
 .skill-type-col
 {
   width: 140px;
-  font-family: "ClearviewADA Cond";
+  /*font-family: "ClearviewADA Cond";*/
+  font-family: "ClearviewADA Cond", sans-serif;
 }
 .skill-type-note
 {
-  font-weight: bold;
-  font-family: 'ClearviewText Comp XThin';
-  font-size: 10px;
+  /*font-weight: bold;*/
+  /*font-family: 'ClearviewText Comp XThin';*/
+  font-family: "ClearviewADA Cond", sans-serif;
+  font-size: 11px;
 }
 .skill-list
 {
@@ -128,12 +130,13 @@ table{ border:0; width:100%; }
   float: left;
   padding-left:10px;
   padding-right:10px;
-  font-size: 12px;
-  font-family: 'ClearviewADA Cond Light';
+  font-size: 14px;
+  /*font-family: 'ClearviewADA Cond Light';*/
+  /*font-family: "ClearviewADA Cond", sans-serif;*/
 }
 #skills-table tr td
 {
-  padding-bottom: 5px;
+  padding-bottom: 2px;
 }
 .proj-title
 {
@@ -162,6 +165,15 @@ table{ border:0; width:100%; }
   padding-left: 4px;
   padding-right: 0px;
 }
+.career-list
+{
+  font-size:15px;
+  word-spacing: -1px;
+}
+.career-title
+{
+  font-size:16px;
+}
 </style>
 </head>
 <body>
@@ -173,7 +185,11 @@ Rich A. Marino | Platform Engineer</td>
 <div id=contact>
 <table>
 <tr>
-<td>Phone:</td>
+<td>Phone (UK):</td>
+<td class="contact-val">+44-7888-867565</td>
+</tr>
+<tr>
+<td>Phone (US):</td>
 <td class="contact-val">+1-857-288-8884</td>
 </tr>
 <tr>
@@ -190,7 +206,7 @@ Web:
 </tr>
 <tr>
 <td  class="contact-loc" colspan=2>
-Miami Beach, FL | New York, NY
+London, UK | Miami Beach, FL
 </td>
 </tr>
 </table>
@@ -201,9 +217,8 @@ Miami Beach, FL | New York, NY
 <!--<h1>Skillset</h1>-->
 <span class=ss>
 <p>Passionate, personable technologist and engineer.  Quick learner, problem solver, and thrives in high-stakes environment.</p>
-<p>Very passionate about making things run as fast and reliably as possible.</p>
 <p>Specialties in high performance trading infrastructure, networking, virtualization, and operating systems, both with respect to development and implementation.</p>
-<p>Expertise in both Windows and Unix environments, heavy professional user of C, C++, C#.</p>
+<p>Very passionate about making things run as fast and reliably as possible.  Expertise in both Windows and Unix environments</p>
 </span>
 <h1>Professional Experience</h1>
 <ul>
@@ -214,56 +229,43 @@ Miami Beach, FL | New York, NY
 </ul>
 </li>
 -->
-<li><b><span class="proj-title">Millennium Management<span class=al>(June 2023 - Present)</span></span></b>
-<ul>
+<li class="career-title"><span class="proj-title"><b>Millennium Management<span class=al>(June 2023 - Present)</span></b> - Systematic Operations Engineer</span>
+<ul class="career-list">
   <li>Provided crucial support for a latency-critical options trading strategy, effectively resolving outages and deploying necessary infrastructure in a timely manner.</li>
+  <li>Collaborated directly with portfolio managers and quant personnel to design, plan, and build out trading infrastructure.</li>
   <li>Innovatively developed proprietary tools aimed at optimizing workflow efficiency. (C#, Shell)</li>
   <li>Played an integral role in the systematic trading on-call rotation, offering comprehensive support across diverse trading systems.</li>
+  <li>Resolved critical trade settlement issues by communicating directly with counter-parties and working directly with FIX protocol messages.</li>
 </ul>
 </li>
-<li><b><span class="proj-title">CrowdStrike (temp)<span class=al>(January 2023 - June 2023)</span></span></b>
-<ul>
+<li class="career-title"><span class="proj-title"><b>CrowdStrike<span class=al>(January 2023 - June 2023)</span></b> - Engineer (Consultant) </span>
+<ul class="career-list">
   <li>Contributed expertise rebuilding virtualization infrastructure that backs hybrid-analysis.com, as well as fixes to kernel-mode Windows driver code.</li>
 </ul>
 </li>
-<li><b><span class="proj-title">Robinhood Markets (Consulting)<span class=al>(December 2021 - January 2023)</span></span></b>
-<ul>
-  <li>Designed and deployed secure and compliant Windows infrastructure from the ground up in formerly Mac-only environment.
-    <ul>
-      <li>Deployed Microsoft InTune, Azure AD, and Azure VDI from the ground up.</li>
-      <li>Implemented deployment and process automation for Windows and other systems.</li>
-      <li>Designed and implemented platform security models based on CIS baselines in cooperation with security experts.</li>
-      <!--<li>Implemented Device Trust utilizing SCEP and Okta Verify.</li>-->
-      <li>Stabilized, secured, and later replaced a haphazardly deployed Amazon AWS Workspaces infrastructure.</li>
-    </ul>
-  </li>
-  <li>Managed and implemented MDM solutions for macOS, ChromeOS, iOS and Android.</li>
-  <!--<li>Managed Apple and macOS fleet utilizing MicroMDM and Apple Business Manager.</li>-->
-  <!--<li>Designed and assisted with implementation of ChromeOS management controls.</li>-->
-  <!--<li>Deployed VMWare WorkSpace One (AirWatch) for management of iOS and Android devices.</li>-->
+<li class="career-title"><span class="proj-title"><b>Robinhood Markets<span class=al>(December 2021 - January 2023)</span></b> - Senior Client Platform Engineer (Consultant)</span>
+<ul class="career-list">
+<li>Conceptualized, designed, and executed the deployment of a secure and compliant Windows infrastructure in a previously Mac-only environment.</li>
+<li>Spearheaded the implementation of Microsoft InTune, Azure AD, and Azure VDI from inception to full deployment, ensuring seamless integration and functionality.</li>
+<li>Engineered deployment and process automation for Windows and other systems, streamlining operations and enhancing efficiency across the organization.</li>
+<li>Collaborated closely with security experts to design and implement platform security models based on CIS baselines, ensuring robust protection against potential threats.</li>
+<li>Successfully stabilized, secured, and ultimately replaced a poorly deployed Amazon AWS Workspaces infrastructure used by hundreds of users, mitigating risks and optimizing performance.</li>
+<li>Managed the end-to-end implementation of MDM solutions for macOS, ChromeOS, iOS, and Android devices, ensuring comprehensive device management and security protocols for hundreds of mobile devices and thousands of computers.</li>
 </ul>
 </li>
-<ul>
-<li><b><span class="proj-title">Consulting <span class=al>(February 2017 - Present)</span></span></b>
-<ul>
-  <li>Deployed a high-performance global anycast network with points of presence on 6 continents (AS 207419 Richard Marino).</li>
-  <li>Assisted clients with a wide range of IT services, troubleshooting, and implementation.</li>
-  <li>Implemented Enterprise connectivity across multiple physical sites.</li>
-  <li>Deployed line of business infrastructure and applications for point of sale.</li>
-  <li>Deployed A/V, digital media, and digital signage solutions.</li>
-</ul>
-</li>
-<li><b><span class="proj-title">Confidential <span class=al>(November 2020 - March 2023)</span></span></b>
-<ul>
+<!--
+<li><span class="proj-title"><b>Confidential <span class=al>(November 2020 - March 2023)</span></b> - Software Engineer</span>
+<ul class="career-list">
+
   <li>Developed custom GIS/mapping application from the ground up, including both data and rendering layers.</li>
   <li>Designed and developed a commercial address geocoding service.</li>
   <li>Designed and developed a custom tailored application utilizing advanced algorithms to optimize door to door delivery services.</li>
 </ul>
 </li>
-<li><b><span class="proj-title">D.E. Shaw & Co. <span class=al>(August 2018 - November 2020)</span></span></b>
-  <ul>
-    <li>Assisted in maintenance and diagnostics of UDP multicast market data feed lines.</li>
-    <li>Revamped and rebuilt company-wide monitoring infrastructure by implementing Telegraf, Prometheus, Grafana and Microsoft System Center Operations Manager (SCOM) from the ground up on both Windows and Linux.</li>
+-->
+<li class="career-title"><span class="proj-title"><b>D.E. Shaw & Co. <span class=al>(August 2018 - November 2020)</span></b> - Production Engineer</span>
+  <ul class="career-list">
+    <li>Spearheaded and led the overhaul of company-wide monitoring infrastructure, driving the implementation of Telegraf, Prometheus, Grafana, and Microsoft System Center Operations Manager (SCOM) from scratch on both Windows and Linux platforms, resulting in a remarkable 75% decrease in operational noise.</li>
     <!--<li>Significantly revamped and rebuilt monitoring infrastructure-->
       <!--<ul>-->
         <!--<li>Implemented Telegraf, Prometheus, and Grafana from the ground up on both Windows and Linux.</li>-->
@@ -273,41 +275,44 @@ Miami Beach, FL | New York, NY
         <!--<li>Developed an application to perform offline dependency analysis and resolution of SCOM Management Packs. (PowerShell)</li>-->
       <!--</ul>-->
     <!--</li>-->
+    <li>Assisted in maintenance and diagnostics of UDP multicast market data feed lines.</li>
     <li>Contributed to a high-level ops rotation administering Windows and Linux systems, as well as network infrastructure.</li>
-    <li>Assisted in development, implementation, and operation of a new HPC cluster / compute grid scheduling application. (Python)</li>
-    <!--<li>Used puppet to automate configuration of Linux systems.</li>-->
-    <!--<li>Implemented and administered various third-party applications from the ground up including GitHub Enterprise.</li>-->
-    <li>Developed low level tooling to investigate Windows driver memory bugs. (C)</li>
+    <li>Assisted in development, implementation, and operation of a new HPC cluster / compute grid scheduling application used across thousands of computers. (Python)</li>
+    <li>Led development of low level tooling to investigate Windows driver memory bugs. (C)</li>
     <li>Contributed significant expertise to developing a secure and segregated Linux and Windows computing environment to facilitate trustworthy computing in an extremely untrustworthy environment for a new office in China.</li>
   </ul>
 </li>
-<li><b><span class="proj-title">Acuity Brands Lighting <span class=al>(March 2017 - August 2018)</span></span></b>
-  <ul>
+<li class="career-title"><span class="proj-title"><b>Consulting <span class=al>(February 2017 - Present)</span></b> - Enterprise Connectivity / IT</span>
+<ul class="career-list">
+  <li>Deployed a high-performance global anycast packet acceleration and content distribution network with dozens of points of presence on 6 continents (AS 207419).</li>
+  <li>Developed custom GIS/mapping application from the ground up, including both data and rendering layers.</li>
+  <li>Assisted clients with a wide range of IT services, troubleshooting, and implementation.</li>
+  <li>Implemented Enterprise connectivity across multiple physical sites.</li>
+  <li>Led the design, deployment, and implementation of line of business infrastructure and applications for point of sale.</li>
+  <li>Deployed A/V, digital media, and digital signage solutions.</li>
+</ul>
+</li>
+<li class="career-title"><span class="proj-title"><b>Acuity Brands Lighting <span class=al>(March 2017 - August 2018)</span></b> - Software Engineer</span>
+  <ul class="career-list">
+    <li>Owned and drove development of cloud-first firmware update service
+    <li>Implemented a cloud-first firmware update service for embedded products from the ground up. (Azure, .net Core, C#, Web front-end)</li>
+    <li>Designed and built an API to allow efficient access to commercial lighting controlled by the nLight protocol. (C++, C)</li>
     <li><!--DevOps-->Configured and maintained critical product build servers and CI/CD pipelines (VSTS, InstallShield)</li>
     <li><!--DevOps-->Rebuilt a critical build server, which resolved significant delays and improved development efficiency. (VSTS)</li>
-    <li>Designed and built an API to allow efficient access to commercial lighting controlled by the nLight protocol. (C++, C)</li>
-    <li>Implemented a cloud-first firmware update service for embedded products from the ground up. (Azure, .net Core, C#, Web front-end)</li>
     <li>Implemented JSON parsing on extremely resource-constrained devices. <C></li>
     <li>Contributed expertise towards integration of a new wireless nLight product into the existing platform. (C#)</li>
-
   </ul>
 </li>
-<li><b><span class="proj-title">Microsoft <span class=al>(May 2015 - Nov 2016)</span></span></b>
+<li class="career-title"><b><span class="proj-title">Microsoft <span class=al>(May 2015 - Nov 2016)</span></span></b>
 <p><span class="proj-title">Windows Fresh Start <span class=al>(Dec 2015 - Nov 2016)</span></span></p>
-  <ul>
-    <li>Designed and built a Windows feature that can quickly clean a 
-    PC of all software while keeping drivers and files.
-    <span class=as>(C, C#, C++)</span>
-    </li>
-    <li>
-    Experimentally implemented automatic user-mode application 
-    virutalization and containerization. (C, C++)
-    </li>
-    <li>Implemented various graphic user interface (GUI) components. 
-      <span class=as>(C#)</span></li>
+  <ul class="career-list">
+    <li>Played a pivotal role as one of the primary engineers in the conception and execution of the Windows Fresh Start feature, working closely with three program managers and other engineers.</li>
+    <li>Contributed significantly to the design and implementation of the feature from its inception to its initial release, utilizing expertise in C, C#, and C++.</li>
+    <li>Conducted experimental implementations of automatic user-mode application virtualization and containerization, collaborating with the team to enhance user experience and system performance.</li>
+    <li>Contributed to the project's user interface design by implementing various graphical components using C#.</li>
   </ul>
 <p><span class="proj-title">Windows Networking <span class=al>(May 2015 - Dec 2015)</span></span></p>
-  <ul>
+  <ul class="career-list">
     <li>Led bug fixes across an enormous codebase (Windows) while in
         charge of maintaining VPN, Enterprise Wi-Fi, and Ethernet features.
     </li>
@@ -320,6 +325,10 @@ Miami Beach, FL | New York, NY
       Quality of Service. <span class=as>(Hyper-V, TCP/UDP, C, C++)</span></li>
   </ul>
 </li>
+</ul>
+<div class="pagebreaker"></div>
+<h1>Internships</h1>
+<ul>
 <li><span class="proj-title"><b>Microsoft Intern Program (May 2014 - August 2014)</b> - Windows Networking</span></p>
 <ul>
   <li>Developed a Cloud Platform System (Azure Stack) orchestration and management client, utilizing REST/JSON.</li>
@@ -347,11 +356,26 @@ Miami Beach, FL | New York, NY
 </ul>
 </li>
 </ul>
-<div class="pagebreaker"></div>
+
 <table>
 <tr>
 <td width=69% class="left-column">
 <h1>Professional, Independent and University Projects</h1>
+<ul>
+  <li>
+    <b><span class="proj-title">Global CDN and Fast Packet Routing (2022-Present)</span></b>
+  <ul>
+    <li>
+      Implemented a private global network utilizing BGP on the internet and OSPF for minimal latency routing of internal and incoming traffic.
+    </li>
+    <li>The network facilitates both fast edge content delivery (CDN) as well as providing reduced latency bi-directional communications.
+    </li>
+    <li>
+      Implemented a proprietary proxy to route packets onto the internet through the nearest global node.
+    </li>
+  </ul>
+  </li>
+</ul>
 <ul>
   <li>
     <b><span class="proj-title">Windows Kernel-mode Memory Map (C, C++, 2019)</span></b>
@@ -412,8 +436,7 @@ Miami Beach, FL | New York, NY
   <li>
     <b><span class="proj-title">Bootable Tor Hidden Site Server (2013 - 2014)</span></b>
     <ul>
-      <li>Created a minimal embedded Linux system that could be booted from read-only media and serve a Tor hidden site.</li>
-      <li>Utilized the Performant PHP Web Server (mentioned above).</li>
+      <li>Created a minimal embedded Linux system that can be booted from read-only media and serve a Tor hidden site, by utilizing the Performant PHP Web Server (mentioned above).</li>
     </ul>
   </li>
    <li>
@@ -543,7 +566,7 @@ Miami Beach, FL | New York, NY
         <li>Azure Virtual Desktops</li>
         <li>Amazon AWS Workspaces</li>
         <li>MicroMDM</li>
-        <li>Santa</li>
+        <!--<li>Santa</li>-->
         <li>Active Directory</li>
         <li>Puppet</li>
       </ul>
@@ -559,46 +582,12 @@ Miami Beach, FL | New York, NY
         <li>IIS</li>
         <li>Citrix XenApp</li>
         <li>System Center</li>
-        <li>SCOM</li>
         <li>SCCM</li>
-        <li>Prometheus</li>
-        <li>Grafana</li>
-        <li>Telegraph (monitoring application)</li>
         <li>GitHub Enterprise</li>
         <li>Microsoft SQL Server</li>
         <li>NetApp</li>
         <li>Enterprise Vault</li>
-        <li>macOS Server</li>
-      </ul>
-    </td>
-  </tr>
-
-  <tr>
-    <td class="skill-type-col">Operating Systems<br/><span class="skill-type-note">(Development and Administration)</span></td>
-    <td>
-      <ul class="skill-list">
-        <li>Windows Server 2012-Present</li>
-        <li>Windows 8, 8.1, 10</li>
-        <li>Linux (RHEL, CentOS, Ubuntu, Debian)</li>
-        <li>OpenBSD</li>
-        <li>Unix</li>
-        <li>macOS</li>
-        <li>FreeBSD</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td class="skill-type-col">Legacy Systems<br/><span class="skill-type-note">(Development and Administration)</span></td>
-    <td>
-      <ul class="skill-list">
-        <li>Windows XP, Vista, 7</li>
-        <li>Windows Server 2000 / 2003 / 2008</li>
-        <li>Windows 9x</li>
-        <li>Windows NT</li>
-        <li>Windows 3.x</li>
-        <li>OS/2</li>
-        <li>Citrix WinFrame</li>
-        <li>MS-DOS</li>
+        <!--<li>macOS Server</li>-->
       </ul>
     </td>
   </tr>
@@ -611,25 +600,6 @@ Miami Beach, FL | New York, NY
         <li>Windows Forms</li>
         <li>WPF</li>
         <li>WinSock</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td class="skill-type-col">Applications</td>
-    <td>
-      <ul class="skill-list">
-        <li>Adobe Audition</li>
-        <li>Adobe Illustrator</li>
-        <li>Adobe InDesign</li>
-        <li>Adobe Photoshop</li>
-        <li>Adobe Premiere</li>
-        <li>AutoCAD</li>
-        <li>COMSOL MultiPhysics</li>
-        <li>Maple</li>
-        <li>MATLAB</li>
-        <li>Transsoft GUIDSign</li>
-        <li>Microsoft Visio</li>
-        <li>Microsoft Project</li>
       </ul>
     </td>
   </tr>
@@ -690,6 +660,80 @@ Miami Beach, FL | New York, NY
       </ul>
     </td>
   </tr>
+  <tr>
+    <td class="skill-type-col">Trading Technology</td>
+    <td>
+      <ul class="skill-list">
+        <li>ION</li>
+        <li>Bloomberg</li>
+        <li>UDP Market Data</li>
+        <li>FIX</li>
+      </ul>
+    </td>
+  </tr>
+  <!--
+  <tr>
+    <td class="skill-type-col">Applications</td>
+    <td>
+      <ul class="skill-list">
+        <li>Adobe Audition</li>
+        <li>Adobe Illustrator</li>
+        <li>Adobe InDesign</li>
+        <li>Adobe Photoshop</li>
+        <li>Adobe Premiere</li>
+        <li>AutoCAD</li>
+        <li>COMSOL MultiPhysics</li>
+        <li>Maple</li>
+        <li>MATLAB</li>
+        <li>Transsoft GUIDSign</li>
+        <li>Microsoft Visio</li>
+        <li>Microsoft Project</li>
+      </ul>
+    </td>
+  </tr>
+  -->
+  <tr>
+    <td class="skill-type-col">Monitoring</td>
+    <td>
+      <ul class="skill-list">
+        <li>Telegraf</li>
+        <li>Prometheus</li>
+        <li>Grafana</li>
+        <li>System Center Operations Monitor</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td class="skill-type-col">Operating Systems<br/><span class="skill-type-note">(Development and Administration)</span></td>
+    <td>
+      <ul class="skill-list">
+        <li>Windows Server</li>
+        <li>Windows 11, 10</li>
+        <li>Linux (RHEL, CentOS, Debian, Ubuntu)</li>
+        <li>Unix</li>
+        <li>macOS</li>
+        <li>OpenBSD</li>
+        <li>FreeBSD</li>
+      </ul>
+    </td>
+  </tr>
+<!--
+  <tr>
+    <td class="skill-type-col">Legacy Systems<br/><span class="skill-type-note">(Development and Administration)</span></td>
+    <td>
+      <ul class="skill-list">
+        <li>Windows XP, Vista, 7, 8, 8.1</li>
+        <li>Windows Server 2000 / 2003 / 2008</li>
+        <li>Windows 9x</li>
+        <li>Windows NT</li>
+        <li>Windows 3.x</li>
+        <li>OS/2</li>
+        <li>Citrix WinFrame</li>
+        <li>MS-DOS</li>
+      </ul>
+    </td>
+  </tr>
+-->
 <!--
   <tr>
     <td class="skill-type-col">Dummy</td>
